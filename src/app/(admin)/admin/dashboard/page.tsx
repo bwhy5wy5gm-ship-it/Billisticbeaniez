@@ -16,6 +16,7 @@ import {
   Shield,
   FileEdit,
   Clock,
+  BarChart3,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -75,6 +76,14 @@ export default function AdminDashboardPage() {
       href: "/admin/photo-log",
       color: "text-indigo-500",
       bg: "bg-indigo-50 dark:bg-indigo-950/20",
+    },
+    {
+      icon: BarChart3,
+      title: "Charts",
+      desc: "Add experiment sensor data for dashboard",
+      href: "/admin/charts",
+      color: "text-cyan-500",
+      bg: "bg-cyan-50 dark:bg-cyan-950/20",
     },
     {
       icon: FileEdit,
