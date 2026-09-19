@@ -353,18 +353,20 @@ const chartData = {
 
 const teamHistory = {
   async findMany() {
-    const { data } = await getDb().from("TeamHistory").select("*").order("year", { ascending: false });
+    const { data } = await getDb().from("TeamHistory").select("*").order("position", { ascending: true }).order("year", { ascending: false });
     return data || [];
   },
   async findUnique(args: { where: { id: string } }) {
     const { data } = await getDb().from("TeamHistory").select("*").eq("id", args.where.id).single();
     return data;
   },
-  async create(args: { data: { year: number; title: string; description: string; photos?: string[] } }) {
+  async create(args: { data: { year: number; title: string; description: string; photos?: string[]; position?: number } }) {
     const id = cuid();
+    const pos = args.data.position ?? 0;
     const { error } = await getDb().from("TeamHistory").insert({
       id, year: args.data.year, title: args.data.title,
       description: args.data.description, photos: JSON.stringify(args.data.photos || []),
+      position: pos,
     });
     if (error) throw new Error(error.message);
     return teamHistory.findUnique({ where: { id } });
@@ -378,6 +380,7 @@ const teamHistory = {
       year: d.year ?? existing.year, updatedAt: new Date().toISOString(),
     };
     if (d.photos !== undefined) updateData.photos = JSON.stringify(d.photos);
+    if (d.position !== undefined) updateData.position = d.position;
     await getDb().from("TeamHistory").update(updateData).eq("id", args.where.id);
     return teamHistory.findUnique({ where: args.where });
   },

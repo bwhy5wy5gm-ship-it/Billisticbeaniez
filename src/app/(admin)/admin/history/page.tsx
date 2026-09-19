@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   Save,
   X,
   ImagePlus,
+  GripVertical,
 } from "lucide-react";
 
 interface HistoryEntry {
@@ -24,6 +25,7 @@ interface HistoryEntry {
   title: string;
   description: string;
   photos: string[];
+  position: number;
 }
 
 export default function AdminHistoryPage() {
@@ -39,6 +41,8 @@ export default function AdminHistoryPage() {
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
@@ -52,7 +56,7 @@ export default function AdminHistoryPage() {
     fetch("/api/history")
       .then((r) => r.json())
       .then((data) => {
-        setEntries(data.map((h: any) => ({ ...h, photos: h.photos || [] })));
+        setEntries(data.map((h: any, i: number) => ({ ...h, photos: h.photos || [], position: h.position ?? i })));
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -121,10 +125,14 @@ export default function AdminHistoryPage() {
     try {
       const method = editing ? "PUT" : "POST";
       const url = editing ? `/api/history/${editing.id}` : "/api/history";
+      const body: any = { year: Number(year), title, description, photos };
+      if (!editing) {
+        body.position = entries.length;
+      }
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ year: Number(year), title, description, photos }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -143,6 +151,48 @@ export default function AdminHistoryPage() {
     fetchEntries();
   }
 
+  // --- Drag and drop ---
+  function onDragStart(e: React.DragEvent, idx: number) {
+    setDragIdx(idx);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(idx));
+  }
+
+  function onDragOver(e: React.DragEvent, idx: number) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }
+
+  function onDrop(e: React.DragEvent, dropIdx: number) {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === dropIdx) return;
+    const next = [...entries];
+    const [moved] = next.splice(dragIdx, 1);
+    next.splice(dropIdx, 0, moved);
+    const updated = next.map((item, i) => ({ ...item, position: i }));
+    setEntries(updated);
+    setDragIdx(null);
+    saveOrder(updated);
+  }
+
+  function onDragEnd() {
+    setDragIdx(null);
+  }
+
+  async function saveOrder(items: HistoryEntry[]) {
+    setSavingOrder(true);
+    try {
+      await fetch("/api/history/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ordered: items.map((item, i) => ({ id: item.id, position: i })),
+        }),
+      });
+    } catch {}
+    setSavingOrder(false);
+  }
+
   if (status === "loading" || !session) return null;
 
   return (
@@ -155,11 +205,15 @@ export default function AdminHistoryPage() {
               Team History
             </Badge>
             <h1 className="text-3xl font-bold">Manage Team History</h1>
+            <p className="text-sm text-muted-foreground mt-1">Drag and drop to reorder events</p>
           </div>
-          <Button onClick={openNew} className="gap-2">
-            <Plus className="h-4 w-4" />
-            New Entry
-          </Button>
+          <div className="flex items-center gap-2">
+            {savingOrder && <span className="text-xs text-muted-foreground">Saving order...</span>}
+            <Button onClick={openNew} className="gap-2">
+              <Plus className="h-4 w-4" />
+              New Entry
+            </Button>
+          </div>
         </div>
 
         {showForm && (
@@ -277,70 +331,80 @@ export default function AdminHistoryPage() {
           </Card>
         ) : (
           <div className="space-y-3">
-            {[...entries]
-              .sort((a, b) => b.year - a.year)
-              .map((entry) => (
-                <Card key={entry.id} className="border-2">
-                  <CardContent className="pt-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline" className="text-xs font-mono">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {entry.year}
-                          </Badge>
-                          {entry.photos && entry.photos.length > 0 && (
-                            <Badge variant="secondary" className="text-xs gap-1">
-                              <ImagePlus className="h-3 w-3" />
-                              {entry.photos.length} photo{entry.photos.length !== 1 ? "s" : ""}
-                            </Badge>
-                          )}
-                        </div>
-                        <h3 className="font-semibold mb-1">{entry.title}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {entry.description.slice(0, 120)}
-                          {entry.description.length > 120 ? "..." : ""}
-                        </p>
+            {entries.map((entry, idx) => (
+              <Card
+                key={entry.id}
+                className="border-2 transition-all"
+                draggable
+                onDragStart={(e) => onDragStart(e, idx)}
+                onDragOver={(e) => onDragOver(e, idx)}
+                onDrop={(e) => onDrop(e, idx)}
+                onDragEnd={onDragEnd}
+                style={{ opacity: dragIdx === idx ? 0.4 : 1 }}
+              >
+                <CardContent className="pt-5">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center pt-0.5 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+                      <GripVertical className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge variant="outline" className="text-xs font-mono">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {entry.year}
+                        </Badge>
                         {entry.photos && entry.photos.length > 0 && (
-                          <div className="flex gap-1.5 mt-2">
-                            {entry.photos.slice(0, 3).map((url, i) => (
-                              <img
-                                key={i}
-                                src={url}
-                                alt=""
-                                className="h-10 w-10 rounded border object-cover"
-                              />
-                            ))}
-                            {entry.photos.length > 3 && (
-                              <span className="text-xs text-muted-foreground self-center">
-                                +{entry.photos.length - 3}
-                              </span>
-                            )}
-                          </div>
+                          <Badge variant="secondary" className="text-xs gap-1">
+                            <ImagePlus className="h-3 w-3" />
+                            {entry.photos.length} photo{entry.photos.length !== 1 ? "s" : ""}
+                          </Badge>
                         )}
                       </div>
-                      <div className="flex gap-1.5 shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => openEdit(entry)}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                          onClick={() => handleDelete(entry.id)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                      <h3 className="font-semibold mb-1">{entry.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {entry.description.slice(0, 120)}
+                        {entry.description.length > 120 ? "..." : ""}
+                      </p>
+                      {entry.photos && entry.photos.length > 0 && (
+                        <div className="flex gap-1.5 mt-2">
+                          {entry.photos.slice(0, 3).map((url, i) => (
+                            <img
+                              key={i}
+                              src={url}
+                              alt=""
+                              className="h-10 w-10 rounded border object-cover"
+                            />
+                          ))}
+                          {entry.photos.length > 3 && (
+                            <span className="text-xs text-muted-foreground self-center">
+                              +{entry.photos.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div className="flex gap-1.5 shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => openEdit(entry)}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                        onClick={() => handleDelete(entry.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
       </div>
