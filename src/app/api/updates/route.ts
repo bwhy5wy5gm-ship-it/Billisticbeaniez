@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 
 export async function GET() {
   try {
-    const updates = prisma.projectUpdate.findMany();
+    const updates = await prisma.projectUpdate.findMany();
     const parsed = updates.map((u: any) => ({
       ...u,
       photos: JSON.parse(u.photos || "[]"),
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     if (!title || !description || !date) {
       return NextResponse.json({ error: "Title, description, and date required" }, { status: 400 });
     }
-    const update = prisma.projectUpdate.create({
+    const update = await prisma.projectUpdate.create({
       data: { title, description, date, photos: photos || [] },
     });
     return NextResponse.json(update);

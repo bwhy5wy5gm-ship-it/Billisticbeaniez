@@ -100,7 +100,7 @@ export default function PhotoLogDetailPage({
                 <img
                   src={photo}
                   alt={`${item.title} photo ${i + 1}`}
-                  className="w-full max-h-[500px] object-cover"
+                  className="w-full max-h-[500px] object-contain bg-muted"
                 />
               </div>
             ))}

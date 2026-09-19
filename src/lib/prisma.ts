@@ -1,173 +1,16 @@
-import Database from "better-sqlite3";
-import path from "path";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import bcrypt from "bcryptjs";
 
-const DB_PATH = path.join(process.cwd(), "prisma", "dev.db");
+let _supabase: SupabaseClient | null = null;
 
-let _db: Database.Database | null = null;
-
-function getDb(): Database.Database {
-  if (!_db) {
-    _db = new Database(DB_PATH);
-    _db.pragma("journal_mode = WAL");
-    _db.pragma("foreign_keys = ON");
-    initTables(_db);
+function getDb(): SupabaseClient {
+  if (!_supabase) {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required");
+    _supabase = createClient(url, key);
   }
-  return _db;
-}
-
-function initTables(db: Database.Database) {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS Account (
-      id TEXT PRIMARY KEY,
-      userId TEXT NOT NULL,
-      type TEXT NOT NULL,
-      provider TEXT NOT NULL,
-      providerAccountId TEXT NOT NULL,
-      refresh_token TEXT,
-      access_token TEXT,
-      expires_at INTEGER,
-      token_type TEXT,
-      scope TEXT,
-      id_token TEXT,
-      session_state TEXT,
-      FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
-      UNIQUE(provider, providerAccountId)
-    );
-
-    CREATE TABLE IF NOT EXISTS Session (
-      id TEXT PRIMARY KEY,
-      sessionToken TEXT NOT NULL UNIQUE,
-      userId TEXT NOT NULL,
-      expires DATETIME NOT NULL,
-      FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS VerificationToken (
-      identifier TEXT NOT NULL,
-      token TEXT NOT NULL UNIQUE,
-      expires DATETIME NOT NULL,
-      UNIQUE(identifier, token)
-    );
-
-    CREATE TABLE IF NOT EXISTS User (
-      id TEXT PRIMARY KEY,
-      name TEXT,
-      email TEXT NOT NULL UNIQUE,
-      emailVerified DATETIME,
-      image TEXT,
-      hashedPassword TEXT,
-      role TEXT NOT NULL DEFAULT 'user',
-      isAdmin INTEGER NOT NULL DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS AdminSignupRequest (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL,
-      reason TEXT NOT NULL,
-      status TEXT NOT NULL DEFAULT 'pending',
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS SensorData (
-      id TEXT PRIMARY KEY,
-      tank TEXT NOT NULL,
-      co2 REAL NOT NULL,
-      oxygen REAL NOT NULL,
-      humidity REAL NOT NULL,
-      temperature REAL NOT NULL,
-      timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS ExperimentLog (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      content TEXT NOT NULL,
-      author TEXT NOT NULL,
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS SiteContent (
-      id TEXT PRIMARY KEY,
-      key TEXT NOT NULL UNIQUE,
-      value TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS AccessLog (
-      id TEXT PRIMARY KEY,
-      page TEXT NOT NULL,
-      visitorId TEXT,
-      userAgent TEXT,
-      timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS SiteSettings (
-      id TEXT PRIMARY KEY,
-      key TEXT NOT NULL UNIQUE,
-      value TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS ProjectUpdate (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      date TEXT NOT NULL,
-      photos TEXT NOT NULL DEFAULT '[]',
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS Feedback (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      date TEXT NOT NULL,
-      company TEXT NOT NULL DEFAULT '',
-      person TEXT NOT NULL DEFAULT '',
-      photos TEXT NOT NULL DEFAULT '[]',
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS PhotoLog (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL DEFAULT '',
-      date TEXT NOT NULL,
-      photos TEXT NOT NULL DEFAULT '[]',
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS ChartData (
-      id TEXT PRIMARY KEY,
-      label TEXT NOT NULL,
-      day INTEGER NOT NULL,
-      co2Control REAL NOT NULL DEFAULT 0,
-      co2Exp REAL NOT NULL DEFAULT 0,
-      o2Control REAL NOT NULL DEFAULT 0,
-      o2Exp REAL NOT NULL DEFAULT 0,
-      tempControl REAL NOT NULL DEFAULT 0,
-      tempExp REAL NOT NULL DEFAULT 0,
-      humidityControl REAL NOT NULL DEFAULT 0,
-      humidityExp REAL NOT NULL DEFAULT 0,
-      createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-
-  // Add missing columns for existing databases
-  const addColumn = (table: string, col: string, type: string, def: string) => {
-    try {
-      db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${type} NOT NULL DEFAULT ${def}`);
-    } catch {}
-  };
-  addColumn("ProjectUpdate", "company", "TEXT", "''");
-  addColumn("ProjectUpdate", "person", "TEXT", "''");
-  addColumn("Feedback", "company", "TEXT", "''");
-  addColumn("Feedback", "person", "TEXT", "''");
+  return _supabase;
 }
 
 function cuid(): string {
@@ -179,416 +22,372 @@ function cuid(): string {
   return id;
 }
 
-function now(): string {
-  return new Date().toISOString();
-}
-
 // ---------------------------------------------------------------------------
-// Query helpers that mirror the Prisma-like API used in the routes
-// ---------------------------------------------------------------------------
-
-function row<T = any>(sql: string, ...params: any[]): T | undefined {
-  return getDb().prepare(sql).get(...params) as T | undefined;
-}
-
-function rows<T = any>(sql: string, ...params: any[]): T[] {
-  return getDb().prepare(sql).all(...params) as T[];
-}
-
-function run(sql: string, ...params: any[]) {
-  return getDb().prepare(sql).run(...params);
-}
-
-// ---------------------------------------------------------------------------
-// Model accessors
+// Model accessors using Supabase REST API
 // ---------------------------------------------------------------------------
 
 const user = {
-  findUnique(args: { where: { id?: string; email?: string } }) {
-    if (args.where.id) return row("SELECT * FROM User WHERE id = ?", args.where.id);
-    if (args.where.email) return row("SELECT * FROM User WHERE email = ?", args.where.email);
+  async findUnique(args: { where: { id?: string; email?: string } }) {
+    const db = getDb();
+    if (args.where.id) {
+      const { data } = await db.from("User").select("*").eq("id", args.where.id).single();
+      return data;
+    }
+    if (args.where.email) {
+      const { data } = await db.from("User").select("*").eq("email", args.where.email).single();
+      return data;
+    }
     return undefined;
   },
-  findMany(args?: { orderBy?: { createdAt?: "asc" | "desc" } }) {
-    return rows("SELECT * FROM User ORDER BY rowid DESC");
+  async findMany() {
+    const { data } = await getDb().from("User").select("*").order("id", { ascending: false });
+    return data || [];
   },
-  create(args: {
-    data: {
-      id?: string;
-      name?: string;
-      email: string;
-      hashedPassword?: string;
-      role?: string;
-      isAdmin?: boolean;
-      image?: string;
-    };
+  async create(args: {
+    data: { id?: string; name?: string; email: string; hashedPassword?: string; role?: string; isAdmin?: boolean; image?: string };
   }) {
     const id = args.data.id || cuid();
-    run(
-      "INSERT INTO User (id, name, email, hashedPassword, role, isAdmin) VALUES (?, ?, ?, ?, ?, ?)",
-      id,
-      args.data.name || null,
-      args.data.email,
-      args.data.hashedPassword || null,
-      args.data.role || "user",
-      args.data.isAdmin ? 1 : 0,
-    );
+    const { error } = await getDb().from("User").insert({
+      id, name: args.data.name || null, email: args.data.email,
+      hashedPassword: args.data.hashedPassword || null,
+      role: args.data.role || "user", isAdmin: args.data.isAdmin ? 1 : 0,
+    });
+    if (error) throw new Error(error.message);
     return user.findUnique({ where: { id } });
   },
-  update(args: {
-    where: { id: string };
-    data: Record<string, any>;
-  }) {
-    const fields = Object.keys(args.data);
-    const set = fields.map((f) => `${f} = ?`).join(", ");
-    const values = fields.map((f) => {
-      const v = args.data[f];
-      if (typeof v === "boolean") return v ? 1 : 0;
-      return v ?? null;
-    });
-    run(`UPDATE User SET ${set} WHERE id = ?`, ...values, args.where.id);
+  async update(args: { where: { id: string }; data: Record<string, any> }) {
+    const updateData: Record<string, any> = {};
+    for (const [k, v] of Object.entries(args.data)) {
+      updateData[k] = typeof v === "boolean" ? (v ? 1 : 0) : (v ?? null);
+    }
+    const { error } = await getDb().from("User").update(updateData).eq("id", args.where.id);
+    if (error) throw new Error(error.message);
     return user.findUnique({ where: { id: args.where.id } });
   },
-  delete(args: { where: { id: string } }) {
-    run("DELETE FROM User WHERE id = ?", args.where.id);
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("User").delete().eq("id", args.where.id);
   },
-  count() {
-    return (row<{ c: number }>("SELECT COUNT(*) as c FROM User")?.c) ?? 0;
+  async count() {
+    const { count } = await getDb().from("User").select("*", { count: "exact", head: true });
+    return count || 0;
   },
 };
 
 const adminSignupRequest = {
-  findUnique(args: { where: { id: string } }) {
-    return row("SELECT * FROM AdminSignupRequest WHERE id = ?", args.where.id);
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("AdminSignupRequest").select("*").eq("id", args.where.id).single();
+    return data;
   },
-  findFirst(args?: { where?: { email?: string; status?: string }; orderBy?: any }) {
-    let sql = "SELECT * FROM AdminSignupRequest WHERE 1=1";
-    const params: any[] = [];
-    if (args?.where?.email) { sql += " AND email = ?"; params.push(args.where.email); }
-    if (args?.where?.status) { sql += " AND status = ?"; params.push(args.where.status); }
-    sql += " ORDER BY rowid DESC LIMIT 1";
-    return row(sql, ...params);
+  async findFirst(args?: { where?: { email?: string; status?: string } }) {
+    let q = getDb().from("AdminSignupRequest").select("*");
+    if (args?.where?.email) q = q.eq("email", args.where.email);
+    if (args?.where?.status) q = q.eq("status", args.where.status);
+    const { data } = await q.order("createdAt", { ascending: false }).limit(1).single();
+    return data;
   },
-  findMany(args?: { where?: { status?: string }; orderBy?: { createdAt?: "asc" | "desc" } }) {
-    let sql = "SELECT * FROM AdminSignupRequest WHERE 1=1";
-    const params: any[] = [];
-    if (args?.where?.status) { sql += " AND status = ?"; params.push(args.where.status); }
-    sql += " ORDER BY createdAt DESC";
-    return rows(sql, ...params);
+  async findMany(args?: { where?: { status?: string } }) {
+    let q = getDb().from("AdminSignupRequest").select("*");
+    if (args?.where?.status) q = q.eq("status", args.where.status);
+    const { data } = await q.order("createdAt", { ascending: false });
+    return data || [];
   },
-  create(args: { data: { name: string; email: string; reason: string; status?: string } }) {
+  async create(args: { data: { name: string; email: string; reason: string; status?: string } }) {
     const id = cuid();
-    run(
-      "INSERT INTO AdminSignupRequest (id, name, email, reason, status) VALUES (?, ?, ?, ?, ?)",
-      id,
-      args.data.name,
-      args.data.email,
-      args.data.reason,
-      args.data.status || "pending",
-    );
+    const { error } = await getDb().from("AdminSignupRequest").insert({
+      id, name: args.data.name, email: args.data.email,
+      reason: args.data.reason, status: args.data.status || "pending",
+    });
+    if (error) throw new Error(error.message);
     return adminSignupRequest.findUnique({ where: { id } });
   },
-  update(args: { where: { id: string }; data: { status: string } }) {
-    run("UPDATE AdminSignupRequest SET status = ?, updatedAt = ? WHERE id = ?", args.data.status, now(), args.where.id);
+  async update(args: { where: { id: string }; data: { status: string } }) {
+    await getDb().from("AdminSignupRequest").update({ status: args.data.status, updatedAt: new Date().toISOString() }).eq("id", args.where.id);
     return adminSignupRequest.findUnique({ where: { id: args.where.id } });
   },
 };
 
 const sensorData = {
-  findFirst(args?: { where?: { tank?: string }; orderBy?: { timestamp?: "desc" } }) {
-    let sql = "SELECT * FROM SensorData WHERE 1=1";
-    const params: any[] = [];
-    if (args?.where?.tank) { sql += " AND tank = ?"; params.push(args.where.tank); }
-    sql += " ORDER BY timestamp DESC LIMIT 1";
-    return row(sql, ...params);
+  async findFirst(args?: { where?: { tank?: string } }) {
+    let q = getDb().from("SensorData").select("*");
+    if (args?.where?.tank) q = q.eq("tank", args.where.tank);
+    const { data } = await q.order("timestamp", { ascending: false }).limit(1).single();
+    return data;
   },
-  create(args: { data: { tank: string; co2: number; oxygen: number; humidity: number; temperature: number } }) {
+  async create(args: { data: { tank: string; co2: number; oxygen: number; humidity: number; temperature: number } }) {
     const id = cuid();
-    run(
-      "INSERT INTO SensorData (id, tank, co2, oxygen, humidity, temperature) VALUES (?, ?, ?, ?, ?, ?)",
-      id,
-      args.data.tank,
-      args.data.co2,
-      args.data.oxygen,
-      args.data.humidity,
-      args.data.temperature,
-    );
+    const { error } = await getDb().from("SensorData").insert({
+      id, tank: args.data.tank, co2: args.data.co2,
+      oxygen: args.data.oxygen, humidity: args.data.humidity, temperature: args.data.temperature,
+    });
+    if (error) throw new Error(error.message);
     return sensorData.findFirst({ where: { tank: args.data.tank } });
   },
 };
 
 const siteContent = {
-  findMany() {
-    return rows("SELECT * FROM SiteContent");
+  async findMany() {
+    const { data } = await getDb().from("SiteContent").select("*");
+    return data || [];
   },
-  findUnique(args: { where: { key: string } }) {
-    return row("SELECT * FROM SiteContent WHERE key = ?", args.where.key);
+  async findUnique(args: { where: { key: string } }) {
+    const { data } = await getDb().from("SiteContent").select("*").eq("key", args.where.key).single();
+    return data;
   },
-  upsert(args: { where: { key: string }; update: { value: string }; create: { key: string; value: string } }) {
-    const existing = siteContent.findUnique({ where: { key: args.where.key } });
+  async upsert(args: { where: { key: string }; update: { value: string }; create: { key: string; value: string } }) {
+    const existing = await siteContent.findUnique({ where: { key: args.where.key } });
     if (existing) {
-      run("UPDATE SiteContent SET value = ? WHERE key = ?", args.update.value, args.where.key);
+      await getDb().from("SiteContent").update({ value: args.update.value }).eq("key", args.where.key);
     } else {
-      run("INSERT INTO SiteContent (id, key, value) VALUES (?, ?, ?)", cuid(), args.create.key, args.create.value);
+      await getDb().from("SiteContent").insert({ id: cuid(), key: args.create.key, value: args.create.value });
     }
     return siteContent.findUnique({ where: { key: args.where.key } });
   },
-  create(args: { data: { key: string; value: string } }) {
-    const existing = siteContent.findUnique({ where: { key: args.data.key } });
+  async create(args: { data: { key: string; value: string } }) {
+    const existing = await siteContent.findUnique({ where: { key: args.data.key } });
     if (existing) return existing;
-    run("INSERT INTO SiteContent (id, key, value) VALUES (?, ?, ?)", cuid(), args.data.key, args.data.value);
+    await getDb().from("SiteContent").insert({ id: cuid(), key: args.data.key, value: args.data.value });
     return siteContent.findUnique({ where: { key: args.data.key } });
   },
 };
 
 const siteSettings = {
-  findMany() {
-    return rows("SELECT * FROM SiteSettings");
+  async findMany() {
+    const { data } = await getDb().from("SiteSettings").select("*");
+    return data || [];
   },
-  findUnique(args: { where: { key: string } }) {
-    return row("SELECT * FROM SiteSettings WHERE key = ?", args.where.key);
+  async findUnique(args: { where: { key: string } }) {
+    const { data } = await getDb().from("SiteSettings").select("*").eq("key", args.where.key).single();
+    return data;
   },
-  upsert(args: { where: { key: string }; update: { value: string }; create: { key: string; value: string } }) {
-    const existing = siteSettings.findUnique({ where: { key: args.where.key } });
+  async upsert(args: { where: { key: string }; update: { value: string }; create: { key: string; value: string } }) {
+    const existing = await siteSettings.findUnique({ where: { key: args.where.key } });
     if (existing) {
-      run("UPDATE SiteSettings SET value = ? WHERE key = ?", args.update.value, args.where.key);
+      await getDb().from("SiteSettings").update({ value: args.update.value }).eq("key", args.where.key);
     } else {
-      run("INSERT INTO SiteSettings (id, key, value) VALUES (?, ?, ?)", cuid(), args.create.key, args.create.value);
+      await getDb().from("SiteSettings").insert({ id: cuid(), key: args.create.key, value: args.create.value });
     }
     return siteSettings.findUnique({ where: { key: args.where.key } });
-  },
-  create(args: { data: { key: string; value: string } }) {
-    const existing = siteSettings.findUnique({ where: { key: args.data.key } });
-    if (existing) return existing;
-    run("INSERT INTO SiteSettings (id, key, value) VALUES (?, ?, ?)", cuid(), args.data.key, args.data.value);
-    return siteSettings.findUnique({ where: { key: args.data.key } });
   },
 };
 
 const accessLog = {
-  findMany(args?: { where?: { page?: string }; orderBy?: { timestamp?: "desc" }; take?: number }) {
-    let sql = "SELECT * FROM AccessLog WHERE 1=1";
-    const params: any[] = [];
-    if (args?.where?.page) { sql += " AND page = ?"; params.push(args.where.page); }
-    sql += " ORDER BY timestamp DESC";
-    if (args?.take) { sql += ` LIMIT ${args.take}`; }
-    return rows(sql, ...params);
+  async findMany(args?: { where?: { page?: string }; take?: number }) {
+    let q = getDb().from("AccessLog").select("*");
+    if (args?.where?.page) q = q.eq("page", args.where.page);
+    q = q.order("timestamp", { ascending: false });
+    if (args?.take) q = q.limit(args.take);
+    const { data } = await q;
+    return data || [];
   },
-  create(args: { data: { page: string; visitorId?: string; userAgent?: string } }) {
+  async create(args: { data: { page: string; visitorId?: string; userAgent?: string } }) {
     const id = cuid();
-    run(
-      "INSERT INTO AccessLog (id, page, visitorId, userAgent) VALUES (?, ?, ?, ?)",
-      id,
-      args.data.page,
-      args.data.visitorId || null,
-      args.data.userAgent || null,
-    );
+    await getDb().from("AccessLog").insert({
+      id, page: args.data.page, visitorId: args.data.visitorId || null, userAgent: args.data.userAgent || null,
+    });
     return { id };
-  },
-  groupBy(args: { by: string[]; _count: true }) {
-    const field = args.by[0];
-    return rows(`SELECT ${field}, COUNT(*) as _count FROM AccessLog GROUP BY ${field}`);
   },
 };
 
 const experimentLog = {
-  findMany(args?: { orderBy?: { createdAt?: "asc" | "desc" } }) {
-    return rows("SELECT * FROM ExperimentLog ORDER BY createdAt DESC");
+  async findMany() {
+    const { data } = await getDb().from("ExperimentLog").select("*").order("createdAt", { ascending: false });
+    return data || [];
   },
-  create(args: { data: { title: string; content: string; author: string } }) {
+  async create(args: { data: { title: string; content: string; author: string } }) {
     const id = cuid();
-    run(
-      "INSERT INTO ExperimentLog (id, title, content, author) VALUES (?, ?, ?, ?)",
-      id,
-      args.data.title,
-      args.data.content,
-      args.data.author,
-    );
+    await getDb().from("ExperimentLog").insert({
+      id, title: args.data.title, content: args.data.content, author: args.data.author,
+    });
     return experimentLog.findMany();
   },
 };
 
 const projectUpdate = {
-  findMany() {
-    return rows("SELECT * FROM ProjectUpdate ORDER BY createdAt DESC");
+  async findMany() {
+    const { data } = await getDb().from("ProjectUpdate").select("*").order("createdAt", { ascending: false });
+    return data || [];
   },
-  findUnique(args: { where: { id: string } }) {
-    return row("SELECT * FROM ProjectUpdate WHERE id = ?", args.where.id);
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("ProjectUpdate").select("*").eq("id", args.where.id).single();
+    return data;
   },
-  create(args: {
-    data: { title: string; description: string; date: string; photos?: string[] };
-  }) {
+  async create(args: { data: { title: string; description: string; date: string; photos?: string[] } }) {
     const id = cuid();
-    run(
-      "INSERT INTO ProjectUpdate (id, title, description, date, photos) VALUES (?, ?, ?, ?, ?)",
-      id,
-      args.data.title,
-      args.data.description,
-      args.data.date,
-      JSON.stringify(args.data.photos || []),
-    );
+    const { error } = await getDb().from("ProjectUpdate").insert({
+      id, title: args.data.title, description: args.data.description,
+      date: args.data.date, photos: JSON.stringify(args.data.photos || []),
+    });
+    if (error) throw new Error(error.message);
     return projectUpdate.findUnique({ where: { id } });
   },
-  update(args: {
-    where: { id: string };
-    data: { title?: string; description?: string; date?: string; photos?: string[] };
-  }) {
-    const existing = projectUpdate.findUnique({ where: args.where });
+  async update(args: { where: { id: string }; data: Record<string, any> }) {
+    const existing = await projectUpdate.findUnique({ where: args.where }) as any;
     if (!existing) return null;
-    const data = args.data;
-    run(
-      "UPDATE ProjectUpdate SET title = ?, description = ?, date = ?, photos = ?, updatedAt = ? WHERE id = ?",
-      data.title ?? existing.title,
-      data.description ?? existing.description,
-      data.date ?? existing.date,
-      JSON.stringify(data.photos ?? JSON.parse((existing as any).photos || "[]")),
-      now(),
-      args.where.id,
-    );
+    const d = args.data;
+    const updateData: Record<string, any> = {
+      title: d.title ?? existing.title, description: d.description ?? existing.description,
+      date: d.date ?? existing.date, updatedAt: new Date().toISOString(),
+    };
+    if (d.photos !== undefined) updateData.photos = JSON.stringify(d.photos);
+    await getDb().from("ProjectUpdate").update(updateData).eq("id", args.where.id);
     return projectUpdate.findUnique({ where: args.where });
   },
-  delete(args: { where: { id: string } }) {
-    run("DELETE FROM ProjectUpdate WHERE id = ?", args.where.id);
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("ProjectUpdate").delete().eq("id", args.where.id);
   },
 };
 
 const feedback = {
-  findMany() {
-    return rows("SELECT * FROM Feedback ORDER BY createdAt DESC");
+  async findMany() {
+    const { data } = await getDb().from("Feedback").select("*").order("createdAt", { ascending: false });
+    return data || [];
   },
-  findUnique(args: { where: { id: string } }) {
-    return row("SELECT * FROM Feedback WHERE id = ?", args.where.id);
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("Feedback").select("*").eq("id", args.where.id).single();
+    return data;
   },
-  create(args: {
-    data: { title: string; description: string; date: string; company?: string; person?: string; photos?: string[] };
-  }) {
+  async create(args: { data: { title: string; description: string; date: string; company?: string; person?: string; photos?: string[] } }) {
     const id = cuid();
-    run(
-      "INSERT INTO Feedback (id, title, description, date, company, person, photos) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      id,
-      args.data.title,
-      args.data.description,
-      args.data.date,
-      args.data.company || "",
-      args.data.person || "",
-      JSON.stringify(args.data.photos || []),
-    );
+    const { error } = await getDb().from("Feedback").insert({
+      id, title: args.data.title, description: args.data.description,
+      date: args.data.date, company: args.data.company || "", person: args.data.person || "",
+      photos: JSON.stringify(args.data.photos || []),
+    });
+    if (error) throw new Error(error.message);
     return feedback.findUnique({ where: { id } });
   },
-  update(args: {
-    where: { id: string };
-    data: { title?: string; description?: string; date?: string; company?: string; person?: string; photos?: string[] };
-  }) {
-    const existing = feedback.findUnique({ where: args.where });
+  async update(args: { where: { id: string }; data: Record<string, any> }) {
+    const existing = await feedback.findUnique({ where: args.where }) as any;
     if (!existing) return null;
-    const data = args.data;
-    run(
-      "UPDATE Feedback SET title = ?, description = ?, date = ?, company = ?, person = ?, photos = ?, updatedAt = ? WHERE id = ?",
-      data.title ?? existing.title,
-      data.description ?? existing.description,
-      data.date ?? existing.date,
-      data.company ?? (existing as any).company,
-      data.person ?? (existing as any).person,
-      JSON.stringify(data.photos ?? JSON.parse((existing as any).photos || "[]")),
-      now(),
-      args.where.id,
-    );
+    const d = args.data;
+    const updateData: Record<string, any> = {
+      title: d.title ?? existing.title, description: d.description ?? existing.description,
+      date: d.date ?? existing.date, company: d.company ?? existing.company,
+      person: d.person ?? existing.person, updatedAt: new Date().toISOString(),
+    };
+    if (d.photos !== undefined) updateData.photos = JSON.stringify(d.photos);
+    await getDb().from("Feedback").update(updateData).eq("id", args.where.id);
     return feedback.findUnique({ where: args.where });
   },
-  delete(args: { where: { id: string } }) {
-    run("DELETE FROM Feedback WHERE id = ?", args.where.id);
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("Feedback").delete().eq("id", args.where.id);
   },
 };
 
 const photoLog = {
-  findMany() {
-    return rows("SELECT * FROM PhotoLog ORDER BY createdAt DESC");
+  async findMany(args?: { group?: string }) {
+    let q = getDb().from("PhotoLog").select("*");
+    if (args?.group) q = q.eq("group", args.group);
+    const { data } = await q.order("createdAt", { ascending: false });
+    return data || [];
   },
-  findUnique(args: { where: { id: string } }) {
-    return row("SELECT * FROM PhotoLog WHERE id = ?", args.where.id);
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("PhotoLog").select("*").eq("id", args.where.id).single();
+    return data;
   },
-  create(args: {
-    data: { title: string; description?: string; date: string; photos?: string[] };
-  }) {
+  async create(args: { data: { group?: string; title: string; description?: string; date: string; photos?: string[] } }) {
     const id = cuid();
-    run(
-      "INSERT INTO PhotoLog (id, title, description, date, photos) VALUES (?, ?, ?, ?, ?)",
-      id,
-      args.data.title,
-      args.data.description || "",
-      args.data.date,
-      JSON.stringify(args.data.photos || []),
-    );
+    const { error } = await getDb().from("PhotoLog").insert({
+      id, group: args.data.group || "general", title: args.data.title, description: args.data.description || "",
+      date: args.data.date, photos: JSON.stringify(args.data.photos || []),
+    });
+    if (error) throw new Error(error.message);
     return photoLog.findUnique({ where: { id } });
   },
-  update(args: {
-    where: { id: string };
-    data: { title?: string; description?: string; date?: string; photos?: string[] };
-  }) {
-    const existing = photoLog.findUnique({ where: args.where });
+  async update(args: { where: { id: string }; data: Record<string, any> }) {
+    const existing = await photoLog.findUnique({ where: args.where }) as any;
     if (!existing) return null;
-    const data = args.data;
-    run(
-      "UPDATE PhotoLog SET title = ?, description = ?, date = ?, photos = ?, updatedAt = ? WHERE id = ?",
-      data.title ?? existing.title,
-      data.description ?? existing.description,
-      data.date ?? existing.date,
-      JSON.stringify(data.photos ?? JSON.parse((existing as any).photos || "[]")),
-      now(),
-      args.where.id,
-    );
+    const d = args.data;
+    const updateData: Record<string, any> = {
+      title: d.title ?? existing.title, description: d.description ?? existing.description,
+      date: d.date ?? existing.date, updatedAt: new Date().toISOString(),
+    };
+    if (d.group !== undefined) updateData.group = d.group;
+    if (d.photos !== undefined) updateData.photos = JSON.stringify(d.photos);
+    await getDb().from("PhotoLog").update(updateData).eq("id", args.where.id);
     return photoLog.findUnique({ where: args.where });
   },
-  delete(args: { where: { id: string } }) {
-    run("DELETE FROM PhotoLog WHERE id = ?", args.where.id);
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("PhotoLog").delete().eq("id", args.where.id);
   },
 };
 
 const chartData = {
-  findMany() {
-    return rows("SELECT * FROM ChartData ORDER BY day ASC");
+  async findMany() {
+    const { data } = await getDb().from("ChartData").select("*").order("day", { ascending: true });
+    return data || [];
   },
-  findUnique(args: { where: { id: string } }) {
-    return row("SELECT * FROM ChartData WHERE id = ?", args.where.id);
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("ChartData").select("*").eq("id", args.where.id).single();
+    return data;
   },
-  create(args: {
-    data: { label: string; day: number; co2Control: number; co2Exp: number; o2Control: number; o2Exp: number; tempControl: number; tempExp: number; humidityControl: number; humidityExp: number };
-  }) {
+  async create(args: { data: { label: string; day: number; co2Control: number; co2Exp: number; o2Control: number; o2Exp: number; tempControl: number; tempExp: number; humidityControl: number; humidityExp: number } }) {
     const id = cuid();
-    run(
-      "INSERT INTO ChartData (id, label, day, co2Control, co2Exp, o2Control, o2Exp, tempControl, tempExp, humidityControl, humidityExp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, args.data.label, args.data.day, args.data.co2Control, args.data.co2Exp, args.data.o2Control, args.data.o2Exp, args.data.tempControl, args.data.tempExp, args.data.humidityControl, args.data.humidityExp,
-    );
+    const d = args.data;
+    const { error } = await getDb().from("ChartData").insert({
+      id, label: d.label, day: d.day, co2Control: d.co2Control, co2Exp: d.co2Exp,
+      o2Control: d.o2Control, o2Exp: d.o2Exp, tempControl: d.tempControl, tempExp: d.tempExp,
+      humidityControl: d.humidityControl, humidityExp: d.humidityExp,
+    });
+    if (error) throw new Error(error.message);
     return chartData.findUnique({ where: { id } });
   },
-  update(args: {
-    where: { id: string };
-    data: { label?: string; day?: number; co2Control?: number; co2Exp?: number; o2Control?: number; o2Exp?: number; tempControl?: number; tempExp?: number; humidityControl?: number; humidityExp?: number };
-  }) {
-    const existing = chartData.findUnique({ where: args.where });
+  async update(args: { where: { id: string }; data: Record<string, any> }) {
+    const existing = await chartData.findUnique({ where: args.where }) as any;
     if (!existing) return null;
     const d = args.data;
-    run(
-      "UPDATE ChartData SET label=?, day=?, co2Control=?, co2Exp=?, o2Control=?, o2Exp=?, tempControl=?, tempExp=?, humidityControl=?, humidityExp=? WHERE id=?",
-      d.label ?? (existing as any).label, d.day ?? (existing as any).day,
-      d.co2Control ?? (existing as any).co2Control, d.co2Exp ?? (existing as any).co2Exp,
-      d.o2Control ?? (existing as any).o2Control, d.o2Exp ?? (existing as any).o2Exp,
-      d.tempControl ?? (existing as any).tempControl, d.tempExp ?? (existing as any).tempExp,
-      d.humidityControl ?? (existing as any).humidityControl, d.humidityExp ?? (existing as any).humidityExp,
-      args.where.id,
-    );
+    const updateData: Record<string, any> = {};
+    for (const key of ["label", "day", "co2Control", "co2Exp", "o2Control", "o2Exp", "tempControl", "tempExp", "humidityControl", "humidityExp"]) {
+      if (d[key] !== undefined) updateData[key] = d[key];
+    }
+    await getDb().from("ChartData").update(updateData).eq("id", args.where.id);
     return chartData.findUnique({ where: args.where });
   },
-  delete(args: { where: { id: string } }) {
-    run("DELETE FROM ChartData WHERE id = ?", args.where.id);
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("ChartData").delete().eq("id", args.where.id);
   },
-  deleteAll() {
-    run("DELETE FROM ChartData");
+  async deleteAll() {
+    await getDb().from("ChartData").delete().neq("id", "__delete_all__");
+  },
+};
+
+const teamHistory = {
+  async findMany() {
+    const { data } = await getDb().from("TeamHistory").select("*").order("year", { ascending: false });
+    return data || [];
+  },
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("TeamHistory").select("*").eq("id", args.where.id).single();
+    return data;
+  },
+  async create(args: { data: { year: number; title: string; description: string; photos?: string[] } }) {
+    const id = cuid();
+    const { error } = await getDb().from("TeamHistory").insert({
+      id, year: args.data.year, title: args.data.title,
+      description: args.data.description, photos: JSON.stringify(args.data.photos || []),
+    });
+    if (error) throw new Error(error.message);
+    return teamHistory.findUnique({ where: { id } });
+  },
+  async update(args: { where: { id: string }; data: Record<string, any> }) {
+    const existing = await teamHistory.findUnique({ where: args.where }) as any;
+    if (!existing) return null;
+    const d = args.data;
+    const updateData: Record<string, any> = {
+      title: d.title ?? existing.title, description: d.description ?? existing.description,
+      year: d.year ?? existing.year, updatedAt: new Date().toISOString(),
+    };
+    if (d.photos !== undefined) updateData.photos = JSON.stringify(d.photos);
+    await getDb().from("TeamHistory").update(updateData).eq("id", args.where.id);
+    return teamHistory.findUnique({ where: args.where });
+  },
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("TeamHistory").delete().eq("id", args.where.id);
   },
 };
 
 // ---------------------------------------------------------------------------
-// Export a Prisma-like API surface
+// Export
 // ---------------------------------------------------------------------------
 
 export const prisma = {
@@ -603,7 +402,7 @@ export const prisma = {
   feedback,
   photoLog,
   chartData,
-  getDb,
+  teamHistory,
   $connect: () => Promise.resolve(),
   $disconnect: () => Promise.resolve(),
 };

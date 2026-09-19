@@ -100,7 +100,7 @@ export default function UpdateDetailPage({
                 <img
                   src={photo}
                   alt={`${update.title} photo ${i + 1}`}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain bg-muted"
                 />
               </div>
             ))}

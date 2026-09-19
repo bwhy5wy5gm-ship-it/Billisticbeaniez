@@ -9,9 +9,7 @@ export async function GET() {
     if (!(session?.user as any)?.isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const requests = await prisma.adminSignupRequest.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+    const requests = await prisma.adminSignupRequest.findMany();
     return NextResponse.json(requests);
   } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });

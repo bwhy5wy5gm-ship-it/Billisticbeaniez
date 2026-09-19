@@ -19,11 +19,20 @@ import {
   ImagePlus,
 } from "lucide-react";
 
+const groups = [
+  { value: "robot", label: "Robot" },
+  { value: "innovation", label: "Innovation" },
+  { value: "team", label: "Team" },
+  { value: "corevalues", label: "Core Values" },
+  { value: "competition", label: "Competition" },
+];
+
 interface PhotoItem {
   id: number;
   title: string;
   description: string;
   date: string;
+  group: string;
   photos: string[];
   createdAt: string;
 }
@@ -38,8 +47,11 @@ export default function AdminPhotoLogPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
+  const [group, setGroup] = useState("robot");
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [filterGroup, setFilterGroup] = useState("all");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
@@ -64,6 +76,7 @@ export default function AdminPhotoLogPage() {
     setTitle("");
     setDescription("");
     setDate(new Date().toISOString().split("T")[0]);
+    setGroup("robot");
     setPhotos([]);
     setShowForm(true);
   }
@@ -73,6 +86,7 @@ export default function AdminPhotoLogPage() {
     setTitle(item.title);
     setDescription(item.description);
     setDate(item.date || "");
+    setGroup(item.group || "robot");
     setPhotos(item.photos || []);
     setShowForm(true);
   }
@@ -83,6 +97,7 @@ export default function AdminPhotoLogPage() {
     setTitle("");
     setDescription("");
     setDate("");
+    setGroup("robot");
     setPhotos([]);
   }
 
@@ -90,12 +105,22 @@ export default function AdminPhotoLogPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
-    const data = await res.json();
-    if (data.url) setPhotos((prev) => [...prev, data.url]);
+    setError("");
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        setError(data.error || "Upload failed");
+      } else {
+        setPhotos((prev) => [...prev, data.url]);
+      }
+    } catch (e: any) {
+      setError(e.message || "Upload failed");
+    }
     setUploading(false);
+    e.target.value = "";
   }
 
   function removePhoto(index: number) {
@@ -103,15 +128,24 @@ export default function AdminPhotoLogPage() {
   }
 
   async function handleSave() {
+    setError("");
+    if (!title.trim()) { setError("Title is required"); return; }
+    if (!date) { setError("Date is required"); return; }
     const method = editing ? "PUT" : "POST";
     const url = editing ? `/api/photos/${editing.id}` : "/api/photos";
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, date, photos }),
-    });
-    closeForm();
-    fetchItems();
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, date, group, photos }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || "Failed to save"); return; }
+      closeForm();
+      fetchItems();
+    } catch (e: any) {
+      setError(e.message || "Failed to save");
+    }
   }
 
   async function handleDelete(id: number) {
@@ -119,11 +153,13 @@ export default function AdminPhotoLogPage() {
     fetchItems();
   }
 
+  const filteredItems = filterGroup === "all" ? items : items.filter((i) => i.group === filterGroup);
+
   if (status === "loading" || !session) return null;
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
             <Badge variant="secondary" className="mb-2 gap-1.5 text-xs border border-indigo-200/60 dark:border-indigo-800/60 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300">
@@ -138,6 +174,26 @@ export default function AdminPhotoLogPage() {
           </Button>
         </div>
 
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Button
+            variant={filterGroup === "all" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setFilterGroup("all")}
+          >
+            All
+          </Button>
+          {groups.map((g) => (
+            <Button
+              key={g.value}
+              variant={filterGroup === g.value ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterGroup(g.value)}
+            >
+              {g.label}
+            </Button>
+          ))}
+        </div>
+
         {showForm && (
           <Card className="border-2 mb-8">
             <CardContent className="pt-6">
@@ -150,7 +206,7 @@ export default function AdminPhotoLogPage() {
                 </Button>
               </div>
               <div className="space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-3 gap-4">
                   <div>
                     <label className="text-sm font-medium mb-1.5">Title</label>
                     <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Photo title" className="h-10" />
@@ -161,6 +217,18 @@ export default function AdminPhotoLogPage() {
                       Date
                     </label>
                     <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-10" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-1.5">Group</label>
+                    <select
+                      value={group}
+                      onChange={(e) => setGroup(e.target.value)}
+                      className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    >
+                      {groups.map((g) => (
+                        <option key={g.value} value={g.value}>{g.label}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div>
@@ -196,6 +264,7 @@ export default function AdminPhotoLogPage() {
                   <Save className="h-4 w-4" />
                   {editing ? "Update" : "Publish"}
                 </Button>
+                {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
               </div>
             </CardContent>
           </Card>
@@ -210,7 +279,7 @@ export default function AdminPhotoLogPage() {
               </Card>
             ))}
           </div>
-        ) : items.length === 0 ? (
+        ) : filteredItems.length === 0 ? (
           <Card className="border-2 border-dashed">
             <CardContent className="pt-5">
               <div className="text-center py-12">
@@ -221,11 +290,11 @@ export default function AdminPhotoLogPage() {
           </Card>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <Card key={item.id} className="border-2 overflow-hidden">
-                {item.photos.length > 0 ? (
+                {item.photos && item.photos.length > 0 ? (
                   <div className="aspect-[4/3] bg-muted overflow-hidden relative">
-                    <img src={item.photos[0]} alt="" className="h-full w-full object-cover" />
+                    <img src={item.photos[0]} alt="" className="h-full w-full object-contain bg-muted" />
                   </div>
                 ) : (
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center">
@@ -233,10 +302,15 @@ export default function AdminPhotoLogPage() {
                   </div>
                 )}
                 <CardContent className="pt-4">
-                  <Badge variant="outline" className="text-xs font-mono mb-1">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    {new Date(item.date).toLocaleDateString()}
-                  </Badge>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="text-xs font-mono">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {new Date(item.date).toLocaleDateString()}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs capitalize">
+                      {item.group}
+                    </Badge>
+                  </div>
                   <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
                   <div className="flex gap-1.5 mt-2">
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(item)}>

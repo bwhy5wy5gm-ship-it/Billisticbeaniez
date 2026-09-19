@@ -8,12 +8,14 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Beaker, Menu, Atom } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useContent } from "@/lib/use-content";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/experiment-design", label: "Experiment" },
-  { href: "/innovation-project", label: "Science" },
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/robot", label: "Robot" },
+  { href: "/innovation-project", label: "Innovation" },
+  { href: "/team-history", label: "History" },
+  { href: "/core-values", label: "Values" },
   { href: "/updates", label: "Updates" },
   { href: "/feedback", label: "Feedback" },
   { href: "/photo-log", label: "Photos" },
@@ -24,6 +26,8 @@ export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { getContent } = useContent();
+  const logo = getContent("site.logo", "");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -42,10 +46,14 @@ export function Navbar() {
     >
       <div className="container flex h-15 items-center justify-between mx-auto px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="relative flex items-center justify-center h-8.5 w-8.5 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/15 group-hover:shadow-lg group-hover:shadow-cyan-500/25 transition-all duration-200">
-            <Beaker className="h-4 w-4" />
-            <Atom className="h-2.5 w-2.5 absolute -top-0.5 -right-0.5 text-emerald-200" />
-          </div>
+          {logo ? (
+            <img src={logo} alt="Logo" className="h-11 w-11 rounded-xl object-cover shadow-md" />
+          ) : (
+            <div className="relative flex items-center justify-center h-11 w-11 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/15 group-hover:shadow-lg group-hover:shadow-cyan-500/25 transition-all duration-200">
+              <Beaker className="h-5 w-5" />
+              <Atom className="h-3 w-3 absolute -top-0.5 -right-0.5 text-emerald-200" />
+            </div>
+          )}
           <span className="hidden sm:inline font-bold text-[15px] tracking-tight">
             <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}
             <span className="text-emerald-600 dark:text-emerald-400">Beaniez</span>
@@ -79,16 +87,6 @@ export function Navbar() {
               </Link>
             );
           })}
-          <div className="w-px h-4 bg-border mx-2" />
-          <Link href="/login">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="px-3 h-8 text-[13px] font-medium text-muted-foreground hover:text-foreground"
-            >
-              Admin
-            </Button>
-          </Link>
           <ThemeToggle />
         </nav>
 
@@ -136,12 +134,6 @@ export function Navbar() {
                     </Link>
                   );
                 })}
-                <div className="h-px bg-border my-1.5" />
-                <Link href="/login" onClick={() => setOpen(false)}>
-                  <Button variant="outline" className="w-full h-9 text-sm font-medium">
-                    Admin Login
-                  </Button>
-                </Link>
               </nav>
             </SheetContent>
           </Sheet>

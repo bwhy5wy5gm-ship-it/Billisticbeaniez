@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Calendar, ArrowUpRight } from "lucide-react";
+import { useContent } from "@/lib/use-content";
 
 interface PhotoItem {
   id: number;
@@ -16,6 +17,7 @@ interface PhotoItem {
 }
 
 export default function PhotoLogPage() {
+  const { getContent } = useContent();
   const [items, setItems] = useState<PhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,9 +42,9 @@ export default function PhotoLogPage() {
             <Camera className="h-3.5 w-3.5" />
             Photo Log
           </Badge>
-          <h1 className="text-4xl font-bold mb-3">Photo Log</h1>
+          <h1 className="text-4xl font-bold mb-3">{getContent("photos.hero.title", "Photo Log")}</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
-            A visual timeline of our experiment and team activities.
+            {getContent("photos.hero.desc", "A visual timeline of our experiment and team activities.")}
           </p>
         </div>
 
@@ -82,7 +84,7 @@ export default function PhotoLogPage() {
                       <img
                         src={item.photos[0]}
                         alt={item.title}
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="h-full w-full object-contain bg-muted group-hover:scale-105 transition-transform duration-300"
                       />
                       {item.photos.length > 1 && (
                         <Badge className="absolute top-2 right-2 text-xs bg-black/50 text-white border-0">

@@ -104,3 +104,14 @@ model SiteSettings {
   dashboardOn    Boolean @default(true)
   updatesPageOn  Boolean @default(true)
 }
+
+model PhotoLog {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  date        String
+  photos      String   @default("[]")
+  group       String   @default("general")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

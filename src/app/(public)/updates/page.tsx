@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ArrowUpRight, FileText } from "lucide-react";
+import { useContent } from "@/lib/use-content";
 
 interface Update {
   id: number;
@@ -16,6 +17,7 @@ interface Update {
 }
 
 export default function UpdatesPage() {
+  const { getContent } = useContent();
   const [updates, setUpdates] = useState<Update[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,9 +42,9 @@ export default function UpdatesPage() {
             <Calendar className="h-3.5 w-3.5" />
             Updates
           </Badge>
-          <h1 className="text-4xl font-bold mb-3">Project Updates</h1>
+          <h1 className="text-4xl font-bold mb-3">{getContent("updates.hero.title", "Project Updates")}</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Follow our experiment progress over time.
+            {getContent("updates.hero.desc", "Follow our experiment progress over time.")}
           </p>
         </div>
 
@@ -64,10 +66,10 @@ export default function UpdatesPage() {
               <div className="text-center py-12">
                 <FileText className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
                 <p className="text-muted-foreground font-medium mb-1">
-                  No updates yet
+                  {getContent("updates.empty.title", "No updates yet")}
                 </p>
                 <p className="text-sm text-muted-foreground/60">
-                  Check back soon for experiment progress.
+                  {getContent("updates.empty.desc", "Check back soon for experiment progress.")}
                 </p>
               </div>
             </CardContent>
@@ -111,7 +113,7 @@ export default function UpdatesPage() {
                             <img
                               src={update.photos[0]}
                               alt=""
-                              className="h-full w-full object-cover"
+                              className="h-full w-full object-contain bg-muted"
                             />
                           </div>
                         </div>

@@ -8,7 +8,7 @@ export async function GET() {
     if (!(session?.user as any)?.isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const users = prisma.user.findMany();
+    const users = await prisma.user.findMany();
     const safe = users.map((u: any) => ({
       id: u.id,
       name: u.name,
@@ -32,7 +32,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
-    const user = prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
@@ -43,7 +43,7 @@ export async function DELETE(req: NextRequest) {
     if (db) {
       db.prepare("DELETE FROM User WHERE id = ?").run(id);
     } else {
-      prisma.user.delete({ where: { id } });
+      await prisma.user.delete({ where: { id } });
     }
     return NextResponse.json({ success: true });
   } catch (e: any) {
@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest) {
     if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
-    const existing = prisma.user.findUnique({ where: { id } });
+    const existing = await prisma.user.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
@@ -76,7 +76,7 @@ export async function PUT(req: NextRequest) {
       const bcrypt = await import("bcryptjs");
       updateData.hashedPassword = await bcrypt.hash(password, 12);
     }
-    prisma.user.update({ where: { id }, data: updateData });
+    await prisma.user.update({ where: { id }, data: updateData });
     return NextResponse.json({ success: true });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });

@@ -25,11 +25,9 @@ export async function GET() {
 
     const latestControl = await prisma.sensorData.findFirst({
       where: { tank: "control" },
-      orderBy: { timestamp: "desc" },
     });
     const latestExperiment = await prisma.sensorData.findFirst({
       where: { tank: "experiment" },
-      orderBy: { timestamp: "desc" },
     });
 
     return NextResponse.json({

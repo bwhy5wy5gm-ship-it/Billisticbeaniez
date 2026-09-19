@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquareText, Calendar, ArrowUpRight, Building, User } from "lucide-react";
+import { useContent } from "@/lib/use-content";
 
 interface FeedbackItem {
   id: number;
@@ -18,6 +19,7 @@ interface FeedbackItem {
 }
 
 export default function FeedbackPage() {
+  const { getContent } = useContent();
   const [items, setItems] = useState<FeedbackItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,9 +44,9 @@ export default function FeedbackPage() {
             <MessageSquareText className="h-3.5 w-3.5" />
             Feedback
           </Badge>
-          <h1 className="text-4xl font-bold mb-3">Feedback We Have Received</h1>
+          <h1 className="text-4xl font-bold mb-3">{getContent("feedback.hero.title", "Feedback We Have Received")}</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
-            What people are saying about our project.
+            {getContent("feedback.hero.desc", "What people are saying about our project.")}
           </p>
         </div>
 
@@ -66,10 +68,10 @@ export default function FeedbackPage() {
               <div className="text-center py-12">
                 <MessageSquareText className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
                 <p className="text-muted-foreground font-medium mb-1">
-                  No feedback yet
+                  {getContent("feedback.empty.title", "No feedback yet")}
                 </p>
                 <p className="text-sm text-muted-foreground/60">
-                  Check back soon for feedback from the community.
+                  {getContent("feedback.empty.desc", "Check back soon for feedback from the community.")}
                 </p>
               </div>
             </CardContent>
@@ -123,7 +125,7 @@ export default function FeedbackPage() {
                             <img
                               src={item.photos[0]}
                               alt=""
-                              className="h-full w-full object-cover"
+                              className="h-full w-full object-contain bg-muted"
                             />
                           </div>
                         </div>

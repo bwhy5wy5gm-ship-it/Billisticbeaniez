@@ -8,24 +8,16 @@ export async function GET() {
     if (!(session?.user as any)?.isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const logs = await prisma.accessLog.findMany({
-      orderBy: { timestamp: "desc" },
-      take: 100,
-    });
-    const totalVisitors = await prisma.accessLog.groupBy({
-      by: ["visitorId"],
-      _count: true,
-    });
-    const pageViews = await prisma.accessLog.groupBy({
-      by: ["page"],
-      _count: true,
-    });
+    const logs = await prisma.accessLog.findMany({ take: 100 });
+    const visitorSet = new Set(logs.map((l: any) => l.visitorId).filter(Boolean));
+    const pageCounts: Record<string, number> = {};
+    for (const l of logs as any[]) { pageCounts[l.page] = (pageCounts[l.page] || 0) + 1; }
     return NextResponse.json({
       logs,
       stats: {
-        totalVisitors: totalVisitors.length,
+        totalVisitors: visitorSet.size,
         totalPageViews: logs.length,
-        pageViews: pageViews.map((p) => ({ page: p.page, count: p._count })),
+        pageViews: Object.entries(pageCounts).map(([page, count]) => ({ page, count })),
       },
     });
   } catch {

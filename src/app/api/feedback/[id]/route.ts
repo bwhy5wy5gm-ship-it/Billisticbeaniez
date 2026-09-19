@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const item = prisma.feedback.findUnique({ where: { id } });
+    const item = await prisma.feedback.findUnique({ where: { id } });
     if (!item) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -34,7 +34,7 @@ export async function PUT(
     }
     const { id } = await params;
     const body = await req.json();
-    const item = prisma.feedback.update({ where: { id }, data: body });
+    const item = await prisma.feedback.update({ where: { id }, data: body });
     if (!item) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -54,7 +54,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const { id } = await params;
-    prisma.feedback.delete({ where: { id } });
+    await prisma.feedback.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });

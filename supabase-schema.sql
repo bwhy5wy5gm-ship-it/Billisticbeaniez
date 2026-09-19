@@ -1,0 +1,153 @@
+-- Run this in Supabase SQL Editor (Dashboard → SQL Editor → New query)
+
+CREATE TABLE IF NOT EXISTS "User" (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  email TEXT NOT NULL UNIQUE,
+  "emailVerified" TIMESTAMPTZ,
+  image TEXT,
+  "hashedPassword" TEXT,
+  role TEXT NOT NULL DEFAULT 'user',
+  "isAdmin" INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS "Account" (
+  id TEXT PRIMARY KEY,
+  "userId" TEXT NOT NULL,
+  type TEXT NOT NULL,
+  provider TEXT NOT NULL,
+  "providerAccountId" TEXT NOT NULL,
+  refresh_token TEXT,
+  access_token TEXT,
+  expires_at INTEGER,
+  token_type TEXT,
+  scope TEXT,
+  id_token TEXT,
+  session_state TEXT,
+  FOREIGN KEY ("userId") REFERENCES "User"(id) ON DELETE CASCADE,
+  UNIQUE(provider, "providerAccountId")
+);
+
+CREATE TABLE IF NOT EXISTS "Session" (
+  id TEXT PRIMARY KEY,
+  "sessionToken" TEXT NOT NULL UNIQUE,
+  "userId" TEXT NOT NULL,
+  expires TIMESTAMPTZ NOT NULL,
+  FOREIGN KEY ("userId") REFERENCES "User"(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "VerificationToken" (
+  identifier TEXT NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  expires TIMESTAMPTZ NOT NULL,
+  UNIQUE(identifier, token)
+);
+
+CREATE TABLE IF NOT EXISTS "AdminSignupRequest" (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "SensorData" (
+  id TEXT PRIMARY KEY,
+  tank TEXT NOT NULL,
+  co2 DOUBLE PRECISION NOT NULL,
+  oxygen DOUBLE PRECISION NOT NULL,
+  humidity DOUBLE PRECISION NOT NULL,
+  temperature DOUBLE PRECISION NOT NULL,
+  "timestamp" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "ExperimentLog" (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  author TEXT NOT NULL,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "SiteContent" (
+  id TEXT PRIMARY KEY,
+  key TEXT NOT NULL UNIQUE,
+  value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "AccessLog" (
+  id TEXT PRIMARY KEY,
+  page TEXT NOT NULL,
+  "visitorId" TEXT,
+  "userAgent" TEXT,
+  "timestamp" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "SiteSettings" (
+  id TEXT PRIMARY KEY,
+  key TEXT NOT NULL UNIQUE,
+  value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "ProjectUpdate" (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  date TEXT NOT NULL,
+  photos TEXT NOT NULL DEFAULT '[]',
+  company TEXT NOT NULL DEFAULT '',
+  person TEXT NOT NULL DEFAULT '',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "Feedback" (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  date TEXT NOT NULL,
+  company TEXT NOT NULL DEFAULT '',
+  person TEXT NOT NULL DEFAULT '',
+  photos TEXT NOT NULL DEFAULT '[]',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "PhotoLog" (
+  id TEXT PRIMARY KEY,
+  "group" TEXT NOT NULL DEFAULT 'general',
+  title TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  date TEXT NOT NULL,
+  photos TEXT NOT NULL DEFAULT '[]',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "TeamHistory" (
+  id TEXT PRIMARY KEY,
+  year INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  photos TEXT NOT NULL DEFAULT '[]',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "ChartData" (
+  id TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  day INTEGER NOT NULL,
+  "co2Control" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "co2Exp" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "o2Control" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "o2Exp" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "tempControl" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "tempExp" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "humidityControl" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "humidityExp" DOUBLE PRECISION NOT NULL DEFAULT 0,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

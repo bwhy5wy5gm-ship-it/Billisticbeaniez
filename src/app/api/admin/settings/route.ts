@@ -4,9 +4,9 @@ import { auth } from "@/lib/auth";
 
 export async function GET() {
   try {
-    const settings = prisma.siteSettings.findMany();
+    const settings = await prisma.siteSettings.findMany();
     const obj: Record<string, string> = {};
-    settings.forEach((s: any) => { obj[s.key] = s.value; });
+    for (const s of settings as any[]) { obj[s.key] = s.value; }
     return NextResponse.json({ settings: obj });
   } catch {
     return NextResponse.json({ settings: {} });
@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
     }
     for (const [key, value] of Object.entries(settings)) {
-      prisma.siteSettings.upsert({
+      await prisma.siteSettings.upsert({
         where: { key },
-        update: { value },
-        create: { key, value },
+        update: { value: value as string },
+        create: { key, value: value as string },
       });
     }
     return NextResponse.json({ success: true });

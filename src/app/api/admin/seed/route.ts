@@ -20,14 +20,20 @@ export async function POST() {
         role: "admin",
       },
     });
-    await prisma.siteSettings.create({
-      data: { key: "demo", value: "true" },
+    await prisma.siteSettings.upsert({
+      where: { key: "demo" },
+      update: { value: "true" },
+      create: { key: "demo", value: "true" },
     });
-    await prisma.siteContent.create({
-      data: { key: "homepage_title", value: "FLL Ocean CO₂ Innovation Project" },
+    await prisma.siteContent.upsert({
+      where: { key: "homepage_title" },
+      update: { value: "FLL Ocean CO₂ Innovation Project" },
+      create: { key: "homepage_title", value: "FLL Ocean CO₂ Innovation Project" },
     });
-    await prisma.siteContent.create({
-      data: { key: "homepage_description", value: "Using biology to remove CO₂ from ocean water." },
+    await prisma.siteContent.upsert({
+      where: { key: "homepage_description" },
+      update: { value: "Using biology to remove CO₂ from ocean water." },
+      create: { key: "homepage_description", value: "Using biology to remove CO₂ from ocean water." },
     });
     return NextResponse.json({ success: true, email: "admin@fll.com", password: "admin123" });
   } catch (e: any) {

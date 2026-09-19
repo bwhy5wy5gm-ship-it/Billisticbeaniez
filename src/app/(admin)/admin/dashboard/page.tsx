@@ -16,6 +16,9 @@ import {
   BarChart3,
   ArrowRight,
   Shield,
+  FileEdit,
+  FileText,
+  Clock,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -85,6 +88,14 @@ export default function AdminDashboardPage() {
       bg: "bg-cyan-50 dark:bg-cyan-950/20",
     },
     {
+      icon: FileEdit,
+      title: "Pages",
+      desc: "Edit content on all public pages",
+      href: "/admin/pages",
+      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-950/20",
+    },
+    {
       icon: Settings,
       title: "Settings",
       desc: "Manage site settings and content",
@@ -93,12 +104,28 @@ export default function AdminDashboardPage() {
       bg: "bg-violet-50 dark:bg-violet-950/20",
     },
     {
+      icon: FileText,
+      title: "Pages",
+      desc: "Edit page content for the public site",
+      href: "/admin/pages",
+      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-950/20",
+    },
+    {
       icon: ScrollText,
       title: "Logs",
       desc: "View access logs and analytics",
       href: "/admin/logs",
       color: "text-cyan-500",
       bg: "bg-cyan-50 dark:bg-cyan-950/20",
+    },
+    {
+      icon: Clock,
+      title: "Team History",
+      desc: "Manage past seasons and milestones",
+      href: "/admin/history",
+      color: "text-orange-500",
+      bg: "bg-orange-50 dark:bg-orange-950/20",
     },
   ];
 
