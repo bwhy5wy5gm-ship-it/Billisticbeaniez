@@ -15,9 +15,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   Beaker,
-  Atom,
   Trophy,
-  Star,
 } from "lucide-react";
 import { useContent } from "@/lib/use-content";
 
@@ -66,30 +64,19 @@ export default function HomePage() {
         </div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="max-w-3xl mx-auto text-center">
-            {/* Logo Placeholder */}
-            <div className="inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-lg shadow-cyan-500/20 mb-6">
+            {/* Logo */}
+            <div className="mb-6">
               {getContent("site.logo", "") ? (
-                <img src={getContent("site.logo", "")} alt="Logo" className="h-20 w-20 rounded-2xl object-cover" />
+                <img
+                  src={getContent("site.logo", "")}
+                  alt="Billistic Beaniez Logo"
+                  className="h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-3xl object-contain mx-auto drop-shadow-xl"
+                />
               ) : (
-                <>
-                  <Beaker className="h-9 w-9" />
-                  <Atom className="h-4 w-4 absolute -mt-5 ml-5 text-emerald-200" />
-                </>
+                <div className="inline-flex items-center justify-center h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-3xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-2xl shadow-cyan-500/30">
+                  <Beaker className="h-16 w-16 sm:h-20 sm:w-20" />
+                </div>
               )}
-            </div>
-
-            <div className="inline-flex items-center gap-2 mb-6">
-              <Badge
-                variant="secondary"
-                className="px-4 py-1.5 text-sm gap-2 border border-cyan-200/60 dark:border-cyan-800/50 bg-white/70 dark:bg-cyan-950/30 backdrop-blur-sm"
-              >
-                <span className="font-semibold">
-                  <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}
-                  <span className="text-emerald-600 dark:text-emerald-400">Beaniez</span>
-                </span>
-                <span className="text-muted-foreground/40">|</span>
-                FLL Team
-              </Badge>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-[3.5rem] font-bold mb-5 leading-[1.12] text-balance">

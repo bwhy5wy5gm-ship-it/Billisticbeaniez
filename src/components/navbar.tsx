@@ -45,13 +45,13 @@ export function Navbar() {
       )}
     >
       <div className="container flex h-15 items-center justify-between mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex items-center gap-3 group">
           {logo ? (
-            <img src={logo} alt="Logo" className="h-11 w-11 rounded-xl object-cover shadow-md" />
+            <img src={logo} alt="Logo" className="h-14 w-14 rounded-xl object-contain shadow-md" />
           ) : (
-            <div className="relative flex items-center justify-center h-11 w-11 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/15 group-hover:shadow-lg group-hover:shadow-cyan-500/25 transition-all duration-200">
-              <Beaker className="h-5 w-5" />
-              <Atom className="h-3 w-3 absolute -top-0.5 -right-0.5 text-emerald-200" />
+            <div className="relative flex items-center justify-center h-14 w-14 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/15 group-hover:shadow-lg group-hover:shadow-cyan-500/25 transition-all duration-200">
+              <Beaker className="h-7 w-7" />
+              <Atom className="h-3.5 w-3.5 absolute -top-0.5 -right-0.5 text-emerald-200" />
             </div>
           )}
           <span className="hidden sm:inline font-bold text-[15px] tracking-tight">
@@ -101,12 +101,12 @@ export function Navbar() {
               }
             />
             <SheetContent side="right" className="w-64 p-0">
-              <div className="flex items-center gap-2.5 px-5 h-14 border-b">
+              <div className="flex items-center gap-3 px-5 h-16 border-b">
                 {logo ? (
-                  <img src={logo} alt="Logo" className="h-7 w-7 rounded-lg object-contain" />
+                  <img src={logo} alt="Logo" className="h-10 w-10 rounded-lg object-contain" />
                 ) : (
-                  <div className="relative flex items-center justify-center h-7 w-7 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white">
-                    <Beaker className="h-3.5 w-3.5" />
+                  <div className="relative flex items-center justify-center h-10 w-10 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white">
+                    <Beaker className="h-5 w-5" />
                   </div>
                 )}
                 <span className="font-bold text-sm tracking-tight">

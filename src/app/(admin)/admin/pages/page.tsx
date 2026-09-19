@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Save, CheckCircle, Eye, Pencil, ImagePlus, X, Beaker, Atom } from "lucide-react";
+import { invalidateContent } from "@/lib/use-content";
 
 type Field = { key: string; label: string; multiline?: boolean; type?: "text" | "image" };
 
@@ -254,6 +255,7 @@ export default function PagesEditorPage() {
         pageConfig.fields.forEach((f) => { next[f.key] = content[f.key] || ""; });
         return next;
       });
+      invalidateContent();
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch {} finally {

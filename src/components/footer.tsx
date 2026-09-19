@@ -18,11 +18,11 @@ export function Footer() {
           <div className="md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 font-bold text-lg mb-3">
               {logo ? (
-                <img src={logo} alt="Logo" className="h-10 w-10 rounded-lg object-contain shadow-sm" />
+                <img src={logo} alt="Logo" className="h-12 w-12 rounded-lg object-contain shadow-sm" />
               ) : (
-                <div className="relative flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-sm">
-                  <Beaker className="h-4 w-4" />
-                  <Atom className="h-2.5 w-2.5 absolute -top-0.5 -right-0.5 text-emerald-200" />
+                <div className="relative flex items-center justify-center h-12 w-12 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-sm">
+                  <Beaker className="h-6 w-6" />
+                  <Atom className="h-3 w-3 absolute -top-0.5 -right-0.5 text-emerald-200" />
                 </div>
               )}
               <span className="tracking-tight text-[15px]">
