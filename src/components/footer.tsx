@@ -31,8 +31,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              FIRST LEGO League team using biology to remove CO2 from ocean
-              water. Science in motion.
+              We are a community FIRST LEGO League team exploring STEM, engineering and innovative solutions to real-world problems.
             </p>
           </div>
           <div>
