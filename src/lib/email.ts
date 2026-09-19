@@ -1,6 +1,10 @@
 import { Resend } from "resend";
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 
 export async function sendContactEmail({
   name,
@@ -11,7 +15,7 @@ export async function sendContactEmail({
   email: string;
   message: string;
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "FLL Innovation Project <onboarding@resend.dev>",
     to: process.env.ADMIN_EMAIL!,
     subject: `New Contact from ${name}`,
@@ -24,7 +28,7 @@ export async function sendContactEmail({
     `,
   });
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "FLL Innovation Project <onboarding@resend.dev>",
     to: email,
     subject: "Thank you for contacting us!",
@@ -49,7 +53,7 @@ export async function sendAdminSignupRequest({
   reason: string;
   requestId: string;
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "FLL Innovation Project <onboarding@resend.dev>",
     to: process.env.ADMIN_EMAIL!,
     subject: `New Admin Signup Request from ${name}`,
@@ -70,7 +74,7 @@ export async function sendAdminApprovedEmail({
   name: string;
   email: string;
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "FLL Innovation Project <onboarding@resend.dev>",
     to: email,
     subject: "Your Admin Account Has Been Approved!",
@@ -91,7 +95,7 @@ export async function sendAdminDeniedEmail({
   name: string;
   email: string;
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "FLL Innovation Project <onboarding@resend.dev>",
     to: email,
     subject: "Admin Signup Request Update",
