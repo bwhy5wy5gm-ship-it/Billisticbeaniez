@@ -128,7 +128,7 @@ export function Footer() {
         <Separator className="my-8" />
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>
-            &copy; {new Date().getFullYear()}{" "}
+            &copy; 2026{" "}
             <span className="font-medium">
               <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}
               <span className="text-emerald-600 dark:text-emerald-400">Beaniez</span>

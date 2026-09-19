@@ -14,23 +14,22 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://billisticbeaniez.com"),
   title: {
-    default: "Billistic Beaniez | FLL Ocean CO₂ Innovation Project",
+    default: "Billistic Beaniez | Robotics & STEM",
     template: "%s | Billistic Beaniez",
   },
   description:
-    "Billistic Beaniez is a FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water. Explore our robot, innovation project, and team journey.",
+    "Billistic Beaniez is a FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems. Meet our robot, explore our innovation project, and follow our journey.",
   keywords: [
+    "Billistic Beaniez",
     "FLL",
     "FIRST LEGO League",
     "robotics",
-    "ocean science",
-    "CO₂ removal",
-    "seaweed",
-    "phytoplankton",
     "STEM",
+    "engineering",
     "LEGO robot",
-    "innovation project",
-    "Billistic Beaniez",
+    "coding",
+    "innovation",
+    "ocean science",
   ],
   authors: [{ name: "Billistic Beaniez" }],
   creator: "Billistic Beaniez",
@@ -39,24 +38,24 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://billisticbeaniez.com",
     siteName: "Billistic Beaniez",
-    title: "Billistic Beaniez | FLL Ocean CO₂ Innovation Project",
+    title: "Billistic Beaniez | Robotics & STEM",
     description:
-      "A FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water.",
+      "A FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Billistic Beaniez FLL Team",
+        alt: "Billistic Beaniez — FLL Robotics & STEM Team",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Billistic Beaniez | FLL Ocean CO₂ Innovation Project",
+    title: "Billistic Beaniez | Robotics & STEM",
     description:
-      "A FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water.",
-    images: ["/og-image.png"],
+      "A FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems.",
+    images: ["/og-image.svg"],
   },
   robots: {
     index: true,
@@ -70,7 +69,7 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.svg",
   },
 };
 
