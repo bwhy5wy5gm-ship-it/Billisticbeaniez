@@ -12,9 +12,66 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Billistic Beaniez | FLL Ocean CO₂ Project",
+  metadataBase: new URL("https://billisticbeaniez.com"),
+  title: {
+    default: "Billistic Beaniez | FLL Ocean CO₂ Innovation Project",
+    template: "%s | Billistic Beaniez",
+  },
   description:
-    "Billistic Beaniez — FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water.",
+    "Billistic Beaniez is a FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water. Explore our robot, innovation project, and team journey.",
+  keywords: [
+    "FLL",
+    "FIRST LEGO League",
+    "robotics",
+    "ocean science",
+    "CO₂ removal",
+    "seaweed",
+    "phytoplankton",
+    "STEM",
+    "LEGO robot",
+    "innovation project",
+    "Billistic Beaniez",
+  ],
+  authors: [{ name: "Billistic Beaniez" }],
+  creator: "Billistic Beaniez",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://billisticbeaniez.com",
+    siteName: "Billistic Beaniez",
+    title: "Billistic Beaniez | FLL Ocean CO₂ Innovation Project",
+    description:
+      "A FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Billistic Beaniez FLL Team",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Billistic Beaniez | FLL Ocean CO₂ Innovation Project",
+    description:
+      "A FIRST LEGO League team using seaweed and phytoplankton to remove CO₂ from ocean water.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
