@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Beaker, Atom } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { useContent } from "@/lib/use-content";
 
 export function Footer() {
@@ -12,33 +11,40 @@ export function Footer() {
   const logo = getContent("site.logo", "");
 
   return (
-    <footer className="border-t bg-muted/30">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
-          <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 font-bold text-lg mb-3">
-              {logo ? (
-                <img src={logo} alt="Logo" className="h-12 w-12 rounded-lg object-contain shadow-sm" />
-              ) : (
-                <div className="relative flex items-center justify-center h-12 w-12 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-sm">
-                  <Beaker className="h-6 w-6" />
-                  <Atom className="h-3 w-3 absolute -top-0.5 -right-0.5 text-emerald-200" />
-                </div>
-              )}
-              <span className="tracking-tight text-[15px]">
-                <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}
-                <span className="text-emerald-600 dark:text-emerald-400">Beaniez</span>
-              </span>
-            </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              We are a community FIRST LEGO League team exploring STEM, engineering and innovative solutions to real-world problems.
-            </p>
-          </div>
+    <footer className="relative border-t bg-muted/30">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex flex-col items-center text-center mb-16">
+          {logo ? (
+            <img
+              src={logo}
+              alt="Billistic Beaniez Logo"
+              className="h-24 w-24 rounded-2xl object-contain shadow-lg mb-6"
+            />
+          ) : (
+            <div className="relative flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-lg mb-6">
+              <Beaker className="h-12 w-12" />
+              <Atom className="h-5 w-5 absolute -top-1 -right-1 text-emerald-200" />
+            </div>
+          )}
+          <h2 className="text-3xl font-bold tracking-tight mb-2">
+            <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}
+            <span className="text-emerald-600 dark:text-emerald-400">Beaniez</span>
+          </h2>
+          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground mb-2">
+            FIRST LEGO League Team
+          </p>
+          <p className="text-sm text-muted-foreground/80">
+            Robotics • Engineering • Innovation
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div>
-            <h3 className="font-semibold text-xs mb-3 uppercase tracking-wider text-muted-foreground">
+            <h3 className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">
               Project
             </h3>
-            <div className="flex flex-col gap-2 text-sm">
+            <div className="flex flex-col gap-3 text-sm">
               <Link href="/robot" className="text-muted-foreground hover:text-foreground transition-colors">
                 Robot
               </Link>
@@ -60,10 +66,10 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold text-xs mb-3 uppercase tracking-wider text-muted-foreground">
+            <h3 className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">
               Photo Logs
             </h3>
-            <div className="flex flex-col gap-2 text-sm">
+            <div className="flex flex-col gap-3 text-sm">
               <Link href="/photo-log/robot" className="text-muted-foreground hover:text-foreground transition-colors">
                 Robot Photos
               </Link>
@@ -85,10 +91,10 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold text-xs mb-3 uppercase tracking-wider text-muted-foreground">
+            <h3 className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">
               Community
             </h3>
-            <div className="flex flex-col gap-2 text-sm">
+            <div className="flex flex-col gap-3 text-sm">
               <Link href="/feedback" className="text-muted-foreground hover:text-foreground transition-colors">
                 Innovation Feedback
               </Link>
@@ -107,7 +113,7 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold text-xs mb-3 uppercase tracking-wider text-muted-foreground">
+            <h3 className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">
               Our Mission
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -121,8 +127,8 @@ export function Footer() {
             </p>
           </div>
         </div>
-        <Separator className="my-8" />
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+
+        <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>
             &copy; 2026{" "}
             <span className="font-medium">

@@ -95,7 +95,7 @@ export default function CoreValuesPage() {
             <Heart className="h-3.5 w-3.5" />
             Core Values
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4">
             {getContent("values.hero.title", "FLL Core Values")}
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
@@ -104,13 +104,13 @@ export default function CoreValuesPage() {
         </div>
 
         {/* Values Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {values.map((value, i) => (
-            <Card key={i} className={`border-2 ${value.border} overflow-hidden`}>
+            <Card key={i} className={`border-2 ${value.border} overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]`}>
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
                   {/* Icon */}
-                  <div className={`w-16 h-16 rounded-full ${value.iconBg} flex items-center justify-center mb-4 ring-4 ring-background`}>
+                  <div className={`w-16 h-16 p-3 rounded-xl ${value.iconBg} flex items-center justify-center mb-4 ring-4 ring-background`}>
                     <value.icon className={`h-7 w-7 ${value.color}`} />
                   </div>
                   {/* Title */}
@@ -138,15 +138,15 @@ export default function CoreValuesPage() {
         </div>
 
         {/* Closing Message */}
-        <Card className="border-2 border-emerald-200/80 dark:border-emerald-800/50">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/20">
-                <GraduationCap className="h-4.5 w-4.5 text-emerald-500" />
+        <Card className="border-2 border-emerald-200/80 dark:border-emerald-800/50 bg-gradient-to-br from-emerald-50/80 via-background to-teal-50/80 dark:from-emerald-950/20 dark:via-background dark:to-teal-950/20">
+          <CardContent className="pt-8 pb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/40">
+                <GraduationCap className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h2 className="text-xl font-semibold">{getContent("values.closing.title", "More Than Just Robots")}</h2>
+              <h2 className="text-2xl font-bold">{getContent("values.closing.title", "More Than Just Robots")}</h2>
             </div>
-            <div className="space-y-3 text-muted-foreground leading-relaxed">
+            <div className="space-y-4 text-muted-foreground leading-relaxed text-base">
               <p>
                 {getContent("values.closing.desc", "While FLL is about building robots and solving challenges, the Core Values remind us that how we work together matters just as much as what we build. These values shape us into better communicators, collaborators, and problem solvers.")}
               </p>
@@ -154,11 +154,11 @@ export default function CoreValuesPage() {
                 Every competition, every practice, and every team meeting is an opportunity to live these values and grow as individuals and as a team.
               </p>
             </div>
-            <div className="mt-6 p-4 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-center">
-              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+            <div className="mt-8 p-6 rounded-xl bg-emerald-100/60 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/40 text-center">
+              <p className="text-base font-medium text-emerald-700 dark:text-emerald-300">
                 &quot;We do the work to find out what we don&apos;t know and discover what we need to learn.&quot;
               </p>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 FLL Core Values: Discovery
               </p>
             </div>
