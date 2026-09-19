@@ -42,7 +42,7 @@ export default function UpdatesPage() {
             <Calendar className="h-4 w-4" />
             Updates
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-5 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 tracking-tight">
             {getContent("updates.hero.title", "Project Updates")}
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">

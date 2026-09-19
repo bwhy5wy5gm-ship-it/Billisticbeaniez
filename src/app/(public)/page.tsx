@@ -90,7 +90,7 @@ export default function HomePage() {
               {getContent("home.hero.title", "BILLISTIC BEANIEZ")}
             </h1>
 
-            <p className="text-lg sm:text-xl md:text-2xl font-semibold text-muted-foreground mb-4 text-balance">
+            <p className="text-lg sm:text-lg md:text-2xl font-semibold text-muted-foreground mb-4 text-balance">
               FIRST LEGO League Team
             </p>
 

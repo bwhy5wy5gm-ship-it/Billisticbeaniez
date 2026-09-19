@@ -54,7 +54,7 @@ export default function PhotoLogPage() {
               <Camera className="h-4 w-4" />
               Photo Log
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
               {getContent("photos.hero.title", "Photo Log")}
             </h1>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">

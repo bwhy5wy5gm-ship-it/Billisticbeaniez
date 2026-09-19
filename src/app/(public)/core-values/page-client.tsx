@@ -95,7 +95,7 @@ export default function CoreValuesPage() {
             <Heart className="h-3.5 w-3.5" />
             Core Values
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {getContent("values.hero.title", "FLL Core Values")}
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">

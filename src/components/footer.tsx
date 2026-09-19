@@ -13,8 +13,8 @@ export function Footer() {
   return (
     <footer className="relative border-t bg-muted/30">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="flex flex-col items-center text-center mb-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex flex-col items-center text-center mb-8">
           {logo ? (
             <img
               src={logo}
@@ -31,15 +31,12 @@ export function Footer() {
             <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}
             <span className="text-emerald-600 dark:text-emerald-400">Beaniez</span>
           </h2>
-          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground mb-2">
-            FIRST LEGO League Team
-          </p>
           <p className="text-sm text-muted-foreground/80">
             Robotics • Engineering • Innovation
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">
               Project
@@ -128,7 +125,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+        <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>
             &copy; 2026{" "}
             <span className="font-medium">

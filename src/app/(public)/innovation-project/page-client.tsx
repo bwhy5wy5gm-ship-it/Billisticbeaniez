@@ -19,20 +19,8 @@ import {
   Activity,
   Globe,
   Heart,
-  ChevronDown,
 } from "lucide-react";
 import { useContent } from "@/lib/use-content";
-
-function FlowArrow() {
-  return (
-    <div className="flex justify-center py-4">
-      <div className="flex flex-col items-center gap-1">
-        <div className="w-px h-8 bg-gradient-to-b from-muted-foreground/10 to-muted-foreground/30" />
-        <ChevronDown className="h-5 w-5 text-muted-foreground/40" />
-      </div>
-    </div>
-  );
-}
 
 export default function InnovationProjectPage() {
   const { getContent } = useContent();
@@ -49,10 +37,10 @@ export default function InnovationProjectPage() {
             <Microscope className="h-3.5 w-3.5" />
             Innovation
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {getContent("innovation.hero.title", "Innovation Project")}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
             {getContent("innovation.hero.desc", "The research behind our experiment and why removing CO2 from ocean water matters for climate change.")}
           </p>
         </div>
@@ -74,8 +62,6 @@ export default function InnovationProjectPage() {
           </CardContent>
         </Card>
 
-        <FlowArrow />
-
         {/* Hypothesis */}
         <Card className="border-2 border-cyan-200/80 dark:border-cyan-800/50 mb-16 hover:shadow-lg transition-shadow duration-300">
           <CardContent className="p-8">
@@ -92,8 +78,6 @@ export default function InnovationProjectPage() {
             </div>
           </CardContent>
         </Card>
-
-        <FlowArrow />
 
         {/* Solution */}
         <Card className="border-2 border-emerald-200/80 dark:border-emerald-800/50 mb-16 hover:shadow-lg transition-shadow duration-300">
@@ -148,8 +132,6 @@ export default function InnovationProjectPage() {
           </CardContent>
         </Card>
 
-        <FlowArrow />
-
         {/* Science Explanation */}
         <Card className="border-2 mb-16 hover:shadow-lg transition-shadow duration-300">
           <CardContent className="p-8">
@@ -166,8 +148,6 @@ export default function InnovationProjectPage() {
             </div>
           </CardContent>
         </Card>
-
-        <FlowArrow />
 
         {/* Experiment Setup */}
         <Card className="border-2 border-violet-200/80 dark:border-violet-800/50 mb-16 hover:shadow-lg transition-shadow duration-300">
@@ -201,8 +181,6 @@ export default function InnovationProjectPage() {
           </CardContent>
         </Card>
 
-        <FlowArrow />
-
         {/* Sensor List */}
         <Card className="border-2 border-amber-200/80 dark:border-amber-800/50 mb-16 hover:shadow-lg transition-shadow duration-300">
           <CardContent className="p-8">
@@ -231,8 +209,6 @@ export default function InnovationProjectPage() {
           </CardContent>
         </Card>
 
-        <FlowArrow />
-
         {/* Results Summary */}
         <Card className="border-2 border-cyan-200/80 dark:border-cyan-800/50 mb-16 hover:shadow-lg transition-shadow duration-300 overflow-hidden">
           <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-50 dark:from-cyan-950/30 dark:via-blue-950/20 dark:to-cyan-950/30 p-8">
@@ -251,8 +227,6 @@ export default function InnovationProjectPage() {
             </div>
           </div>
         </Card>
-
-        <FlowArrow />
 
         {/* Why It Matters */}
         <Card className="border-2 mb-16 hover:shadow-lg transition-shadow duration-300">
@@ -278,8 +252,6 @@ export default function InnovationProjectPage() {
             </div>
           </CardContent>
         </Card>
-
-        <FlowArrow />
 
         {/* Future Improvements */}
         <Card className="border-2 hover:shadow-lg transition-shadow duration-300">

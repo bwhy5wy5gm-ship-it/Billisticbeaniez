@@ -43,7 +43,7 @@ export default function TeamHistoryPage() {
               <Trophy className="h-4 w-4" />
               Team History
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight">Our Journey</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Our Journey</h1>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
               A timeline of our team&apos;s growth, achievements, and milestones over the years.
             </p>

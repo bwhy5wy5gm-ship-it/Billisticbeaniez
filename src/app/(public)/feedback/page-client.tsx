@@ -71,7 +71,7 @@ export default function FeedbackPage() {
             <MessageSquareText className="h-4 w-4" />
             Feedback
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-5 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 tracking-tight">
             {getContent("feedback.hero.title", "Feedback We Have Received")}
           </h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto leading-relaxed">

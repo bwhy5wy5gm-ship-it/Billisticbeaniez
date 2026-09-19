@@ -41,10 +41,10 @@ export default function RobotPage() {
             <Bot className="h-4 w-4" />
             Robot
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
             {getContent("robot.hero.title", "Meet Our Robot")}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-balance leading-relaxed">
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto text-balance leading-relaxed">
             {getContent("robot.hero.desc", "The engineering marvel that brings our ideas to life on the competition field.")}
           </p>
         </div>
