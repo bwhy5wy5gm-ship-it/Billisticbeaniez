@@ -15,8 +15,11 @@ import {
   Beaker,
   Droplets,
 } from "lucide-react";
+import { useContent } from "@/lib/use-content";
 
 export default function ContactPage() {
+  const { getContent } = useContent();
+  const logo = getContent("site.logo", "");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -54,6 +57,9 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
+          {logo && (
+            <img src={logo} alt="Logo" className="h-16 w-16 rounded-2xl object-contain mx-auto mb-4" />
+          )}
           <Badge
             variant="secondary"
             className="mb-4 gap-1.5 px-4 py-1.5 border border-blue-200/60 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300"

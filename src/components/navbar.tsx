@@ -102,9 +102,13 @@ export function Navbar() {
             />
             <SheetContent side="right" className="w-64 p-0">
               <div className="flex items-center gap-2.5 px-5 h-14 border-b">
-                <div className="relative flex items-center justify-center h-7 w-7 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white">
-                  <Beaker className="h-3.5 w-3.5" />
-                </div>
+                {logo ? (
+                  <img src={logo} alt="Logo" className="h-7 w-7 rounded-lg object-contain" />
+                ) : (
+                  <div className="relative flex items-center justify-center h-7 w-7 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 text-white">
+                    <Beaker className="h-3.5 w-3.5" />
+                  </div>
+                )}
                 <span className="font-bold text-sm tracking-tight">
                   <span className="text-cyan-600">Billistic</span>{" "}
                   <span className="text-emerald-600">Beaniez</span>
