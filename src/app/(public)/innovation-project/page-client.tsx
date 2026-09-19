@@ -209,40 +209,6 @@ export default function InnovationProjectPage() {
           </CardContent>
         </Card>
 
-        {/* Timeline */}
-        <Card className="border-2 mb-10">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-950/20">
-                <Activity className="h-4.5 w-4.5 text-violet-500" />
-              </div>
-              <h2 className="text-xl font-semibold">{getContent("innovation.timeline.title", "Experiment Timeline")}</h2>
-            </div>
-            <div className="relative">
-              <div className="absolute left-[15px] top-0 bottom-0 w-0.5 bg-border" />
-              <div className="space-y-6">
-                {[
-                  { day: "Days 1 2", title: "Setup", desc: "Prepare both tanks, install sensors, calibrate equipment.", color: "bg-blue-500" },
-                  { day: "Days 3 4", title: "Baseline Data", desc: "Record initial readings from both tanks for 48 hours.", color: "bg-violet-500" },
-                  { day: "Days 5 11", title: "Active Experiment", desc: "Monitor data daily, check seaweed health, record observations.", color: "bg-cyan-500" },
-                  { day: "Days 12 14", title: "Analysis & Conclusion", desc: "Compare all data, draw conclusions, prepare presentation.", color: "bg-emerald-500" },
-                ].map((step, i) => (
-                  <div key={i} className="flex gap-4 relative">
-                    <div className={`relative z-10 h-8 w-8 rounded-full ${step.color} flex items-center justify-center shrink-0 ring-4 ring-background`}>
-                      <span className="text-xs font-bold text-white">{i + 1}</span>
-                    </div>
-                    <div className="flex-1 pb-2">
-                      <Badge variant="outline" className="text-xs mb-1 font-mono">{step.day}</Badge>
-                      <h4 className="font-semibold mb-0.5">{step.title}</h4>
-                      <p className="text-sm text-muted-foreground">{step.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Results Summary */}
         <Card className="border-2 border-cyan-200/80 dark:border-cyan-800/50 mb-10">
           <CardContent className="pt-6">

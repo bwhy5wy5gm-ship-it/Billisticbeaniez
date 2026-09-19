@@ -1,9 +1,9 @@
 export const defaults: Record<string, string> = {
   "site.logo": "",
-  "home.hero.title": "Billistic Beaniez — Robotics & STEM",
+  "home.hero.title": "Billistic Beaniez Robotics & STEM",
   "home.hero.subtitle": "Billistic Beaniez | FLL Team",
   "home.hero.description": "Our mission is to learn, build, and innovate through teamwork. We use robotics and science to solve real problems and grow our skills. Together, we support each other and strive to make a positive impact.",
-  "home.hero.button1": "Meet the Team",
+  "home.hero.button1": "See Our Innovation",
   "home.hero.button2": "See Our Robot",
   "home.whataido.title": "What We Do",
   "home.whataido.desc": "Three pillars that make up our FLL journey.",

@@ -6,10 +6,10 @@ import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Save, CheckCircle, Eye, Pencil, ImagePlus, X, Beaker, Atom } from "lucide-react";
+import { Save, CheckCircle, Eye, Pencil, ImagePlus, X, Beaker, Atom, Plus } from "lucide-react";
 import { invalidateContent } from "@/lib/use-content";
 
-type Field = { key: string; label: string; multiline?: boolean; type?: "text" | "image" };
+type Field = { key: string; label: string; multiline?: boolean; type?: "text" | "image" | "attachments" };
 
 const PAGES: { id: string; label: string; route: string; fields: Field[] }[] = [
   {
@@ -53,6 +53,8 @@ const PAGES: { id: string; label: string; route: string; fields: Field[] }[] = [
       { key: "robot.whatis.desc", label: "What It Does Description", multiline: true },
       { key: "robot.programming.title", label: "Programming Title" },
       { key: "robot.challenges.title", label: "Challenges Title" },
+      { key: "robot.attachments.title", label: "Attachments Title" },
+      { key: "robot.attachments", label: "Attachments", type: "attachments" },
     ],
   },
   {
@@ -201,6 +203,89 @@ function InlineEdit({ field, value, onChange }: { field: Field; value: string; o
 
 function SectionLabel({ children, className }: { children: React.ReactNode; className?: string }) {
   return <div className={`text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2 ${className || ""}`}>{children}</div>;
+}
+
+type Attachment = { image: string; title: string; desc: string };
+
+function AttachmentsEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  let items: Attachment[] = [];
+  try { items = value ? JSON.parse(value) : []; } catch { items = []; }
+
+  function update(i: number, patch: Partial<Attachment>) {
+    const next = [...items];
+    next[i] = { ...next[i], ...patch };
+    onChange(JSON.stringify(next));
+  }
+
+  function remove(i: number) {
+    onChange(JSON.stringify(items.filter((_, idx) => idx !== i)));
+  }
+
+  function add() {
+    onChange(JSON.stringify([...items, { image: "", title: "", desc: "" }]));
+  }
+
+  return (
+    <div className="space-y-4">
+      {items.map((item, i) => (
+        <div key={i} className="rounded-lg border p-4 space-y-3 relative">
+          <button onClick={() => remove(i)} className="absolute top-2 right-2 p-1 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+            <X className="h-3.5 w-3.5" />
+          </button>
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">Image</label>
+            {item.image ? (
+              <div className="relative group">
+                <img src={item.image} alt="" className="w-full h-32 object-contain bg-muted rounded-lg border" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                  <label className="cursor-pointer px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-black hover:bg-white/90 flex items-center gap-1.5">
+                    <ImagePlus className="h-3.5 w-3.5" /> Replace
+                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const fd = new FormData();
+                      fd.append("file", file);
+                      const res = await fetch("/api/upload", { method: "POST", body: fd });
+                      const data = await res.json();
+                      if (data.url) update(i, { image: data.url });
+                    }} />
+                  </label>
+                  <button onClick={() => update(i, { image: "" })} className="px-3 py-1.5 bg-red-500 rounded-lg text-sm font-medium text-white hover:bg-red-600 flex items-center gap-1.5">
+                    <X className="h-3.5 w-3.5" /> Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <label className="flex items-center justify-center gap-2 h-24 rounded-lg border-2 border-dashed cursor-pointer hover:bg-muted/50 transition-colors">
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const fd = new FormData();
+                  fd.append("file", file);
+                  const res = await fetch("/api/upload", { method: "POST", body: fd });
+                  const data = await res.json();
+                  if (data.url) update(i, { image: data.url });
+                }} />
+                <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Upload image</span>
+              </label>
+            )}
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">Title</label>
+            <Input value={item.title} onChange={(e) => update(i, { title: e.target.value })} placeholder="Attachment title" className="h-9 text-sm" />
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">Description</label>
+            <Textarea value={item.desc} onChange={(e) => update(i, { desc: e.target.value })} placeholder="Brief description" rows={2} className="resize-none text-sm" />
+          </div>
+        </div>
+      ))}
+      <button onClick={add} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <Plus className="h-4 w-4" /> Add attachment
+      </button>
+    </div>
+  );
 }
 
 export default function PagesEditorPage() {
@@ -474,6 +559,16 @@ export default function PagesEditorPage() {
                     <SectionLabel>Challenges</SectionLabel>
                     <InlineEdit field={pageConfig.fields[10]} value={c("robot.challenges.title", "")} onChange={(v) => updateField("robot.challenges.title", v)} />
                   </div>
+                </div>
+
+                {/* Attachments */}
+                <div className="rounded-xl border-2 bg-card p-6">
+                  <SectionLabel>Attachments</SectionLabel>
+                  <p className="text-xs text-muted-foreground mb-3">Add images, files, or documents related to your robot.</p>
+                  <AttachmentsEditor
+                    value={c("robot.attachments", "")}
+                    onChange={(v) => updateField("robot.attachments", v)}
+                  />
                 </div>
               </>
             )}

@@ -80,7 +80,7 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-[3.5rem] font-bold mb-5 leading-[1.12] text-balance">
-              {getContent("home.hero.title", "Billistic Beaniez — Robotics & STEM")}
+              {getContent("home.hero.title", "Billistic Beaniez Robotics & STEM")}
             </h1>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed text-balance">

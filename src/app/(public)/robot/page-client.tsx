@@ -1,24 +1,33 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Bot,
-  Cpu,
   Wrench,
   Target,
-  Lightbulb,
   Zap,
   Gauge,
-  Settings,
-  Code,
-  RotateCcw,
-  ArrowUpRight,
+  FileImage,
+  Plus,
+  X,
 } from "lucide-react";
 import { useContent } from "@/lib/use-content";
 
+type Attachment = { image: string; title: string; desc: string };
+
 export default function RobotPage() {
   const { getContent } = useContent();
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+
+  useEffect(() => {
+    const raw = getContent("robot.attachments", "");
+    if (raw) {
+      try { setAttachments(JSON.parse(raw)); } catch {}
+    }
+  }, [getContent("robot.attachments", "")]);
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="max-w-5xl mx-auto">
@@ -124,107 +133,34 @@ export default function RobotPage() {
           </CardContent>
         </Card>
 
-        {/* Programming Highlights */}
-        <Card className="border-2 border-emerald-200/80 dark:border-emerald-800/50 mb-10">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/20">
-                <Code className="h-4.5 w-4.5 text-emerald-500" />
-              </div>
-              <h2 className="text-xl font-semibold">{getContent("robot.programming.title", "Programming Highlights")}</h2>
-            </div>
-            <div className="space-y-4">
-              {[
-                {
-                  icon: Cpu,
-                  title: "LEGO MINDSTORMS EV3",
-                  desc: "Our robot runs on the EV3 platform, programmed using EV3 MicroPython for precise control and advanced logic.",
-                  color: "text-emerald-500",
-                  bg: "bg-emerald-50 dark:bg-emerald-950/20",
-                },
-                {
-                  icon: Settings,
-                  title: "PID Control System",
-                  desc: "We implemented a PID controller for smooth, accurate line following and wall squaring movements.",
-                  color: "text-cyan-500",
-                  bg: "bg-cyan-50 dark:bg-cyan-950/20",
-                },
-                {
-                  icon: RotateCcw,
-                  title: "Calibration Routines",
-                  desc: "Automatic sensor calibration at the start of each run ensures consistent performance under different lighting conditions.",
-                  color: "text-blue-500",
-                  bg: "bg-blue-50 dark:bg-blue-950/20",
-                },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className={`p-4 rounded-xl border ${item.color === "text-emerald-500" ? "border-emerald-200/50 dark:border-emerald-800/30" : item.color === "text-cyan-500" ? "border-cyan-200/50 dark:border-cyan-800/30" : "border-blue-200/50 dark:border-blue-800/30"} ${item.bg}`}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <item.icon className={`h-4 w-4 ${item.color}`} />
-                    <h4 className="font-semibold text-sm">{item.title}</h4>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Challenges and Improvements */}
+        {/* Attachments */}
         <Card className="border-2">
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-950/20">
-                <Lightbulb className="h-4.5 w-4.5 text-violet-500" />
+                <Wrench className="h-4.5 w-4.5 text-violet-500" />
               </div>
-              <h2 className="text-xl font-semibold">{getContent("robot.challenges.title", "Challenges & Improvements")}</h2>
+              <h2 className="text-xl font-semibold">{getContent("robot.attachments.title", "Attachments")}</h2>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                {
-                  title: "Sensor Reliability",
-                  desc: "Early prototypes struggled with inconsistent sensor readings. We solved this by implementing multiple calibration runs and averaging algorithms.",
-                  color: "text-cyan-500",
-                  bg: "bg-cyan-50 dark:bg-cyan-950/20",
-                  border: "border-cyan-200/50 dark:border-cyan-800/30",
-                },
-                {
-                  title: "Attachment Alignment",
-                  desc: "Ensuring attachments connect securely and align properly required redesigning the mounting mechanism with guide pins and snap fits.",
-                  color: "text-emerald-500",
-                  bg: "bg-emerald-50 dark:bg-emerald-950/20",
-                  border: "border-emerald-200/50 dark:border-emerald-800/30",
-                },
-                {
-                  title: "Time Management",
-                  desc: "Balancing mission complexity with time constraints taught us to prioritize high value missions and optimize our run sequences.",
-                  color: "text-blue-500",
-                  bg: "bg-blue-50 dark:bg-blue-950/20",
-                  border: "border-blue-200/50 dark:border-blue-800/30",
-                },
-                {
-                  title: "Future Upgrades",
-                  desc: "We plan to add machine learning capabilities for adaptive navigation and improved decision making during missions.",
-                  color: "text-violet-500",
-                  bg: "bg-violet-50 dark:bg-violet-950/20",
-                  border: "border-violet-200/50 dark:border-violet-800/30",
-                },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className={`p-4 rounded-xl border ${item.border} ${item.bg}`}
-                >
-                  <h4 className="font-semibold text-sm mb-1">{item.title}</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {attachments.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">No attachments added yet. Add them in the admin Pages editor.</p>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-4">
+                {attachments.map((att, i) => (
+                  <div key={i} className="rounded-xl border bg-card overflow-hidden">
+                    {att.image && (
+                      <div className="aspect-[16/10] bg-muted overflow-hidden">
+                        <img src={att.image} alt={att.title} className="h-full w-full object-contain bg-muted" />
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <h4 className="font-semibold text-sm mb-1">{att.title}</h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{att.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

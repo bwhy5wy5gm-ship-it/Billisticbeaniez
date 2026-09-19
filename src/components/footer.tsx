@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Beaker, Atom, Droplets } from "lucide-react";
+import { Beaker, Atom } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useContent } from "@/lib/use-content";
 
@@ -45,9 +45,6 @@ export function Footer() {
               </Link>
               <Link href="/innovation-project" className="text-muted-foreground hover:text-foreground transition-colors">
                 Innovation Project
-              </Link>
-              <Link href="/team" className="text-muted-foreground hover:text-foreground transition-colors">
-                Team
               </Link>
               <Link href="/core-values" className="text-muted-foreground hover:text-foreground transition-colors">
                 Core Values
@@ -135,10 +132,6 @@ export function Footer() {
             </span>
             . All rights reserved.
           </p>
-          <div className="flex items-center gap-1.5">
-            <Droplets className="h-3.5 w-3.5" />
-            FLL Innovation Project
-          </div>
         </div>
       </div>
     </footer>
