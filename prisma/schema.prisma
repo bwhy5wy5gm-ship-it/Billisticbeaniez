@@ -115,3 +115,49 @@ model PhotoLog {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model ProjectUpdate {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  date        String
+  photos      String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Feedback {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  date        String
+  company     String   @default("")
+  person      String   @default("")
+  photos      String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ChartData {
+  id             String @id @default(cuid())
+  label          String
+  day            Int
+  co2Control     Float  @default(0)
+  co2Exp         Float  @default(0)
+  o2Control      Float  @default(0)
+  o2Exp          Float  @default(0)
+  tempControl    Float  @default(0)
+  tempExp        Float  @default(0)
+  humidityControl Float @default(0)
+  humidityExp    Float  @default(0)
+}
+
+model TeamHistory {
+  id          String   @id @default(cuid())
+  year        Int
+  title       String
+  description String
+  photos      String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
