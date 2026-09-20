@@ -8,7 +8,7 @@ import { useContent } from "@/lib/use-content";
 export function Footer() {
   const { data: session } = useSession();
   const { getContent } = useContent();
-  const logo = getContent("site.logo", "");
+  const logo = getContent("site.favicon", "") || getContent("site.logo", "");
   const sponsorLogo = getContent("site.sponsor.logo", "");
   const sponsorUrl = getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/");
 

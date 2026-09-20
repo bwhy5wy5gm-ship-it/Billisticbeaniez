@@ -16,18 +16,16 @@ async function getFavicon(): Promise<string> {
   try {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!url || !key) return "/favicon.png";
+    if (!url || !key) return "";
     const sb = createClient(url, key);
     const { data } = await sb.from("SiteContent").select("value").eq("key", "site.favicon").limit(1).single();
-    return data?.value || "/favicon.png";
+    return data?.value || "";
   } catch {
-    return "/favicon.png";
+    return "";
   }
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const favicon = await getFavicon();
-
   return {
     metadataBase: new URL("https://billisticbeaniez.com"),
     title: {
@@ -85,19 +83,22 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": -1,
       },
     },
-    icons: {
-      icon: favicon,
-    },
   };
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const favicon = await getFavicon();
+
   return (
     <html
       lang="en"
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="icon" type="image/png" href={favicon || "/favicon.png"} />
+        <link rel="apple-touch-icon" href={favicon || "/favicon.png"} />
+      </head>
       <body className="min-h-full flex flex-col font-sans">
         <Providers>
           <ThemeProvider
