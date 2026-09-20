@@ -127,14 +127,18 @@ export function Footer() {
           </div>
         </div>
 
-        {sponsorLogo && (
-          <div className="border-t mt-8 pt-6 flex flex-col items-center gap-3 text-center">
-            <p className="text-xs text-muted-foreground/60 uppercase tracking-wider">Proudly supported by</p>
+        <div className="border-t mt-8 pt-6 flex flex-col items-center gap-3 text-center">
+          <p className="text-xs text-muted-foreground/60 uppercase tracking-wider">Proudly supported by</p>
+          {sponsorLogo ? (
             <a href={sponsorUrl} target="_blank" rel="noopener noreferrer">
               <img src={sponsorLogo} alt="Sponsor" className="h-10 object-contain rounded-md hover:opacity-80 transition-opacity" />
             </a>
-          </div>
-        )}
+          ) : (
+            <div className="h-10 w-24 rounded-md border border-dashed border-muted-foreground/20 flex items-center justify-center">
+              <span className="text-[10px] text-muted-foreground/40">Sponsor logo</span>
+            </div>
+          )}
+        </div>
 
         <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>
