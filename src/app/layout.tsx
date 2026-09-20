@@ -5,74 +5,91 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { FaviconUpdater } from "@/components/favicon-updater";
+import { createClient } from "@supabase/supabase-js";
 
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://billisticbeaniez.com"),
-  title: {
-    default: "Billistic Beaniez | Robotics & STEM",
-    template: "%s | Billistic Beaniez",
-  },
-  description:
-    "Billistic Beaniez is a FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems. Meet our robot, explore our innovation project, and follow our journey.",
-  keywords: [
-    "Billistic Beaniez",
-    "FLL",
-    "FIRST LEGO League",
-    "robotics",
-    "STEM",
-    "engineering",
-    "LEGO robot",
-    "coding",
-    "innovation",
-    "ocean science",
-  ],
-  authors: [{ name: "Billistic Beaniez" }],
-  creator: "Billistic Beaniez",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://billisticbeaniez.com",
-    siteName: "Billistic Beaniez",
-    title: "Billistic Beaniez | Robotics & STEM",
+async function getFavicon(): Promise<string> {
+  try {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) return "/favicon.svg";
+    const sb = createClient(url, key);
+    const { data } = await sb.from("SiteContent").select("value").eq("key", "site.favicon").limit(1).single();
+    return data?.value || "/favicon.svg";
+  } catch {
+    return "/favicon.svg";
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const favicon = await getFavicon();
+
+  return {
+    metadataBase: new URL("https://billisticbeaniez.com"),
+    title: {
+      default: "Billistic Beaniez | Robotics & STEM",
+      template: "%s | Billistic Beaniez",
+    },
     description:
-      "A FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems.",
-    images: [
-      {
-        url: "/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "Billistic Beaniez — FLL Robotics & STEM Team",
-      },
+      "Billistic Beaniez is a FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems. Meet our robot, explore our innovation project, and follow our journey.",
+    keywords: [
+      "Billistic Beaniez",
+      "FLL",
+      "FIRST LEGO League",
+      "robotics",
+      "STEM",
+      "engineering",
+      "LEGO robot",
+      "coding",
+      "innovation",
+      "ocean science",
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Billistic Beaniez | Robotics & STEM",
-    description:
-      "A FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems.",
-    images: ["/og-image.svg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    authors: [{ name: "Billistic Beaniez" }],
+    creator: "Billistic Beaniez",
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      url: "https://billisticbeaniez.com",
+      siteName: "Billistic Beaniez",
+      title: "Billistic Beaniez | Robotics & STEM",
+      description:
+        "A FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems.",
+      images: [
+        {
+          url: "/og-image.svg",
+          width: 1200,
+          height: 630,
+          alt: "Billistic Beaniez — FLL Robotics & STEM Team",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Billistic Beaniez | Robotics & STEM",
+      description:
+        "A FIRST LEGO League robotics team combining engineering, coding, and STEM innovation to solve real world problems.",
+      images: ["/og-image.svg"],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-  icons: {
-    icon: "/favicon.svg",
-  },
-};
+    icons: {
+      icon: favicon,
+    },
+  };
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -82,7 +99,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans">
-        <FaviconUpdater />
         <Providers>
           <ThemeProvider
             attribute="class"
