@@ -329,7 +329,7 @@ export default function HomePage() {
                 <img
                   src={getContent("site.sponsor.logo", "")}
                   alt="Sponsor"
-                  className="h-24 sm:h-28 md:h-32 object-contain mx-auto mb-6 rounded-xl transition-transform duration-200 group-hover:scale-105"
+                  className="h-24 sm:h-28 md:h-32 object-contain mx-auto mb-6 transition-transform duration-200 group-hover:scale-105"
                 />
               </a>
             ) : (

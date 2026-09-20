@@ -131,7 +131,7 @@ export function Footer() {
           <p className="text-xs text-muted-foreground/60 uppercase tracking-wider">Proudly supported by</p>
           {sponsorLogo ? (
             <a href={sponsorUrl} target="_blank" rel="noopener noreferrer">
-              <img src={sponsorLogo} alt="Sponsor" className="h-10 object-contain rounded-md hover:opacity-80 transition-opacity" />
+              <img src={sponsorLogo} alt="Sponsor" className="h-10 object-contain hover:opacity-80 transition-opacity" />
             </a>
           ) : (
             <div className="h-10 w-24 rounded-md border border-dashed border-muted-foreground/20 flex items-center justify-center">
