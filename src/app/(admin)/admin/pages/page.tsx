@@ -18,6 +18,7 @@ const PAGES: { id: string; label: string; route: string; fields: Field[] }[] = [
     route: "/",
     fields: [
       { key: "site.logo", label: "Site Logo", type: "image" },
+      { key: "site.favicon", label: "Favicon (PNG)", type: "image" },
       { key: "home.hero.title", label: "Hero Title" },
       { key: "home.hero.subtitle", label: "Hero Subtitle" },
       { key: "home.hero.description", label: "Hero Description", multiline: true },
@@ -416,6 +417,13 @@ export default function PagesEditorPage() {
                   <SectionLabel>Site Logo</SectionLabel>
                   <p className="text-xs text-muted-foreground mb-3">Shows in navbar and footer. Leave empty for default icon.</p>
                   <InlineEdit field={pageConfig.fields[0]} value={c("site.logo", "")} onChange={(v) => updateField("site.logo", v)} />
+                </div>
+
+                {/* Favicon */}
+                <div className="rounded-xl border-2 bg-card p-6">
+                  <SectionLabel>Favicon</SectionLabel>
+                  <p className="text-xs text-muted-foreground mb-3">Upload a .png image that shows in the browser tab. Recommended size: 32x32 or 64x64 pixels.</p>
+                  <InlineEdit field={pageConfig.fields[1]} value={c("site.favicon", "")} onChange={(v) => updateField("site.favicon", v)} />
                 </div>
 
                 {/* Hero */}
