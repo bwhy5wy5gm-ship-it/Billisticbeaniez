@@ -9,6 +9,8 @@ export function Footer() {
   const { data: session } = useSession();
   const { getContent } = useContent();
   const logo = getContent("site.logo", "");
+  const sponsorLogo = getContent("site.sponsor.logo", "");
+  const sponsorUrl = getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/");
 
   return (
     <footer className="relative border-t bg-muted/30">
@@ -124,6 +126,15 @@ export function Footer() {
             </p>
           </div>
         </div>
+
+        {sponsorLogo && (
+          <div className="border-t mt-8 pt-6 flex flex-col items-center gap-3 text-center">
+            <p className="text-xs text-muted-foreground/60 uppercase tracking-wider">Proudly supported by</p>
+            <a href={sponsorUrl} target="_blank" rel="noopener noreferrer">
+              <img src={sponsorLogo} alt="Sponsor" className="h-10 object-contain rounded-md hover:opacity-80 transition-opacity" />
+            </a>
+          </div>
+        )}
 
         <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>

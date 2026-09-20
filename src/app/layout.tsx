@@ -16,12 +16,12 @@ async function getFavicon(): Promise<string> {
   try {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!url || !key) return "/favicon.svg";
+    if (!url || !key) return "/favicon.png";
     const sb = createClient(url, key);
     const { data } = await sb.from("SiteContent").select("value").eq("key", "site.favicon").limit(1).single();
-    return data?.value || "/favicon.svg";
+    return data?.value || "/favicon.png";
   } catch {
-    return "/favicon.svg";
+    return "/favicon.png";
   }
 }
 

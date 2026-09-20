@@ -86,7 +86,7 @@ export default function HomePage() {
               )}
             </div>
 
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl font-extrabold mb-6 leading-[0.95] text-balance tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold mb-6 leading-[0.95] text-balance tracking-tight">
               {getContent("home.hero.title", "BILLISTIC BEANIEZ")}
             </h1>
 
@@ -308,6 +308,48 @@ export default function HomePage() {
                 </Card>
               )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sponsor */}
+      <section className="py-20 sm:py-24 border-b">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-8">
+              Proudly Supported By
+            </p>
+            {getContent("site.sponsor.logo", "") ? (
+              <a
+                href={getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block group"
+              >
+                <img
+                  src={getContent("site.sponsor.logo", "")}
+                  alt="Sponsor"
+                  className="h-24 sm:h-28 md:h-32 object-contain mx-auto mb-6 rounded-xl transition-transform duration-200 group-hover:scale-105"
+                />
+              </a>
+            ) : (
+              <div className="inline-flex items-center justify-center h-24 sm:h-28 md:h-32 w-48 rounded-xl border-2 border-dashed border-muted-foreground/20 mb-6">
+                <span className="text-xs text-muted-foreground/50">Sponsor logo</span>
+              </div>
+            )}
+            <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+              Thank you for supporting Billistic Beaniez and helping our team pursue robotics, engineering and STEM.
+            </p>
+            {getContent("site.sponsor.logo", "") && (
+              <a
+                href={getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                VISIT SPONSOR <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            )}
           </div>
         </div>
       </section>
