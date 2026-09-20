@@ -124,7 +124,7 @@ export function Footer() {
               positive impact.
             </p>
             <p className="text-sm font-medium italic text-cyan-600 dark:text-cyan-400">
-              &ldquo;CO2 Solutions, Seaweed Powered&rdquo;
+              &ldquo;Building Ideas. Engineering Solutions.&rdquo;
             </p>
           </div>
         </div>
