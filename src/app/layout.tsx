@@ -26,6 +26,8 @@ async function getFavicon(): Promise<string> {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const favicon = await getFavicon();
+
   return {
     metadataBase: new URL("https://billisticbeaniez.com"),
     title: {
@@ -83,22 +85,19 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": -1,
       },
     },
+    icons: {
+      icon: favicon || "/favicon.png",
+    },
   };
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const favicon = await getFavicon();
-
   return (
     <html
       lang="en"
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <link rel="icon" type="image/png" href={favicon || "/favicon.png"} />
-        <link rel="apple-touch-icon" href={favicon || "/favicon.png"} />
-      </head>
       <body className="min-h-full flex flex-col font-sans">
         <Providers>
           <ThemeProvider
