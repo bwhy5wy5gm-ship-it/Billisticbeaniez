@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { FaviconUpdater } from "@/components/favicon-updater";
 import { createClient } from "@supabase/supabase-js";
 
 const inter = Inter({
@@ -99,6 +100,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans">
+        <FaviconUpdater />
         <Providers>
           <ThemeProvider
             attribute="class"
