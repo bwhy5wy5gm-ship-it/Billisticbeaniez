@@ -320,6 +320,7 @@ export default function PagesEditorPage() {
   }, []);
 
   const pageConfig = PAGES.find((p) => p.id === activePage)!;
+  const fk = (key: string) => pageConfig.fields.find((f) => f.key === key)!;
   const hasChanges = pageConfig.fields.some((f) => (content[f.key] || "") !== (original[f.key] || ""));
 
   async function saveAll() {
@@ -416,14 +417,14 @@ export default function PagesEditorPage() {
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Site Logo</SectionLabel>
                   <p className="text-xs text-muted-foreground mb-3">Shows in navbar and footer. Leave empty for default icon.</p>
-                  <InlineEdit field={pageConfig.fields[0]} value={c("site.logo", "")} onChange={(v) => updateField("site.logo", v)} />
+                  <InlineEdit field={fk("site.logo")} value={c("site.logo", "")} onChange={(v) => updateField("site.logo", v)} />
                 </div>
 
                 {/* Favicon */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Favicon</SectionLabel>
                   <p className="text-xs text-muted-foreground mb-3">Upload a .png image that shows in the browser tab. Recommended size: 32x32 or 64x64 pixels.</p>
-                  <InlineEdit field={pageConfig.fields[1]} value={c("site.favicon", "")} onChange={(v) => updateField("site.favicon", v)} />
+                  <InlineEdit field={fk("site.favicon")} value={c("site.favicon", "")} onChange={(v) => updateField("site.favicon", v)} />
                 </div>
 
                 {/* Hero */}
@@ -436,23 +437,23 @@ export default function PagesEditorPage() {
                     <div className="relative">
                       <SectionLabel>Hero Section</SectionLabel>
                       <div className="mb-4">
-                        <InlineEdit field={pageConfig.fields[2]} value={c("home.hero.subtitle", "")} onChange={(v) => updateField("home.hero.subtitle", v)} />
+                        <InlineEdit field={fk("home.hero.subtitle")} value={c("home.hero.subtitle", "")} onChange={(v) => updateField("home.hero.subtitle", v)} />
                       </div>
                       <div className="mb-3">
-                        <InlineEdit field={pageConfig.fields[1]} value={c("home.hero.title", "")} onChange={(v) => updateField("home.hero.title", v)} />
+                        <InlineEdit field={fk("home.hero.title")} value={c("home.hero.title", "")} onChange={(v) => updateField("home.hero.title", v)} />
                       </div>
                       <div className="mb-4 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[3]} value={c("home.hero.description", "")} onChange={(v) => updateField("home.hero.description", v)} />
+                        <InlineEdit field={fk("home.hero.description")} value={c("home.hero.description", "")} onChange={(v) => updateField("home.hero.description", v)} />
                       </div>
                       <div className="mb-4">
-                        <InlineEdit field={pageConfig.fields[4]} value={c("home.hero.image", "")} onChange={(v) => updateField("home.hero.image", v)} />
+                        <InlineEdit field={fk("home.hero.image")} value={c("home.hero.image", "")} onChange={(v) => updateField("home.hero.image", v)} />
                       </div>
                       <div className="flex gap-3 justify-center">
                         <span className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-cyan-500/15">
-                          <InlineEdit field={pageConfig.fields[5]} value={c("home.hero.button1", "")} onChange={(v) => updateField("home.hero.button1", v)} />
+                          <InlineEdit field={fk("home.hero.button1")} value={c("home.hero.button1", "")} onChange={(v) => updateField("home.hero.button1", v)} />
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg border text-sm font-medium">
-                          <InlineEdit field={pageConfig.fields[6]} value={c("home.hero.button2", "")} onChange={(v) => updateField("home.hero.button2", v)} />
+                          <InlineEdit field={fk("home.hero.button2")} value={c("home.hero.button2", "")} onChange={(v) => updateField("home.hero.button2", v)} />
                         </span>
                       </div>
                     </div>
@@ -463,24 +464,24 @@ export default function PagesEditorPage() {
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>What We Do Section</SectionLabel>
                   <div className="text-center mb-4">
-                    <InlineEdit field={pageConfig.fields[7]} value={c("home.whataido.title", "")} onChange={(v) => updateField("home.whataido.title", v)} />
+                    <InlineEdit field={fk("home.whataido.title")} value={c("home.whataido.title", "")} onChange={(v) => updateField("home.whataido.title", v)} />
                     <div className="mt-1">
-                      <InlineEdit field={pageConfig.fields[8]} value={c("home.whataido.desc", "")} onChange={(v) => updateField("home.whataido.desc", v)} />
+                      <InlineEdit field={fk("home.whataido.desc")} value={c("home.whataido.desc", "")} onChange={(v) => updateField("home.whataido.desc", v)} />
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-3 gap-3">
                     {[
-                      { titleKey: 9, descKey: 10, color: "text-cyan-500", bg: "bg-cyan-50 dark:bg-cyan-950/20" },
-                      { titleKey: 11, descKey: 12, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-950/20" },
-                      { titleKey: 13, descKey: 14, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-950/20" },
+                      { titleKey: "home.whataido.robot.title", descKey: "home.whataido.robot.desc", color: "text-cyan-500", bg: "bg-cyan-50 dark:bg-cyan-950/20" },
+                      { titleKey: "home.whataido.innovation.title", descKey: "home.whataido.innovation.desc", color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-950/20" },
+                      { titleKey: "home.whataido.values.title", descKey: "home.whataido.values.desc", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-950/20" },
                     ].map((card, i) => (
                       <div key={i} className="rounded-lg border bg-card p-4 ring-1 ring-transparent">
                         <div className={`p-2 rounded-lg ${card.bg} w-fit mb-3`}>
                           <div className={`h-5 w-5 ${card.color}`}>{i === 0 ? "🤖" : i === 1 ? "🔬" : "❤️"}</div>
                         </div>
-                        <InlineEdit field={pageConfig.fields[card.titleKey]} value={c(pageConfig.fields[card.titleKey].key, "")} onChange={(v) => updateField(pageConfig.fields[card.titleKey].key, v)} />
+                        <InlineEdit field={fk(card.titleKey)} value={c(card.titleKey, "")} onChange={(v) => updateField(card.titleKey, v)} />
                         <div className="mt-1">
-                          <InlineEdit field={pageConfig.fields[card.descKey]} value={c(pageConfig.fields[card.descKey].key, "")} onChange={(v) => updateField(pageConfig.fields[card.descKey].key, v)} />
+                          <InlineEdit field={fk(card.descKey)} value={c(card.descKey, "")} onChange={(v) => updateField(card.descKey, v)} />
                         </div>
                       </div>
                     ))}
@@ -493,13 +494,13 @@ export default function PagesEditorPage() {
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDYpIi8+PC9zdmc+')] opacity-50" />
                     <div className="relative">
                       <SectionLabel className="!text-white/60">Bottom CTA Section</SectionLabel>
-                      <InlineEdit field={pageConfig.fields[15]} value={c("home.cta.title", "")} onChange={(v) => updateField("home.cta.title", v)} />
+                      <InlineEdit field={fk("home.cta.title")} value={c("home.cta.title", "")} onChange={(v) => updateField("home.cta.title", v)} />
                       <div className="mt-2 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[16]} value={c("home.cta.desc", "")} onChange={(v) => updateField("home.cta.desc", v)} />
+                        <InlineEdit field={fk("home.cta.desc")} value={c("home.cta.desc", "")} onChange={(v) => updateField("home.cta.desc", v)} />
                       </div>
                       <div className="mt-4">
                         <span className="inline-flex items-center px-6 py-2.5 rounded-lg bg-white text-cyan-700 text-sm font-semibold shadow-xl">
-                          <InlineEdit field={pageConfig.fields[17]} value={c("home.cta.button", "")} onChange={(v) => updateField("home.cta.button", v)} />
+                          <InlineEdit field={fk("home.cta.button")} value={c("home.cta.button", "")} onChange={(v) => updateField("home.cta.button", v)} />
                         </span>
                       </div>
                     </div>
@@ -519,12 +520,12 @@ export default function PagesEditorPage() {
                     </div>
                     <div className="relative">
                       <SectionLabel>Hero</SectionLabel>
-                      <InlineEdit field={pageConfig.fields[0]} value={c("robot.hero.title", "")} onChange={(v) => updateField("robot.hero.title", v)} />
+                      <InlineEdit field={fk("robot.hero.title")} value={c("robot.hero.title", "")} onChange={(v) => updateField("robot.hero.title", v)} />
                       <div className="mt-3 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[1]} value={c("robot.hero.desc", "")} onChange={(v) => updateField("robot.hero.desc", v)} />
+                        <InlineEdit field={fk("robot.hero.desc")} value={c("robot.hero.desc", "")} onChange={(v) => updateField("robot.hero.desc", v)} />
                       </div>
                       <div className="mt-4">
-                        <InlineEdit field={pageConfig.fields[2]} value={c("robot.hero.image", "")} onChange={(v) => updateField("robot.hero.image", v)} />
+                        <InlineEdit field={fk("robot.hero.image")} value={c("robot.hero.image", "")} onChange={(v) => updateField("robot.hero.image", v)} />
                       </div>
                     </div>
                   </div>
@@ -533,27 +534,27 @@ export default function PagesEditorPage() {
                 {/* Robot Photo */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Robot Photo</SectionLabel>
-                  <InlineEdit field={pageConfig.fields[3]} value={c("robot.image", "")} onChange={(v) => updateField("robot.image", v)} />
+                  <InlineEdit field={fk("robot.image")} value={c("robot.image", "")} onChange={(v) => updateField("robot.image", v)} />
                 </div>
 
                 {/* Name Section */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Name Section</SectionLabel>
-                  <InlineEdit field={pageConfig.fields[4]} value={c("robot.name.title", "")} onChange={(v) => updateField("robot.name.title", v)} />
+                  <InlineEdit field={fk("robot.name.title")} value={c("robot.name.title", "")} onChange={(v) => updateField("robot.name.title", v)} />
                   <div className="mt-2 text-2xl font-bold">
-                    <InlineEdit field={pageConfig.fields[5]} value={c("robot.name.value", "")} onChange={(v) => updateField("robot.name.value", v)} />
+                    <InlineEdit field={fk("robot.name.value")} value={c("robot.name.value", "")} onChange={(v) => updateField("robot.name.value", v)} />
                   </div>
                   <div className="mt-2">
-                    <InlineEdit field={pageConfig.fields[6]} value={c("robot.name.desc", "")} onChange={(v) => updateField("robot.name.desc", v)} />
+                    <InlineEdit field={fk("robot.name.desc")} value={c("robot.name.desc", "")} onChange={(v) => updateField("robot.name.desc", v)} />
                   </div>
                 </div>
 
                 {/* What It Does */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>What It Does</SectionLabel>
-                  <InlineEdit field={pageConfig.fields[7]} value={c("robot.whatis.title", "")} onChange={(v) => updateField("robot.whatis.title", v)} />
+                  <InlineEdit field={fk("robot.whatis.title")} value={c("robot.whatis.title", "")} onChange={(v) => updateField("robot.whatis.title", v)} />
                   <div className="mt-2">
-                    <InlineEdit field={pageConfig.fields[8]} value={c("robot.whatis.desc", "")} onChange={(v) => updateField("robot.whatis.desc", v)} />
+                    <InlineEdit field={fk("robot.whatis.desc")} value={c("robot.whatis.desc", "")} onChange={(v) => updateField("robot.whatis.desc", v)} />
                   </div>
                 </div>
 
@@ -561,11 +562,11 @@ export default function PagesEditorPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="rounded-xl border-2 bg-card p-6">
                     <SectionLabel>Programming</SectionLabel>
-                    <InlineEdit field={pageConfig.fields[9]} value={c("robot.programming.title", "")} onChange={(v) => updateField("robot.programming.title", v)} />
+                    <InlineEdit field={fk("robot.programming.title")} value={c("robot.programming.title", "")} onChange={(v) => updateField("robot.programming.title", v)} />
                   </div>
                   <div className="rounded-xl border-2 bg-card p-6">
                     <SectionLabel>Challenges</SectionLabel>
-                    <InlineEdit field={pageConfig.fields[10]} value={c("robot.challenges.title", "")} onChange={(v) => updateField("robot.challenges.title", v)} />
+                    <InlineEdit field={fk("robot.challenges.title")} value={c("robot.challenges.title", "")} onChange={(v) => updateField("robot.challenges.title", v)} />
                   </div>
                 </div>
 
@@ -592,12 +593,12 @@ export default function PagesEditorPage() {
                     </div>
                     <div className="relative">
                       <SectionLabel>Hero</SectionLabel>
-                      <InlineEdit field={pageConfig.fields[0]} value={c("innovation.hero.title", "")} onChange={(v) => updateField("innovation.hero.title", v)} />
+                      <InlineEdit field={fk("innovation.hero.title")} value={c("innovation.hero.title", "")} onChange={(v) => updateField("innovation.hero.title", v)} />
                       <div className="mt-3 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[1]} value={c("innovation.hero.desc", "")} onChange={(v) => updateField("innovation.hero.desc", v)} />
+                        <InlineEdit field={fk("innovation.hero.desc")} value={c("innovation.hero.desc", "")} onChange={(v) => updateField("innovation.hero.desc", v)} />
                       </div>
                       <div className="mt-4">
-                        <InlineEdit field={pageConfig.fields[2]} value={c("innovation.hero.image", "")} onChange={(v) => updateField("innovation.hero.image", v)} />
+                        <InlineEdit field={fk("innovation.hero.image")} value={c("innovation.hero.image", "")} onChange={(v) => updateField("innovation.hero.image", v)} />
                       </div>
                     </div>
                   </div>
@@ -628,9 +629,9 @@ export default function PagesEditorPage() {
                   <div className="bg-gradient-to-br from-cyan-50 via-blue-50/40 to-emerald-50 dark:from-cyan-950/20 dark:via-blue-950/10 dark:to-emerald-950/20 p-8 text-center relative">
                     <div className="relative">
                       <SectionLabel>Hero</SectionLabel>
-                      <InlineEdit field={pageConfig.fields[0]} value={c("values.hero.title", "")} onChange={(v) => updateField("values.hero.title", v)} />
+                      <InlineEdit field={fk("values.hero.title")} value={c("values.hero.title", "")} onChange={(v) => updateField("values.hero.title", v)} />
                       <div className="mt-3 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[1]} value={c("values.hero.desc", "")} onChange={(v) => updateField("values.hero.desc", v)} />
+                        <InlineEdit field={fk("values.hero.desc")} value={c("values.hero.desc", "")} onChange={(v) => updateField("values.hero.desc", v)} />
                       </div>
                     </div>
                   </div>
@@ -639,9 +640,9 @@ export default function PagesEditorPage() {
                 {/* Closing */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Closing Section</SectionLabel>
-                  <InlineEdit field={pageConfig.fields[2]} value={c("values.closing.title", "")} onChange={(v) => updateField("values.closing.title", v)} />
+                  <InlineEdit field={fk("values.closing.title")} value={c("values.closing.title", "")} onChange={(v) => updateField("values.closing.title", v)} />
                   <div className="mt-2">
-                    <InlineEdit field={pageConfig.fields[3]} value={c("values.closing.desc", "")} onChange={(v) => updateField("values.closing.desc", v)} />
+                    <InlineEdit field={fk("values.closing.desc")} value={c("values.closing.desc", "")} onChange={(v) => updateField("values.closing.desc", v)} />
                   </div>
                 </div>
               </>
@@ -654,9 +655,9 @@ export default function PagesEditorPage() {
                   <div className="bg-gradient-to-br from-cyan-50 via-blue-50/40 to-emerald-50 dark:from-cyan-950/20 dark:via-blue-950/10 dark:to-emerald-950/20 p-8 text-center relative">
                     <div className="relative">
                       <SectionLabel>Hero</SectionLabel>
-                      <InlineEdit field={pageConfig.fields[0]} value={c(pageConfig.fields[0].key, "")} onChange={(v) => updateField(pageConfig.fields[0].key, v)} />
+                      <InlineEdit field={fk(pageConfig.fields[0].key)} value={c(pageConfig.fields[0].key, "")} onChange={(v) => updateField(pageConfig.fields[0].key, v)} />
                       <div className="mt-3 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[1]} value={c(pageConfig.fields[1].key, "")} onChange={(v) => updateField(pageConfig.fields[1].key, v)} />
+                        <InlineEdit field={fk(pageConfig.fields[1].key)} value={c(pageConfig.fields[1].key, "")} onChange={(v) => updateField(pageConfig.fields[1].key, v)} />
                       </div>
                     </div>
                   </div>
@@ -671,9 +672,9 @@ export default function PagesEditorPage() {
                   <div className="bg-gradient-to-br from-cyan-50 via-blue-50/40 to-emerald-50 dark:from-cyan-950/20 dark:via-blue-950/10 dark:to-emerald-950/20 p-8 text-center relative">
                     <div className="relative">
                       <SectionLabel>Hero</SectionLabel>
-                      <InlineEdit field={pageConfig.fields[0]} value={c("contact.hero.title", "")} onChange={(v) => updateField("contact.hero.title", v)} />
+                      <InlineEdit field={fk("contact.hero.title")} value={c("contact.hero.title", "")} onChange={(v) => updateField("contact.hero.title", v)} />
                       <div className="mt-3 max-w-md mx-auto">
-                        <InlineEdit field={pageConfig.fields[1]} value={c("contact.hero.desc", "")} onChange={(v) => updateField("contact.hero.desc", v)} />
+                        <InlineEdit field={fk("contact.hero.desc")} value={c("contact.hero.desc", "")} onChange={(v) => updateField("contact.hero.desc", v)} />
                       </div>
                     </div>
                   </div>
@@ -685,15 +686,15 @@ export default function PagesEditorPage() {
                   <div className="space-y-3">
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">Submit Button Text</label>
-                      <InlineEdit field={pageConfig.fields[2]} value={c("contact.form.button", "")} onChange={(v) => updateField("contact.form.button", v)} />
+                      <InlineEdit field={fk("contact.form.button")} value={c("contact.form.button", "")} onChange={(v) => updateField("contact.form.button", v)} />
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">Success Title</label>
-                      <InlineEdit field={pageConfig.fields[3]} value={c("contact.success.title", "")} onChange={(v) => updateField("contact.success.title", v)} />
+                      <InlineEdit field={fk("contact.success.title")} value={c("contact.success.title", "")} onChange={(v) => updateField("contact.success.title", v)} />
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">Success Message</label>
-                      <InlineEdit field={pageConfig.fields[4]} value={c("contact.success.desc", "")} onChange={(v) => updateField("contact.success.desc", v)} />
+                      <InlineEdit field={fk("contact.success.desc")} value={c("contact.success.desc", "")} onChange={(v) => updateField("contact.success.desc", v)} />
                     </div>
                   </div>
                 </div>
