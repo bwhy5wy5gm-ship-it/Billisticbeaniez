@@ -27,7 +27,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { getContent } = useContent();
-  const logo = getContent("site.logo", "");
+  const logo = getContent("site.favicon", "") || getContent("site.logo", "");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);

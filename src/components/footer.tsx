@@ -8,7 +8,8 @@ import { useContent } from "@/lib/use-content";
 export function Footer() {
   const { data: session } = useSession();
   const { getContent } = useContent();
-  const logo = getContent("site.favicon", "") || getContent("site.logo", "");
+  const favicon = getContent("site.favicon", "");
+  const logo = getContent("site.logo", "");
   const sponsorLogo = getContent("site.sponsor.logo", "");
   const sponsorUrl = getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/");
 
@@ -17,9 +18,9 @@ export function Footer() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col items-center text-center mb-8">
-          {logo ? (
+          {favicon ? (
             <img
-              src={logo}
+              src={favicon}
               alt="Billistic Beaniez Logo"
               className="h-24 w-24 rounded-2xl object-contain shadow-lg mb-6"
             />
@@ -127,20 +128,22 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-8 pt-6 flex flex-col items-center gap-3 text-center">
-          <p className="text-xs text-muted-foreground/60 uppercase tracking-wider">Proudly supported by</p>
-          {sponsorLogo ? (
+        {sponsorLogo && (
+          <div className="border-t mt-8 pt-6 flex flex-col items-center gap-3 text-center">
+            <p className="text-xs text-muted-foreground/60 uppercase tracking-wider">Proudly supported by</p>
             <a href={sponsorUrl} target="_blank" rel="noopener noreferrer">
               <img src={sponsorLogo} alt="Sponsor" className="h-10 object-contain hover:opacity-80 transition-opacity" />
             </a>
-          ) : (
-            <div className="h-10 w-24 rounded-md border border-dashed border-muted-foreground/20 flex items-center justify-center">
-              <span className="text-[10px] text-muted-foreground/40">Sponsor logo</span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        {logo && (
+          <div className="flex justify-center mt-8 pt-6 border-t">
+            <img src={logo} alt="Billistic Beaniez" className="h-16 w-16 rounded-xl object-contain shadow-md" />
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground mt-6 pt-4 border-t">
           <p>
             &copy; 2026{" "}
             <span className="font-medium">
