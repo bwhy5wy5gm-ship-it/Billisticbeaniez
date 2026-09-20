@@ -18,9 +18,9 @@ export function Footer() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col items-center text-center mb-8">
-          {favicon ? (
+          {logo ? (
             <img
-              src={favicon}
+              src={logo}
               alt="Billistic Beaniez Logo"
               className="h-24 w-24 rounded-2xl object-contain shadow-lg mb-6"
             />
@@ -137,13 +137,7 @@ export function Footer() {
           </div>
         )}
 
-        {logo && (
-          <div className="flex justify-center mt-8 pt-6 border-t">
-            <img src={logo} alt="Billistic Beaniez" className="h-16 w-16 rounded-xl object-contain shadow-md" />
-          </div>
-        )}
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground mt-6 pt-4 border-t">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground mt-8 pt-6 border-t">
           <p>
             &copy; 2026{" "}
             <span className="font-medium">
