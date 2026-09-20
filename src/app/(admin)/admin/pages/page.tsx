@@ -18,6 +18,7 @@ const PAGES: { id: string; label: string; route: string; fields: Field[] }[] = [
     route: "/",
     fields: [
       { key: "site.logo", label: "Site Logo", type: "image" },
+      { key: "site.footer.logo", label: "Top Footer Logo", type: "image" },
       { key: "site.favicon", label: "Favicon (PNG)", type: "image" },
       { key: "site.sponsor.logo", label: "Sponsor Logo", type: "image" },
       { key: "site.sponsor.url", label: "Sponsor Website URL" },
@@ -443,6 +444,13 @@ export default function PagesEditorPage() {
                       <InlineEdit field={fk("site.sponsor.url")} value={c("site.sponsor.url", "https://www.facebook.com/DNARacingWA/")} onChange={(v) => updateField("site.sponsor.url", v)} />
                     </div>
                   </div>
+                </div>
+
+                {/* Top Footer Logo */}
+                <div className="rounded-xl border-2 bg-card p-6">
+                  <SectionLabel>Top Footer Logo</SectionLabel>
+                  <p className="text-xs text-muted-foreground mb-3">Logo shown at the top of the footer above the team name.</p>
+                  <InlineEdit field={fk("site.footer.logo")} value={c("site.footer.logo", "")} onChange={(v) => updateField("site.footer.logo", v)} />
                 </div>
 
                 {/* Hero */}

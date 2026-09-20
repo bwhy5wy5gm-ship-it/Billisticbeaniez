@@ -9,6 +9,7 @@ export function Footer() {
   const { data: session } = useSession();
   const { getContent } = useContent();
   const favicon = getContent("site.favicon", "");
+  const footerLogo = getContent("site.footer.logo", "") || getContent("site.favicon", "");
   const logo = getContent("site.logo", "");
   const sponsorLogo = getContent("site.sponsor.logo", "");
   const sponsorUrl = getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/");
@@ -18,9 +19,9 @@ export function Footer() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col items-center text-center mb-8">
-          {logo ? (
+          {footerLogo ? (
             <img
-              src={logo}
+              src={footerLogo}
               alt="Billistic Beaniez Logo"
               className="h-24 w-24 rounded-2xl object-contain shadow-lg mb-6"
             />
