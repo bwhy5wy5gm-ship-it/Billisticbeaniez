@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Save, CheckCircle, Eye, Pencil, ImagePlus, X, Beaker, Atom, Plus } from "lucide-react";
+import { Save, CheckCircle, Eye, Pencil, ImagePlus, X, Beaker, Atom, Plus, RotateCcw, RotateCw } from "lucide-react";
 import { invalidateContent } from "@/lib/use-content";
 
 type Field = { key: string; label: string; multiline?: boolean; type?: "text" | "image" | "attachments" };
@@ -131,7 +131,7 @@ const PAGES: { id: string; label: string; route: string; fields: Field[] }[] = [
   },
 ];
 
-function InlineEdit({ field, value, onChange }: { field: Field; value: string; onChange: (v: string) => void }) {
+function InlineEdit({ field, value, onChange, rotate = "0", onRotate }: { field: Field; value: string; onChange: (v: string) => void; rotate?: string; onRotate?: (v: string) => void }) {
   const [editing, setEditing] = useState(false);
   const [temp, setTemp] = useState(value);
 
@@ -140,7 +140,7 @@ function InlineEdit({ field, value, onChange }: { field: Field; value: string; o
       <div className="group relative">
         {value ? (
           <>
-            <img src={value} alt="" className="w-full h-48 object-contain bg-muted rounded-lg border" />
+            <img src={value} alt="" className="w-full h-48 object-contain bg-muted rounded-lg border" style={{ transform: `rotate(${rotate}deg)` }} />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
               <label className="cursor-pointer px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-black hover:bg-white/90 flex items-center gap-1.5">
                 <ImagePlus className="h-3.5 w-3.5" /> Replace
@@ -154,6 +154,16 @@ function InlineEdit({ field, value, onChange }: { field: Field; value: string; o
                   if (data.url) onChange(data.url);
                 }} />
               </label>
+              {onRotate && (
+                <>
+                  <button onClick={() => onRotate(String((parseInt(rotate) - 90) % 360))} className="px-2 py-1.5 bg-white rounded-lg text-sm font-medium text-black hover:bg-white/90 flex items-center gap-1">
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={() => onRotate(String((parseInt(rotate) + 90) % 360))} className="px-2 py-1.5 bg-white rounded-lg text-sm font-medium text-black hover:bg-white/90 flex items-center gap-1">
+                    <RotateCw className="h-3.5 w-3.5" />
+                  </button>
+                </>
+              )}
               <button onClick={() => onChange("")} className="px-3 py-1.5 bg-red-500 rounded-lg text-sm font-medium text-white hover:bg-red-600 flex items-center gap-1.5">
                 <X className="h-3.5 w-3.5" /> Remove
               </button>
@@ -420,14 +430,14 @@ export default function PagesEditorPage() {
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Site Logo</SectionLabel>
                   <p className="text-xs text-muted-foreground mb-3">Shows in navbar and footer. Leave empty for default icon.</p>
-                  <InlineEdit field={fk("site.logo")} value={c("site.logo", "")} onChange={(v) => updateField("site.logo", v)} />
+                  <InlineEdit field={fk("site.logo")} value={c("site.logo", "")} onChange={(v) => updateField("site.logo", v)} rotate={c("site.logo.rotate", "0")} onRotate={(v) => updateField("site.logo.rotate", v)} />
                 </div>
 
                 {/* Favicon */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Favicon</SectionLabel>
                   <p className="text-xs text-muted-foreground mb-3">Upload a .png image that shows in the browser tab. Recommended size: 32x32 or 64x64 pixels.</p>
-                  <InlineEdit field={fk("site.favicon")} value={c("site.favicon", "")} onChange={(v) => updateField("site.favicon", v)} />
+                  <InlineEdit field={fk("site.favicon")} value={c("site.favicon", "")} onChange={(v) => updateField("site.favicon", v)} rotate={c("site.favicon.rotate", "0")} onRotate={(v) => updateField("site.favicon.rotate", v)} />
                 </div>
 
                 {/* Sponsor */}
@@ -437,7 +447,7 @@ export default function PagesEditorPage() {
                   <div className="space-y-3">
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">Sponsor Logo</label>
-                      <InlineEdit field={fk("site.sponsor.logo")} value={c("site.sponsor.logo", "")} onChange={(v) => updateField("site.sponsor.logo", v)} />
+                      <InlineEdit field={fk("site.sponsor.logo")} value={c("site.sponsor.logo", "")} onChange={(v) => updateField("site.sponsor.logo", v)} rotate={c("site.sponsor.logo.rotate", "0")} onRotate={(v) => updateField("site.sponsor.logo.rotate", v)} />
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">Sponsor Website URL</label>
@@ -450,7 +460,7 @@ export default function PagesEditorPage() {
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Top Footer Logo</SectionLabel>
                   <p className="text-xs text-muted-foreground mb-3">Logo shown at the top of the footer above the team name.</p>
-                  <InlineEdit field={fk("site.footer.logo")} value={c("site.footer.logo", "")} onChange={(v) => updateField("site.footer.logo", v)} />
+                  <InlineEdit field={fk("site.footer.logo")} value={c("site.footer.logo", "")} onChange={(v) => updateField("site.footer.logo", v)} rotate={c("site.footer.logo.rotate", "0")} onRotate={(v) => updateField("site.footer.logo.rotate", v)} />
                 </div>
 
                 {/* Hero */}
@@ -472,7 +482,7 @@ export default function PagesEditorPage() {
                         <InlineEdit field={fk("home.hero.description")} value={c("home.hero.description", "")} onChange={(v) => updateField("home.hero.description", v)} />
                       </div>
                       <div className="mb-4">
-                        <InlineEdit field={fk("home.hero.image")} value={c("home.hero.image", "")} onChange={(v) => updateField("home.hero.image", v)} />
+                        <InlineEdit field={fk("home.hero.image")} value={c("home.hero.image", "")} onChange={(v) => updateField("home.hero.image", v)} rotate={c("home.hero.image.rotate", "0")} onRotate={(v) => updateField("home.hero.image.rotate", v)} />
                       </div>
                       <div className="flex gap-3 justify-center">
                         <span className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium shadow-lg shadow-cyan-500/15">
@@ -551,7 +561,7 @@ export default function PagesEditorPage() {
                         <InlineEdit field={fk("robot.hero.desc")} value={c("robot.hero.desc", "")} onChange={(v) => updateField("robot.hero.desc", v)} />
                       </div>
                       <div className="mt-4">
-                        <InlineEdit field={fk("robot.hero.image")} value={c("robot.hero.image", "")} onChange={(v) => updateField("robot.hero.image", v)} />
+                        <InlineEdit field={fk("robot.hero.image")} value={c("robot.hero.image", "")} onChange={(v) => updateField("robot.hero.image", v)} rotate={c("robot.hero.image.rotate", "0")} onRotate={(v) => updateField("robot.hero.image.rotate", v)} />
                       </div>
                     </div>
                   </div>
@@ -560,7 +570,7 @@ export default function PagesEditorPage() {
                 {/* Robot Photo */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>Robot Photo</SectionLabel>
-                  <InlineEdit field={fk("robot.image")} value={c("robot.image", "")} onChange={(v) => updateField("robot.image", v)} />
+                  <InlineEdit field={fk("robot.image")} value={c("robot.image", "")} onChange={(v) => updateField("robot.image", v)} rotate={c("robot.image.rotate", "0")} onRotate={(v) => updateField("robot.image.rotate", v)} />
                 </div>
 
                 {/* Name Section */}
@@ -624,7 +634,7 @@ export default function PagesEditorPage() {
                         <InlineEdit field={fk("innovation.hero.desc")} value={c("innovation.hero.desc", "")} onChange={(v) => updateField("innovation.hero.desc", v)} />
                       </div>
                       <div className="mt-4">
-                        <InlineEdit field={fk("innovation.hero.image")} value={c("innovation.hero.image", "")} onChange={(v) => updateField("innovation.hero.image", v)} />
+                        <InlineEdit field={fk("innovation.hero.image")} value={c("innovation.hero.image", "")} onChange={(v) => updateField("innovation.hero.image", v)} rotate={c("innovation.hero.image.rotate", "0")} onRotate={(v) => updateField("innovation.hero.image.rotate", v)} />
                       </div>
                     </div>
                   </div>

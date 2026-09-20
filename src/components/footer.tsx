@@ -8,9 +8,10 @@ import { useContent } from "@/lib/use-content";
 export function Footer() {
   const { data: session } = useSession();
   const { getContent } = useContent();
-  const favicon = getContent("site.favicon", "");
-  const footerLogo = getContent("site.footer.logo", "") || getContent("site.favicon", "");
+  const footerLogo = getContent("site.footer.logo", "") || getContent("site.logo", "");
+  const footerLogoRotate = getContent("site.footer.logo.rotate", getContent("site.logo.rotate", "0"));
   const logo = getContent("site.logo", "");
+  const logoRotate = getContent("site.logo.rotate", "0");
   const sponsorLogo = getContent("site.sponsor.logo", "");
   const sponsorUrl = getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/");
 
@@ -24,6 +25,7 @@ export function Footer() {
               src={footerLogo}
               alt="Billistic Beaniez Logo"
               className="h-24 w-24 rounded-2xl object-contain shadow-lg mb-6"
+              style={{ transform: `rotate(${footerLogoRotate}deg)` }}
             />
           ) : (
             <div className="relative flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-lg mb-6">
@@ -138,7 +140,13 @@ export function Footer() {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground mt-8 pt-6 border-t">
+        {logo && (
+          <div className="flex justify-center mt-8 pt-6 border-t">
+            <img src={logo} alt="Billistic Beaniez" className="h-16 w-16 rounded-xl object-contain shadow-md" style={{ transform: `rotate(${logoRotate}deg)` }} />
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground mt-6 pt-4 border-t">
           <p>
             &copy; 2026{" "}
             <span className="font-medium">

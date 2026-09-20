@@ -78,6 +78,7 @@ export default function HomePage() {
                   src={getContent("site.logo", "")}
                   alt="Billistic Beaniez Logo"
                   className="h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 rounded-3xl object-contain mx-auto drop-shadow-2xl"
+                  style={{ transform: `rotate(${getContent("site.logo.rotate", "0")}deg)` }}
                 />
               ) : (
                 <div className="inline-flex items-center justify-center h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 rounded-3xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-2xl shadow-cyan-500/30">

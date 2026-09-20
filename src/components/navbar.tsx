@@ -27,7 +27,8 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { getContent } = useContent();
-  const logo = getContent("site.favicon", "") || getContent("site.logo", "");
+  const logo = getContent("site.footer.logo", "") || getContent("site.logo", "");
+  const logoRotate = getContent("site.footer.logo.rotate", getContent("site.logo.rotate", "0"));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -47,7 +48,7 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between mx-auto px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3 group shrink-0">
           {logo ? (
-            <img src={logo} alt="Logo" className="h-14 w-14 rounded-xl object-contain shadow-md group-hover:shadow-lg transition-shadow duration-200" />
+            <img src={logo} alt="Logo" className="h-14 w-14 rounded-xl object-contain shadow-md group-hover:shadow-lg transition-shadow duration-200" style={{ transform: `rotate(${logoRotate}deg)` }} />
           ) : (
             <div className="relative flex items-center justify-center h-14 w-14 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-md shadow-cyan-500/15 group-hover:shadow-lg group-hover:shadow-cyan-500/30 transition-all duration-300 group-hover:scale-[1.03]">
               <Beaker className="h-7 w-7" />
