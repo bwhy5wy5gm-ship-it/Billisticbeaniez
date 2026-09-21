@@ -1,26 +1,67 @@
 import type { MetadataRoute } from "next";
+import { createClient } from "@supabase/supabase-js";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://billisticbeaniez.com";
+  const now = new Date();
 
-  const publicPages = [
-    { path: "", priority: 1, changeFrequency: "weekly" as const },
-    { path: "/robot", priority: 0.9, changeFrequency: "weekly" as const },
-    { path: "/innovation-project", priority: 0.9, changeFrequency: "weekly" as const },
-    { path: "/core-values", priority: 0.7, changeFrequency: "monthly" as const },
-    { path: "/team-history", priority: 0.8, changeFrequency: "monthly" as const },
-    { path: "/team", priority: 0.8, changeFrequency: "monthly" as const },
-    { path: "/updates", priority: 0.7, changeFrequency: "weekly" as const },
-    { path: "/feedback", priority: 0.6, changeFrequency: "monthly" as const },
-    { path: "/photo-log", priority: 0.7, changeFrequency: "weekly" as const },
-    { path: "/contact", priority: 0.6, changeFrequency: "monthly" as const },
-    { path: "/dashboard", priority: 0.5, changeFrequency: "weekly" as const },
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: `${base}/`, lastModified: now },
+    { url: `${base}/robot`, lastModified: now },
+    { url: `${base}/innovation-project`, lastModified: now },
+    { url: `${base}/core-values`, lastModified: now },
+    { url: `${base}/team-history`, lastModified: now },
+    { url: `${base}/team`, lastModified: now },
+    { url: `${base}/updates`, lastModified: now },
+    { url: `${base}/feedback`, lastModified: now },
+    { url: `${base}/photo-log`, lastModified: now },
+    { url: `${base}/contact`, lastModified: now },
+    { url: `${base}/photo-log/robot`, lastModified: now },
+    { url: `${base}/photo-log/innovation`, lastModified: now },
+    { url: `${base}/photo-log/team`, lastModified: now },
+    { url: `${base}/photo-log/core-values`, lastModified: now },
+    { url: `${base}/photo-log/competition`, lastModified: now },
   ];
 
-  return publicPages.map(({ path, priority, changeFrequency }) => ({
-    url: `${base}${path}`,
-    lastModified: new Date(),
-    changeFrequency,
-    priority,
-  }));
+  const dynamicPages: MetadataRoute.Sitemap = [];
+
+  try {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (url && key) {
+      const sb = createClient(url, key);
+
+      const { data: photos } = await sb
+        .from("PhotoLog")
+        .select("id, createdAt")
+        .order("createdAt", { ascending: false });
+
+      if (photos) {
+        for (const photo of photos) {
+          dynamicPages.push({
+            url: `${base}/photo-log/${photo.id}`,
+            lastModified: new Date(photo.createdAt),
+          });
+        }
+      }
+
+      const { data: updates } = await sb
+        .from("Update")
+        .select("id, createdAt")
+        .order("createdAt", { ascending: false });
+
+      if (updates) {
+        for (const update of updates) {
+          dynamicPages.push({
+            url: `${base}/updates/${update.id}`,
+            lastModified: new Date(update.createdAt),
+          });
+        }
+      }
+    }
+  } catch {
+    // Database unavailable, return static pages only
+  }
+
+  return [...staticPages, ...dynamicPages];
 }
