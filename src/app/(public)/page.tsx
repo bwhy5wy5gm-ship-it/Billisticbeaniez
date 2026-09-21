@@ -176,37 +176,57 @@ export default function HomePage() {
                 {getContent("home.awards.desc", "Recognised for innovation and excellence in FIRST LEGO League.")}
               </p>
             </div>
-            <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              <Card className="border-2 border-amber-200/80 dark:border-amber-800/50 bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20">
-                <CardContent className="pt-8 pb-8 px-8 text-center">
-                  <div className="p-3.5 rounded-xl bg-amber-100 dark:bg-amber-950/30 w-fit mx-auto mb-5">
-                    <Trophy className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+            <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              <Card className="border-2 border-amber-200/80 dark:border-amber-800/50 overflow-hidden">
+                {getContent("home.awards.innovation.image", "") ? (
+                  <div className="aspect-[16/10] bg-muted overflow-hidden">
+                    <img
+                      src={getContent("home.awards.innovation.image", "")}
+                      alt={getContent("home.awards.innovation.title", "Innovation Award")}
+                      className="h-full w-full object-contain"
+                    />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">
+                ) : (
+                  <div className="aspect-[16/10] bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 flex items-center justify-center">
+                    <Trophy className="h-12 w-12 text-amber-400/40" />
+                  </div>
+                )}
+                <CardContent className="pt-6 pb-6 px-6 text-center">
+                  <Badge variant="outline" className="mb-3 text-xs bg-amber-100/50 dark:bg-amber-950/30 border-amber-300/50 dark:border-amber-700/50">
+                    2025
+                  </Badge>
+                  <h3 className="font-semibold text-lg mb-1">
                     {getContent("home.awards.innovation.title", "Innovation Award")}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     {getContent("home.awards.innovation.desc", "Forrestfield Regional Competition")}
                   </p>
-                  <Badge variant="outline" className="mt-3 text-xs bg-amber-100/50 dark:bg-amber-950/30 border-amber-300/50 dark:border-amber-700/50">
-                    2025
-                  </Badge>
                 </CardContent>
               </Card>
-              <Card className="border-2 border-cyan-200/80 dark:border-cyan-800/50 bg-gradient-to-br from-cyan-50/50 to-blue-50/50 dark:from-cyan-950/20 dark:to-blue-950/20">
-                <CardContent className="pt-8 pb-8 px-8 text-center">
-                  <div className="p-3.5 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 w-fit mx-auto mb-5">
-                    <Trophy className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+              <Card className="border-2 border-cyan-200/80 dark:border-cyan-800/50 overflow-hidden">
+                {getContent("home.awards.nationals.image", "") ? (
+                  <div className="aspect-[16/10] bg-muted overflow-hidden">
+                    <img
+                      src={getContent("home.awards.nationals.image", "")}
+                      alt={getContent("home.awards.nationals.title", "2nd Place Innovation Award")}
+                      className="h-full w-full object-contain"
+                    />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">
+                ) : (
+                  <div className="aspect-[16/10] bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/20 dark:to-blue-950/20 flex items-center justify-center">
+                    <Trophy className="h-12 w-12 text-cyan-400/40" />
+                  </div>
+                )}
+                <CardContent className="pt-6 pb-6 px-6 text-center">
+                  <Badge variant="outline" className="mb-3 text-xs bg-cyan-100/50 dark:bg-cyan-950/30 border-cyan-300/50 dark:border-cyan-700/50">
+                    2025
+                  </Badge>
+                  <h3 className="font-semibold text-lg mb-1">
                     {getContent("home.awards.nationals.title", "2nd Place Innovation Award")}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     {getContent("home.awards.nationals.desc", "Nationals West Competition")}
                   </p>
-                  <Badge variant="outline" className="mt-3 text-xs bg-cyan-100/50 dark:bg-cyan-950/30 border-cyan-300/50 dark:border-cyan-700/50">
-                    2025
-                  </Badge>
                 </CardContent>
               </Card>
             </div>
