@@ -89,13 +89,13 @@ export default function TeamPageClient() {
             className="mb-4 gap-1.5 px-4 py-1.5 border border-emerald-200/60 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300"
           >
             <Users className="h-3.5 w-3.5" />
-            Our Team
+            Team #3818 | Perth, WA
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {getContent("team.hero.title", "Meet the Billistic Beaniez Team")}
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
-            {getContent("team.hero.desc", "Six passionate students working together to solve real-world problems through FIRST LEGO League robotics and innovation.")}
+            {getContent("team.hero.desc", "Six passionate students working together to solve real world problems through FIRST LEGO League robotics and innovation.")}
           </p>
         </div>
 

@@ -92,11 +92,11 @@ export default function HomePage() {
             </h1>
 
             <p className="text-lg sm:text-lg md:text-2xl font-semibold text-muted-foreground mb-4 text-balance">
-              FIRST LEGO League Team
+              {getContent("home.hero.subtitle", "Team #3818 | Perth, WA, Australia")}
             </p>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed text-balance">
-              {getContent("home.hero.description", "We are Billistic Beaniez, a FIRST LEGO League team that combines robotics, ocean science, and teamwork to tackle real world challenges.")}
+              {getContent("home.hero.description", "We are Billistic Beaniez (Team #3818), a FIRST LEGO League team from Perth, WA that combines robotics, ocean science, and teamwork to tackle real world challenges.")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

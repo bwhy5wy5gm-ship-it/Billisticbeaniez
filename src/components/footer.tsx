@@ -38,6 +38,9 @@ export function Footer() {
           <p className="text-sm text-muted-foreground/80">
             Robotics • Engineering • Innovation
           </p>
+          <p className="text-xs text-muted-foreground/60 mt-1">
+            Team #3818 | Perth, WA, Australia
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

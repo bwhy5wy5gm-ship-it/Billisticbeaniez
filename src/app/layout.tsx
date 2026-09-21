@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | Billistic Beaniez",
     },
     description:
-      "Meet Billistic Beaniez, a student FIRST LEGO League robotics team. Explore our robot, engineering, Innovation Project, research, achievements, and FLL journey.",
+      "Meet Billistic Beaniez (Team #3818), a student FIRST LEGO League robotics team from Perth, Western Australia. Explore our robot, engineering, Innovation Project, research, achievements, and FLL journey.",
     keywords: [
       "Billistic Beaniez",
       "FLL",
@@ -50,6 +50,10 @@ export async function generateMetadata(): Promise<Metadata> {
       "student robotics",
       "FLL competition",
       "robot design",
+      "Perth robotics",
+      "Western Australia",
+      "team 3818",
+      "FLL 3818",
     ],
     authors: [{ name: "Billistic Beaniez" }],
     creator: "Billistic Beaniez",
@@ -66,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: "/og-image.svg",
           width: 1200,
           height: 630,
-          alt: "Billistic Beaniez — FIRST LEGO League Robotics Team",
+          alt: "Billistic Beaniez, FIRST LEGO League Robotics Team",
         },
       ],
     },

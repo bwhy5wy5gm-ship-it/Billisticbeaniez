@@ -1,8 +1,16 @@
 import { Resend } from "resend";
 
+const TEAM_NAME = "Billistic Beaniez FIRST Lego League Team";
+const TEAM_EMAIL = "Billistic Beaniez <onboarding@resend.dev>";
+const ADMIN_EMAIL = "aarik.berge@gmail.com";
+
 let _resend: Resend | null = null;
 function getResend() {
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  if (!_resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error("RESEND_API_KEY is not set");
+    _resend = new Resend(apiKey);
+  }
   return _resend;
 }
 
@@ -15,9 +23,11 @@ export async function sendContactEmail({
   email: string;
   message: string;
 }) {
-  await getResend().emails.send({
-    from: "FLL Innovation Project <onboarding@resend.dev>",
-    to: process.env.ADMIN_EMAIL!,
+  const resend = getResend();
+
+  await resend.emails.send({
+    from: TEAM_EMAIL,
+    to: ADMIN_EMAIL,
     subject: `New Contact from ${name}`,
     html: `
       <h2>New Contact Form Submission</h2>
@@ -28,16 +38,16 @@ export async function sendContactEmail({
     `,
   });
 
-  await getResend().emails.send({
-    from: "FLL Innovation Project <onboarding@resend.dev>",
+  await resend.emails.send({
+    from: TEAM_EMAIL,
     to: email,
-    subject: "Thank you for contacting us!",
+    subject: `Thank you for contacting ${TEAM_NAME}!`,
     html: `
       <h2>Thank you, ${name}!</h2>
       <p>We received your message and will get back to you soon.</p>
       <p>Your message: "${message}"</p>
       <br/>
-      <p>Best regards,<br/>FLL Innovation Project Team</p>
+      <p>Best regards,<br/>${TEAM_NAME}</p>
     `,
   });
 }
@@ -53,9 +63,11 @@ export async function sendAdminSignupRequest({
   reason: string;
   requestId: string;
 }) {
-  await getResend().emails.send({
-    from: "FLL Innovation Project <onboarding@resend.dev>",
-    to: process.env.ADMIN_EMAIL!,
+  const resend = getResend();
+
+  await resend.emails.send({
+    from: TEAM_EMAIL,
+    to: ADMIN_EMAIL,
     subject: `New Admin Signup Request from ${name}`,
     html: `
       <h2>New Admin Signup Request</h2>
@@ -74,16 +86,18 @@ export async function sendAdminApprovedEmail({
   name: string;
   email: string;
 }) {
-  await getResend().emails.send({
-    from: "FLL Innovation Project <onboarding@resend.dev>",
+  const resend = getResend();
+
+  await resend.emails.send({
+    from: TEAM_EMAIL,
     to: email,
-    subject: "Your Admin Account Has Been Approved!",
+    subject: `Your Admin Account Has Been Approved!`,
     html: `
       <h2>Welcome, ${name}!</h2>
       <p>Your admin account has been approved. You can now log in to the admin dashboard.</p>
       <p><a href="${process.env.NEXTAUTH_URL}/login">Log In Now</a></p>
       <br/>
-      <p>Best regards,<br/>FLL Innovation Project Team</p>
+      <p>Best regards,<br/>${TEAM_NAME}</p>
     `,
   });
 }
@@ -95,16 +109,18 @@ export async function sendAdminDeniedEmail({
   name: string;
   email: string;
 }) {
-  await getResend().emails.send({
-    from: "FLL Innovation Project <onboarding@resend.dev>",
+  const resend = getResend();
+
+  await resend.emails.send({
+    from: TEAM_EMAIL,
     to: email,
-    subject: "Admin Signup Request Update",
+    subject: `Admin Signup Request Update`,
     html: `
       <h2>Hello, ${name}</h2>
       <p>Unfortunately, your admin signup request has been denied at this time.</p>
       <p>If you believe this is an error, please contact us.</p>
       <br/>
-      <p>Best regards,<br/>FLL Innovation Project Team</p>
+      <p>Best regards,<br/>${TEAM_NAME}</p>
     `,
   });
 }
