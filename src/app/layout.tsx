@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | Billistic Beaniez",
     },
     description:
-      "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Award-winning Innovation Project, robot design, and teamwork. Join us!",
+      "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. 2025 Innovation Award winners. Explore our robot, project, and journey.",
     keywords: [
       "Billistic Beaniez",
       "FLL",
@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Billistic Beaniez",
       title: "Billistic Beaniez | FIRST LEGO League Robotics Team",
       description:
-        "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Award-winning Innovation Project, robot design, and teamwork.",
+        "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. 2025 Innovation Award winners. Explore our robot, project, and journey.",
       images: [
         {
           url: "/og-image.svg",
@@ -78,7 +78,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: "Billistic Beaniez | FIRST LEGO League Robotics Team",
       description:
-        "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Award-winning Innovation Project, robot design, and teamwork.",
+        "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. 2025 Innovation Award winners. Explore our robot, project, and journey.",
       images: ["/og-image.svg"],
     },
     robots: {

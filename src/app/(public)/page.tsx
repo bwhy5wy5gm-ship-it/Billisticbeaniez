@@ -18,6 +18,8 @@ import {
   Trophy,
   Users,
   Target,
+  Lightbulb,
+  Handshake,
 } from "lucide-react";
 import { useContent } from "@/lib/use-content";
 
@@ -99,7 +101,7 @@ export default function HomePage() {
             </p>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed text-balance">
-              {getContent("home.hero.description", "We are Billistic Beaniez (Team #3818), a FIRST LEGO League team from Perth, WA that combines robotics, ocean science, and teamwork to tackle real world challenges.")}
+              {getContent("home.hero.description", "We are a student robotics team competing in FIRST LEGO League, combining engineering, programming, research and innovation to tackle real world challenges.")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -137,7 +139,21 @@ export default function HomePage() {
                 {getContent("home.about.title", "About Billistic Beaniez")}
               </h2>
               <p className="text-muted-foreground text-base max-w-3xl mx-auto leading-relaxed">
-                {getContent("home.about.desc", "Billistic Beaniez is FIRST LEGO League Team #3818, based in Perth, Western Australia. We are a group of passionate students who love robotics, engineering, and solving real world problems through STEM. Our team combines creativity, technical skills, and teamwork to compete in FLL robotics competitions and develop innovative solutions to challenges that matter. Through FIRST LEGO League, we learn to design, build, and program autonomous robots while also researching real world issues and presenting our findings to judges and the community.")}
+                {getContent("home.about.desc", "Billistic Beaniez is FIRST LEGO League Team #3818, based in Perth, Western Australia. We are a group of passionate students who love robotics, engineering, and solving real world problems through STEM. Our team combines creativity, technical skills, and teamwork to compete in FLL robotics competitions and develop innovative solutions to challenges that matter. Through FIRST LEGO League, we learn to design, build, and program autonomous robots while also researching real world issues and presenting our findings to judges and the community. Every season, we work together to improve our robot, refine our Innovation Project, and push ourselves to grow as engineers, researchers, and teammates.")}
+              </p>
+            </div>
+
+            {/* Mission */}
+            <div className="bg-muted/30 rounded-2xl p-8 md:p-12 text-center">
+              <Badge variant="outline" className="mb-4 gap-1.5 text-xs">
+                <Lightbulb className="h-3 w-3" />
+                Our Mission
+              </Badge>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                {getContent("home.about.mission.title", "Our Mission")}
+              </h3>
+              <p className="text-muted-foreground text-base max-w-2xl mx-auto leading-relaxed">
+                {getContent("home.about.mission.desc", "Our mission is to learn, build, and innovate through teamwork. We use robotics and science to solve real problems and grow our skills. Together, we support each other and strive to make a positive impact.")}
               </p>
             </div>
           </div>
@@ -166,8 +182,12 @@ export default function HomePage() {
                   <div className="p-3.5 rounded-xl bg-amber-100 dark:bg-amber-950/30 w-fit mx-auto mb-5">
                     <Trophy className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Innovation Award</h3>
-                  <p className="text-sm text-muted-foreground">Forrestfield Regional Competition</p>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {getContent("home.awards.innovation.title", "Innovation Award")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {getContent("home.awards.innovation.desc", "Forrestfield Regional Competition")}
+                  </p>
                   <Badge variant="outline" className="mt-3 text-xs bg-amber-100/50 dark:bg-amber-950/30 border-amber-300/50 dark:border-amber-700/50">
                     2025
                   </Badge>
@@ -178,8 +198,12 @@ export default function HomePage() {
                   <div className="p-3.5 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 w-fit mx-auto mb-5">
                     <Trophy className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">2nd Place Innovation Award</h3>
-                  <p className="text-sm text-muted-foreground">Nationals West Competition</p>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {getContent("home.awards.nationals.title", "2nd Place Innovation Award")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {getContent("home.awards.nationals.desc", "Nationals West Competition")}
+                  </p>
                   <Badge variant="outline" className="mt-3 text-xs bg-cyan-100/50 dark:bg-cyan-950/30 border-cyan-300/50 dark:border-cyan-700/50">
                     2025
                   </Badge>
@@ -206,7 +230,7 @@ export default function HomePage() {
                   href: "/robot",
                   icon: Bot,
                   title: getContent("home.whataido.robot.title", "Robot Design & Programming"),
-                  desc: getContent("home.whataido.robot.desc", "We design, build, and program a LEGO robot to complete autonomous missions on the FLL competition field."),
+                  desc: getContent("home.whataido.robot.desc", "We design, build, and program a LEGO robot to complete autonomous missions on the FLL competition field. Our robot uses sensors, motors, and custom code to navigate challenges with precision and reliability."),
                   color: "text-cyan-500",
                   bg: "bg-cyan-50 dark:bg-cyan-950/20",
                   ring: "group-hover:ring-cyan-200 dark:group-hover:ring-cyan-800",
@@ -215,7 +239,7 @@ export default function HomePage() {
                   href: "/innovation-project",
                   icon: Microscope,
                   title: getContent("home.whataido.innovation.title", "Innovation Project"),
-                  desc: getContent("home.whataido.innovation.desc", "We research real world problems and develop creative solutions as part of the FLL Innovation Project."),
+                  desc: getContent("home.whataido.innovation.desc", "We research real world problems and develop creative solutions as part of the FLL Innovation Project. Our team investigates real challenges, experiments with ideas, and presents our findings to experts and the community."),
                   color: "text-purple-500",
                   bg: "bg-purple-50 dark:bg-purple-950/20",
                   ring: "group-hover:ring-purple-200 dark:group-hover:ring-purple-800",
@@ -224,7 +248,7 @@ export default function HomePage() {
                   href: "/core-values",
                   icon: Heart,
                   title: getContent("home.whataido.values.title", "Core Values"),
-                  desc: getContent("home.whataido.values.desc", "We practice discovery, inclusion, teamwork, and fun, the FLL Core Values that guide our team."),
+                  desc: getContent("home.whataido.values.desc", "We practice discovery, inclusion, teamwork, and fun, the FLL Core Values that guide our team. These values shape how we work together, solve problems, and support each other through every challenge."),
                   color: "text-rose-500",
                   bg: "bg-rose-50 dark:bg-rose-950/20",
                   ring: "group-hover:ring-rose-200 dark:group-hover:ring-rose-800",
@@ -266,10 +290,10 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {[
-                { href: "/updates", icon: Calendar, title: "Project Updates", desc: "Follow our progress.", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/20" },
-                { href: "/feedback", icon: MessageSquareText, title: "Innovation Feedback", desc: "What people are saying.", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/20" },
-                { href: "/photo-log", icon: Camera, title: "Photo Logs", desc: "See our journey visually.", color: "text-indigo-500", bg: "bg-indigo-50 dark:bg-indigo-950/20" },
-                { href: "/dashboard", icon: Target, title: "Live Dashboard", desc: "Watch real time data.", color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/20" },
+                { href: "/updates", icon: Calendar, title: getContent("home.explore.updates.title", "Project Updates"), desc: getContent("home.explore.updates.desc", "Follow our progress with regular updates on build sessions, experiments, and competition preparation."), color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/20" },
+                { href: "/feedback", icon: MessageSquareText, title: getContent("home.explore.feedback.title", "Innovation Feedback"), desc: getContent("home.explore.feedback.desc", "Read feedback from judges, mentors, and the community on our Innovation Project."), color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/20" },
+                { href: "/photo-log", icon: Camera, title: getContent("home.explore.photos.title", "Photo Logs"), desc: getContent("home.explore.photos.desc", "See our journey visually through build sessions, team meetings, and competitions."), color: "text-indigo-500", bg: "bg-indigo-50 dark:bg-indigo-950/20" },
+                { href: "/dashboard", icon: Target, title: getContent("home.explore.dashboard.title", "Live Dashboard"), desc: getContent("home.explore.dashboard.desc", "Watch real time sensor data from our experiments and robot testing."), color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/20" },
               ].map((item) => (
                 <Link key={item.href} href={item.href}>
                   <Card className="h-full transition-all cursor-pointer group hover:shadow-md hover:border-border/80 card-lift">
@@ -436,10 +460,10 @@ export default function HomePage() {
               <span className="text-sm font-medium text-white/90">Billistic Beaniez</span>
             </div>
             <h2 className="text-4xl sm:text-5xl font-bold text-white mb-5 text-balance leading-tight">
-              {getContent("home.cta.title", "Join Us on Our Journey")}
+              {getContent("home.cta.title", "Follow Our FLL Journey")}
             </h2>
             <p className="text-cyan-100 max-w-lg mx-auto mb-10 text-base sm:text-lg leading-relaxed">
-              {getContent("home.cta.desc", "Follow Billistic Beaniez as we build, learn, and compete in FIRST LEGO League.")}
+              {getContent("home.cta.desc", "Follow Billistic Beaniez as we build, learn, and compete in FIRST LEGO League robotics competitions.")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact">
