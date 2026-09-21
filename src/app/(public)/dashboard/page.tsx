@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import DashboardPageClient from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Live Dashboard",
-  description: "Real-time sensor data and experiment monitoring for our FLL ocean CO₂ removal project.",
+  title: "Live Dashboard | Billistic Beaniez FIRST LEGO League",
+  description: "Real-time sensor data and experiment monitoring from the Billistic Beaniez FLL Innovation Project.",
 };
 
 export default function DashboardPage() {

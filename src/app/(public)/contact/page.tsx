@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import ContactPageClient from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with Billistic Beaniez FLL team. We welcome questions about our ocean CO₂ research and robotics project.",
+  title: "Contact Us | Billistic Beaniez FIRST LEGO League",
+  description: "Get in touch with the Billistic Beaniez FIRST LEGO League team. We welcome questions about our robotics, engineering, and Innovation Project.",
 };
 
 export default function ContactPage() {

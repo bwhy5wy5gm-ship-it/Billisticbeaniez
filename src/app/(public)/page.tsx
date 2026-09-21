@@ -76,7 +76,7 @@ export default function HomePage() {
               {getContent("site.logo", "") ? (
                 <img
                   src={getContent("site.logo", "")}
-                  alt="Billistic Beaniez Logo"
+                  alt="Billistic Beaniez FIRST LEGO League robotics team logo"
                   className="h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 rounded-3xl object-contain mx-auto drop-shadow-2xl"
                   style={{ transform: `rotate(${getContent("site.logo.rotate", "0")}deg)` }}
                 />
