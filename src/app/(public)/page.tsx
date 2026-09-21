@@ -139,7 +139,7 @@ export default function HomePage() {
                 {getContent("home.about.title", "About Billistic Beaniez")}
               </h2>
               <p className="text-muted-foreground text-base max-w-3xl mx-auto leading-relaxed">
-                {getContent("home.about.desc", "Billistic Beaniez is FIRST LEGO League Team #3818, based in Perth, Western Australia. We are a group of passionate students who love robotics, engineering, and solving real world problems through STEM. Our team combines creativity, technical skills, and teamwork to compete in FLL robotics competitions and develop innovative solutions to challenges that matter. Through FIRST LEGO League, we learn to design, build, and program autonomous robots while also researching real world issues and presenting our findings to judges and the community. Every season, we work together to improve our robot, refine our Innovation Project, and push ourselves to grow as engineers, researchers, and teammates.")}
+                {getContent("home.about.desc", "Billistic Beaniez is FIRST LEGO League Team #3818, based in Perth, Western Australia. We are a group of passionate students who love robotics, engineering, and solving real world problems through STEM. Our team combines creativity, technical skills, and teamwork to compete in FLL robotics competitions and develop innovative solutions to challenges that matter. Through FIRST LEGO League, we learn to design, build, and program autonomous robots while researching real world issues and presenting our ideas to judges and the community. Every season, we work together to improve our robot, refine our Innovation Project, and grow as engineers, researchers, and teammates.")}
               </p>
             </div>
 
