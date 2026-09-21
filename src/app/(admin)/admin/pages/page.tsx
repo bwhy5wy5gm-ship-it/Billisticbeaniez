@@ -510,6 +510,69 @@ export default function PagesEditorPage() {
                   </div>
                 </div>
 
+                {/* About Us */}
+                <div className="rounded-xl border-2 bg-card p-6">
+                  <SectionLabel>About Us Section</SectionLabel>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">About Us Title</label>
+                      <InlineEdit field={fk("home.about.title")} value={c("home.about.title", "")} onChange={(v) => updateField("home.about.title", v)} />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">About Us Description</label>
+                      <InlineEdit field={fk("home.about.desc")} value={c("home.about.desc", "")} onChange={(v) => updateField("home.about.desc", v)} />
+                    </div>
+                    <div className="border-t pt-3 mt-3">
+                      <label className="text-xs text-muted-foreground mb-1 block">Mission Title</label>
+                      <InlineEdit field={fk("home.about.mission.title")} value={c("home.about.mission.title", "")} onChange={(v) => updateField("home.about.mission.title", v)} />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Mission Description</label>
+                      <InlineEdit field={fk("home.about.mission.desc")} value={c("home.about.mission.desc", "")} onChange={(v) => updateField("home.about.mission.desc", v)} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Awards */}
+                <div className="rounded-xl border-2 bg-card p-6">
+                  <SectionLabel>2025 Awards Section</SectionLabel>
+                  <p className="text-xs text-muted-foreground mb-3">Upload photos of your awards. Images show on the homepage.</p>
+                  <div className="space-y-3 mb-4">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Awards Title</label>
+                      <InlineEdit field={fk("home.awards.title")} value={c("home.awards.title", "")} onChange={(v) => updateField("home.awards.title", v)} />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Awards Description</label>
+                      <InlineEdit field={fk("home.awards.desc")} value={c("home.awards.desc", "")} onChange={(v) => updateField("home.awards.desc", v)} />
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="rounded-lg border bg-muted/30 p-4">
+                      <label className="text-xs font-medium mb-2 block">Innovation Award</label>
+                      <div className="space-y-2">
+                        <InlineEdit field={fk("home.awards.innovation.title")} value={c("home.awards.innovation.title", "")} onChange={(v) => updateField("home.awards.innovation.title", v)} />
+                        <InlineEdit field={fk("home.awards.innovation.desc")} value={c("home.awards.innovation.desc", "")} onChange={(v) => updateField("home.awards.innovation.desc", v)} />
+                        <div>
+                          <label className="text-xs text-muted-foreground mb-1 block">Award Photo</label>
+                          <InlineEdit field={fk("home.awards.innovation.image")} value={c("home.awards.innovation.image", "")} onChange={(v) => updateField("home.awards.innovation.image", v)} rotate={c("home.awards.innovation.image.rotate", "0")} onRotate={(v) => updateField("home.awards.innovation.image.rotate", v)} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-lg border bg-muted/30 p-4">
+                      <label className="text-xs font-medium mb-2 block">Nationals Award</label>
+                      <div className="space-y-2">
+                        <InlineEdit field={fk("home.awards.nationals.title")} value={c("home.awards.nationals.title", "")} onChange={(v) => updateField("home.awards.nationals.title", v)} />
+                        <InlineEdit field={fk("home.awards.nationals.desc")} value={c("home.awards.nationals.desc", "")} onChange={(v) => updateField("home.awards.nationals.desc", v)} />
+                        <div>
+                          <label className="text-xs text-muted-foreground mb-1 block">Award Photo</label>
+                          <InlineEdit field={fk("home.awards.nationals.image")} value={c("home.awards.nationals.image", "")} onChange={(v) => updateField("home.awards.nationals.image", v)} rotate={c("home.awards.nationals.image.rotate", "0")} onRotate={(v) => updateField("home.awards.nationals.image.rotate", v)} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* What We Do */}
                 <div className="rounded-xl border-2 bg-card p-6">
                   <SectionLabel>What We Do Section</SectionLabel>
