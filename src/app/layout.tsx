@@ -93,7 +93,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: favicon || "/favicon.ico",
+      icon: favicon || "/favicon.png",
     },
   };
 }
@@ -136,8 +136,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
-        <link rel="icon" href="/favicon.ico" sizes="16x16" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="canonical" href="https://billisticbeaniez.com/" />
         <meta name="theme-color" content="#0891b2" />

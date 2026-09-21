@@ -16,7 +16,7 @@ export function FaviconUpdater() {
       document.head.appendChild(link);
     }
     link.href = favicon;
-    link.type = "image/png";
+    link.type = favicon.endsWith(".svg") ? "image/svg+xml" : "image/png";
   }, [favicon]);
 
   return null;
