@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | Billistic Beaniez",
     },
     description:
-      "Meet Billistic Beaniez (Team #3818), a student FIRST LEGO League robotics team from Perth, Western Australia. Explore our robot, engineering, Innovation Project, research, achievements, and FLL journey.",
+      "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Award-winning Innovation Project, robot design, and teamwork. Join us!",
     keywords: [
       "Billistic Beaniez",
       "FLL",
@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Billistic Beaniez",
       title: "Billistic Beaniez | FIRST LEGO League Robotics Team",
       description:
-        "Meet Billistic Beaniez, a student FIRST LEGO League robotics team. Explore our robot, engineering, Innovation Project, research, achievements, and FLL journey.",
+        "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Award-winning Innovation Project, robot design, and teamwork.",
       images: [
         {
           url: "/og-image.svg",
@@ -78,7 +78,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: "Billistic Beaniez | FIRST LEGO League Robotics Team",
       description:
-        "Meet Billistic Beaniez, a student FIRST LEGO League robotics team. Explore our robot, engineering, Innovation Project, research, achievements, and FLL journey.",
+        "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Award-winning Innovation Project, robot design, and teamwork.",
       images: ["/og-image.svg"],
     },
     robots: {
@@ -104,11 +104,15 @@ const organizationJsonLd = {
   name: "Billistic Beaniez",
   url: "https://billisticbeaniez.com",
   description:
-    "Billistic Beaniez is a student FIRST LEGO League (FLL) robotics team. The team designs, builds, and programs LEGO robots, develops Innovation Projects, and competes in FLL robotics competitions, combining engineering, programming, research, and STEM innovation.",
+    "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, Western Australia. 2025 Innovation Award winners at Forrestfield Regional and 2nd Place Innovation Award at Nationals West.",
   logo: "https://billisticbeaniez.com/og-image.svg",
   sameAs: [],
   foundingDate: "2025",
-  keywords: "FIRST LEGO League, FLL, robotics team, STEM, engineering, LEGO robot, innovation project",
+  location: {
+    "@type": "Place",
+    name: "Perth, Western Australia",
+  },
+  keywords: "FIRST LEGO League, FLL, robotics team, STEM, engineering, LEGO robot, innovation project, Perth, Western Australia, team 3818",
 };
 
 const websiteJsonLd = {
@@ -117,7 +121,7 @@ const websiteJsonLd = {
   name: "Billistic Beaniez",
   url: "https://billisticbeaniez.com",
   description:
-    "Billistic Beaniez is a student FIRST LEGO League robotics team. Explore our robot, Innovation Project, research, and FLL journey.",
+    "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Explore our robot, Innovation Project, and FLL journey.",
   publisher: {
     "@type": "Organization",
     name: "Billistic Beaniez",
@@ -132,6 +136,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
+        <link rel="canonical" href="https://billisticbeaniez.com/" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

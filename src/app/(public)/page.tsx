@@ -15,6 +15,9 @@ import {
   ArrowRight,
   ArrowUpRight,
   Beaker,
+  Trophy,
+  Users,
+  Target,
 } from "lucide-react";
 import { useContent } from "@/lib/use-content";
 
@@ -121,8 +124,74 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* What We Do */}
+      {/* About Us */}
+      <section className="py-20 sm:py-24 border-b">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-14">
+              <Badge variant="outline" className="mb-4 gap-1.5 text-xs">
+                <Users className="h-3 w-3" />
+                About Us
+              </Badge>
+              <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+                {getContent("home.about.title", "About Billistic Beaniez")}
+              </h2>
+              <p className="text-muted-foreground text-base max-w-3xl mx-auto leading-relaxed">
+                {getContent("home.about.desc", "Billistic Beaniez is FIRST LEGO League Team #3818, based in Perth, Western Australia. We are a group of passionate students who love robotics, engineering, and solving real world problems through STEM. Our team combines creativity, technical skills, and teamwork to compete in FLL robotics competitions and develop innovative solutions to challenges that matter. Through FIRST LEGO League, we learn to design, build, and program autonomous robots while also researching real world issues and presenting our findings to judges and the community.")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Awards */}
       <section className="py-20 sm:py-24 bg-muted/20 border-b">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-14">
+              <Badge variant="outline" className="mb-4 gap-1.5 text-xs">
+                <Trophy className="h-3 w-3" />
+                Achievements
+              </Badge>
+              <h2 className="text-4xl sm:text-5xl font-bold mb-3">
+                {getContent("home.awards.title", "2025 Award Winners")}
+              </h2>
+              <p className="text-muted-foreground text-base max-w-lg mx-auto">
+                {getContent("home.awards.desc", "Recognised for innovation and excellence in FIRST LEGO League.")}
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              <Card className="border-2 border-amber-200/80 dark:border-amber-800/50 bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20">
+                <CardContent className="pt-8 pb-8 px-8 text-center">
+                  <div className="p-3.5 rounded-xl bg-amber-100 dark:bg-amber-950/30 w-fit mx-auto mb-5">
+                    <Trophy className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Innovation Award</h3>
+                  <p className="text-sm text-muted-foreground">Forrestfield Regional Competition</p>
+                  <Badge variant="outline" className="mt-3 text-xs bg-amber-100/50 dark:bg-amber-950/30 border-amber-300/50 dark:border-amber-700/50">
+                    2025
+                  </Badge>
+                </CardContent>
+              </Card>
+              <Card className="border-2 border-cyan-200/80 dark:border-cyan-800/50 bg-gradient-to-br from-cyan-50/50 to-blue-50/50 dark:from-cyan-950/20 dark:to-blue-950/20">
+                <CardContent className="pt-8 pb-8 px-8 text-center">
+                  <div className="p-3.5 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 w-fit mx-auto mb-5">
+                    <Trophy className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">2nd Place Innovation Award</h3>
+                  <p className="text-sm text-muted-foreground">Nationals West Competition</p>
+                  <Badge variant="outline" className="mt-3 text-xs bg-cyan-100/50 dark:bg-cyan-950/30 border-cyan-300/50 dark:border-cyan-700/50">
+                    2025
+                  </Badge>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Do */}
+      <section className="py-20 sm:py-24 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
@@ -136,8 +205,8 @@ export default function HomePage() {
                 {
                   href: "/robot",
                   icon: Bot,
-                  title: getContent("home.whataido.robot.title", "Robot"),
-                  desc: getContent("home.whataido.robot.desc", "We design, build, and program a LEGO robot to complete autonomous missions on the competition field."),
+                  title: getContent("home.whataido.robot.title", "Robot Design & Programming"),
+                  desc: getContent("home.whataido.robot.desc", "We design, build, and program a LEGO robot to complete autonomous missions on the FLL competition field."),
                   color: "text-cyan-500",
                   bg: "bg-cyan-50 dark:bg-cyan-950/20",
                   ring: "group-hover:ring-cyan-200 dark:group-hover:ring-cyan-800",
@@ -145,8 +214,8 @@ export default function HomePage() {
                 {
                   href: "/innovation-project",
                   icon: Microscope,
-                  title: getContent("home.whataido.innovation.title", "Innovation"),
-                  desc: getContent("home.whataido.innovation.desc", "We research real world problems and develop creative solutions. Our current project uses seaweed to remove CO2 from ocean water."),
+                  title: getContent("home.whataido.innovation.title", "Innovation Project"),
+                  desc: getContent("home.whataido.innovation.desc", "We research real world problems and develop creative solutions as part of the FLL Innovation Project."),
                   color: "text-purple-500",
                   bg: "bg-purple-50 dark:bg-purple-950/20",
                   ring: "group-hover:ring-purple-200 dark:group-hover:ring-purple-800",
@@ -154,8 +223,8 @@ export default function HomePage() {
                 {
                   href: "/core-values",
                   icon: Heart,
-                  title: getContent("home.whataido.values.title", "Team Values"),
-                  desc: getContent("home.whataido.values.desc", "We practice discovery, inclusion, teamwork, and fun while learning to work together and make a positive impact."),
+                  title: getContent("home.whataido.values.title", "Core Values"),
+                  desc: getContent("home.whataido.values.desc", "We practice discovery, inclusion, teamwork, and fun, the FLL Core Values that guide our team."),
                   color: "text-rose-500",
                   bg: "bg-rose-50 dark:bg-rose-950/20",
                   ring: "group-hover:ring-rose-200 dark:group-hover:ring-rose-800",
@@ -186,7 +255,7 @@ export default function HomePage() {
       </section>
 
       {/* Quick Links */}
-      <section className="py-20 sm:py-24 border-b">
+      <section className="py-20 sm:py-24 bg-muted/20 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
@@ -200,7 +269,7 @@ export default function HomePage() {
                 { href: "/updates", icon: Calendar, title: "Project Updates", desc: "Follow our progress.", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/20" },
                 { href: "/feedback", icon: MessageSquareText, title: "Innovation Feedback", desc: "What people are saying.", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/20" },
                 { href: "/photo-log", icon: Camera, title: "Photo Logs", desc: "See our journey visually.", color: "text-indigo-500", bg: "bg-indigo-50 dark:bg-indigo-950/20" },
-                { href: "/dashboard", icon: Bot, title: "Live Dashboard", desc: "Watch real time data.", color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/20" },
+                { href: "/dashboard", icon: Target, title: "Live Dashboard", desc: "Watch real time data.", color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/20" },
               ].map((item) => (
                 <Link key={item.href} href={item.href}>
                   <Card className="h-full transition-all cursor-pointer group hover:shadow-md hover:border-border/80 card-lift">
@@ -225,7 +294,7 @@ export default function HomePage() {
       </section>
 
       {/* Latest Update + Featured Photo side by side */}
-      <section className="py-20 sm:py-24 bg-muted/20 border-b">
+      <section className="py-20 sm:py-24 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto grid sm:grid-cols-2 gap-8">
             {/* Latest Update */}
@@ -314,7 +383,7 @@ export default function HomePage() {
       </section>
 
       {/* Sponsor */}
-      <section className="py-20 sm:py-24 border-b">
+      <section className="py-20 sm:py-24 bg-muted/20 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-8">
