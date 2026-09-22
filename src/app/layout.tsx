@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { FaviconUpdater } from "@/components/favicon-updater";
+import { JsonLd } from "@/components/json-ld";
 import { createClient } from "@supabase/supabase-js";
 
 const inter = Inter({
@@ -98,36 +99,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Billistic Beaniez",
-  url: "https://billisticbeaniez.com",
-  description:
-    "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, Western Australia. 2025 Innovation Award winners at Forrestfield Regional and 2nd Place Innovation Award at Nationals West.",
-  logo: "https://billisticbeaniez.com/og-image.svg",
-  sameAs: [],
-  foundingDate: "2025",
-  location: {
-    "@type": "Place",
-    name: "Perth, Western Australia",
-  },
-  keywords: "FIRST LEGO League, FLL, robotics team, STEM, engineering, LEGO robot, innovation project, Perth, Western Australia, team 3818",
-};
-
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "Billistic Beaniez",
-  url: "https://billisticbeaniez.com",
-  description:
-    "Billistic Beaniez (Team 3818) is a FIRST LEGO League robotics team from Perth, WA. Explore our robot, Innovation Project, and FLL journey.",
-  publisher: {
-    "@type": "Organization",
-    name: "Billistic Beaniez",
-  },
-};
-
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -141,16 +112,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="canonical" href="https://billisticbeaniez.com/" />
         <meta name="theme-color" content="#0891b2" />
         <link rel="preconnect" href="https://eemruvvaeemlcbgyjwnh.supabase.co" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
       </head>
       <body className="min-h-full flex flex-col font-sans">
+        <JsonLd />
         <FaviconUpdater />
         <Providers>
           <ThemeProvider

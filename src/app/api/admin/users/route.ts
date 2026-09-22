@@ -36,7 +36,7 @@ export async function DELETE(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    if (user.email === "admin@fll.com") {
+    if (user.email === "admin@billisticbeaniez.com") {
       return NextResponse.json({ error: "Cannot delete the primary admin" }, { status: 400 });
     }
     const db = (prisma as any).getDb ? (prisma as any).getDb() : null;

@@ -13,12 +13,12 @@ export async function POST() {
 async function seed() {
   try {
     const existing = await prisma.user.findUnique({
-      where: { email: "admin@fll.com" },
+      where: { email: "admin@billisticbeaniez.com" },
     });
 
     if (existing) {
       return NextResponse.json(
-        { message: "Admin already exists", email: "admin@fll.com" },
+        { message: "Admin already exists", email: "admin@billisticbeaniez.com" },
         { status: 409 }
       );
     }
@@ -28,7 +28,7 @@ async function seed() {
     await prisma.user.create({
       data: {
         name: "Admin",
-        email: "admin@fll.com",
+        email: "admin@billisticbeaniez.com",
         hashedPassword,
         isAdmin: true,
         role: "admin",
@@ -56,7 +56,7 @@ async function seed() {
     return NextResponse.json({
       success: true,
       message: "Admin created",
-      email: "admin@fll.com",
+      email: "admin@billisticbeaniez.com",
     });
   } catch (e: any) {
     return NextResponse.json(

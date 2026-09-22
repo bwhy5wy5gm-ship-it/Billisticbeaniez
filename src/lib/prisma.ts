@@ -389,6 +389,31 @@ const teamHistory = {
   },
 };
 
+const document = {
+  async findMany() {
+    const { data } = await getDb().from("Document").select("*").order("createdAt", { ascending: false });
+    return data || [];
+  },
+  async findUnique(args: { where: { id: string } }) {
+    const { data } = await getDb().from("Document").select("*").eq("id", args.where.id).single();
+    return data;
+  },
+  async create(args: { data: { title: string; description?: string; category?: string; fileUrl: string; fileName: string; fileSize?: number; fileType?: string } }) {
+    const id = cuid();
+    const { error } = await getDb().from("Document").insert({
+      id, title: args.data.title, description: args.data.description || "",
+      category: args.data.category || "general", fileUrl: args.data.fileUrl,
+      fileName: args.data.fileName, fileSize: args.data.fileSize || 0,
+      fileType: args.data.fileType || "",
+    });
+    if (error) throw new Error(error.message);
+    return document.findUnique({ where: { id } });
+  },
+  async delete(args: { where: { id: string } }) {
+    await getDb().from("Document").delete().eq("id", args.where.id);
+  },
+};
+
 // ---------------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------------
@@ -406,6 +431,7 @@ export const prisma = {
   photoLog,
   chartData,
   teamHistory,
+  document,
   $connect: () => Promise.resolve(),
   $disconnect: () => Promise.resolve(),
 };

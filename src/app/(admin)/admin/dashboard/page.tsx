@@ -17,6 +17,7 @@ import {
   FileEdit,
   Clock,
   BarChart3,
+  FileText,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -108,6 +109,14 @@ export default function AdminDashboardPage() {
       href: "/admin/history",
       color: "text-orange-500",
       bg: "bg-orange-50 dark:bg-orange-950/20",
+    },
+    {
+      icon: FileText,
+      title: "Documents",
+      desc: "Upload and manage team documents",
+      href: "/admin/docs",
+      color: "text-teal-500",
+      bg: "bg-teal-50 dark:bg-teal-950/20",
     },
   ];
 

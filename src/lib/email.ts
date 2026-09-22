@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 const TEAM_NAME = "Billistic Beaniez FIRST Lego League Team";
 const TEAM_EMAIL = "Billistic Beaniez <onboarding@resend.dev>";
-const ADMIN_EMAIL = "aarik.berge@gmail.com";
+const ADMIN_EMAIL = "info@billisticbeaniez.com";
 
 let _resend: Resend | null = null;
 function getResend() {
