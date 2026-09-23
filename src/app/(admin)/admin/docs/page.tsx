@@ -79,6 +79,11 @@ export default function DocsAdminPage() {
       setTimeout(() => setError(""), 3000);
       return;
     }
+    if (file.size > 4 * 1024 * 1024) {
+      setError("File is too large. Maximum size is 4MB.");
+      setTimeout(() => setError(""), 4000);
+      return;
+    }
 
     setUploading(true);
     setError("");
@@ -86,7 +91,13 @@ export default function DocsAdminPage() {
       const fd = new FormData();
       fd.append("file", file);
       const uploadRes = await fetch("/api/upload", { method: "POST", body: fd });
-      const uploadData = await uploadRes.json();
+      const uploadText = await uploadRes.text();
+      let uploadData: any;
+      try {
+        uploadData = JSON.parse(uploadText);
+      } catch {
+        throw new Error("Upload failed: " + uploadRes.status + " " + uploadText.substring(0, 100));
+      }
       if (!uploadData.url) throw new Error(uploadData.error || "Upload failed");
 
       const docRes = await fetch("/api/documents", {
@@ -102,7 +113,13 @@ export default function DocsAdminPage() {
           fileType: file.type,
         }),
       });
-      const docData = await docRes.json();
+      const docText = await docRes.text();
+      let docData: any;
+      try {
+        docData = JSON.parse(docText);
+      } catch {
+        throw new Error("Failed to save document: " + docRes.status);
+      }
       if (docData.error) throw new Error(docData.error);
 
       setTitle("");
