@@ -79,8 +79,8 @@ export default function DocsAdminPage() {
       setTimeout(() => setError(""), 3000);
       return;
     }
-    if (file.size > 4 * 1024 * 1024) {
-      setError("File is too large. Maximum size is 4MB.");
+    if (file.size > 10 * 1024 * 1024) {
+      setError("File is too large. Maximum size is 10MB.");
       setTimeout(() => setError(""), 4000);
       return;
     }
