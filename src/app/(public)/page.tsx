@@ -19,17 +19,48 @@ import {
   Users,
   Target,
   Lightbulb,
-  Handshake,
+  Route,
+  MapPin,
 } from "lucide-react";
 import { useContent } from "@/lib/use-content";
+
+type HomeUpdate = {
+  id: string | number;
+  title: string;
+  description: string;
+  date?: string;
+  createdAt?: string;
+  photos?: string[];
+};
+
+type HomePhoto = {
+  id: string | number;
+  title: string;
+  description: string;
+  photos: string[];
+};
+
+function formatUpdateDate(update: { date?: string; createdAt?: string }): string {
+  const raw = update.date || update.createdAt || "";
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return parsed.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 export default function HomePage() {
   const { getContent } = useContent();
   const [mounted, setMounted] = useState(false);
-  const [latestUpdate, setLatestUpdate] = useState<any>(null);
-  const [featuredPhoto, setFeaturedPhoto] = useState<any>(null);
+  const [latestUpdate, setLatestUpdate] = useState<HomeUpdate | null>(null);
+  const [featuredPhoto, setFeaturedPhoto] = useState<HomePhoto | null>(null);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     fetch("/api/updates")
@@ -47,7 +78,7 @@ export default function HomePage() {
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          const withPhotos = data.filter((p: any) => p.photos && p.photos.length > 0);
+          const withPhotos = data.filter((p: { photos?: string[] }) => p.photos && p.photos.length > 0);
           if (withPhotos.length > 0) {
             const random = withPhotos[Math.floor(Math.random() * withPhotos.length)];
             setFeaturedPhoto({ ...random, photos: random.photos || [] });
@@ -96,11 +127,11 @@ export default function HomePage() {
               {getContent("home.hero.title", "BILLISTIC BEANIEZ")}
             </h1>
 
-            <p className="text-lg sm:text-lg md:text-2xl font-semibold text-muted-foreground mb-4 text-balance">
+            <p className="text-lg sm:text-lg md:text-2xl font-semibold text-foreground mb-4 text-balance">
               {getContent("home.hero.subtitle", "Team #3818 | Perth, WA, Australia")}
             </p>
 
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed text-balance">
+            <p className="text-base sm:text-lg text-foreground max-w-2xl mx-auto mb-10 leading-relaxed text-balance">
               {getContent("home.hero.description", "We are a student robotics team competing in FIRST LEGO League, combining engineering, programming, research and innovation to tackle real world challenges.")}
             </p>
 
@@ -138,7 +169,7 @@ export default function HomePage() {
               <h2 className="text-4xl sm:text-5xl font-bold mb-4">
                 {getContent("home.about.title", "About Billistic Beaniez")}
               </h2>
-              <p className="text-muted-foreground text-base max-w-3xl mx-auto leading-relaxed">
+              <p className="text-foreground text-base max-w-3xl mx-auto leading-relaxed">
                 {getContent("home.about.desc", "Billistic Beaniez is FIRST LEGO League Team #3818, based in Perth, Western Australia. We are a group of passionate students who love robotics, engineering, and solving real world problems through STEM. Our team combines creativity, technical skills, and teamwork to compete in FLL robotics competitions and develop innovative solutions to challenges that matter. Through FIRST LEGO League, we learn to design, build, and program autonomous robots while researching real world issues and presenting our ideas to judges and the community. Every season, we work together to improve our robot, refine our Innovation Project, and grow as engineers, researchers, and teammates.")}
               </p>
             </div>
@@ -152,7 +183,7 @@ export default function HomePage() {
               <h3 className="text-2xl md:text-3xl font-bold mb-4">
                 {getContent("home.about.mission.title", "Our Mission")}
               </h3>
-              <p className="text-muted-foreground text-base max-w-2xl mx-auto leading-relaxed">
+              <p className="text-foreground text-base max-w-2xl mx-auto leading-relaxed">
                 {getContent("home.about.mission.desc", "Our mission is to learn, build, and innovate through teamwork. We use robotics and science to solve real problems and grow our skills. Together, we support each other and strive to make a positive impact.")}
               </p>
             </div>
@@ -172,7 +203,7 @@ export default function HomePage() {
               <h2 className="text-4xl sm:text-5xl font-bold mb-3">
                 {getContent("home.awards.title", "2025 Award Winners")}
               </h2>
-              <p className="text-muted-foreground text-base max-w-lg mx-auto">
+              <p className="text-foreground text-base max-w-lg mx-auto">
                 {getContent("home.awards.desc", "Recognised for innovation and excellence in FIRST LEGO League.")}
               </p>
             </div>
@@ -198,7 +229,7 @@ export default function HomePage() {
                   <h3 className="font-semibold text-lg mb-1">
                     {getContent("home.awards.innovation.title", "Innovation Award")}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     {getContent("home.awards.innovation.desc", "Forrestfield Regional Competition")}
                   </p>
                 </CardContent>
@@ -224,7 +255,7 @@ export default function HomePage() {
                   <h3 className="font-semibold text-lg mb-1">
                     {getContent("home.awards.nationals.title", "2nd Place Innovation Award")}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     {getContent("home.awards.nationals.desc", "Nationals West Competition")}
                   </p>
                 </CardContent>
@@ -240,7 +271,7 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
               <h2 className="text-4xl sm:text-5xl font-bold mb-3">{getContent("home.whataido.title", "WHAT WE DO")}</h2>
-              <p className="text-muted-foreground text-base max-w-lg mx-auto">
+              <p className="text-foreground text-base max-w-lg mx-auto">
                 {getContent("home.whataido.desc", "Three pillars that make up our FLL journey.")}
               </p>
             </div>
@@ -286,7 +317,7 @@ export default function HomePage() {
                         {item.title}
                         <ArrowUpRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm text-foreground leading-relaxed">
                         {item.desc}
                       </p>
                     </CardContent>
@@ -298,13 +329,77 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Planner */}
+      <section className="py-20 sm:py-24 bg-muted/20 border-b">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-14">
+              <Badge variant="outline" className="mb-4 gap-1.5 text-xs">
+                <Route className="h-3 w-3" />
+                Match Planner
+              </Badge>
+              <h2 className="text-4xl sm:text-5xl font-bold mb-3">
+                {getContent("home.planner.title", "Use Our Planner")}
+              </h2>
+              <p className="text-foreground text-base max-w-xl mx-auto leading-relaxed">
+                {getContent("home.planner.desc", "Plan your whole match on the competition mat, score every mission, and see your strategy before you drive it.")}
+              </p>
+            </div>
+            <Card className="overflow-hidden border-2 border-cyan-200/80 dark:border-cyan-800/50">
+              <CardContent className="pt-8 pb-8 px-6 md:px-10">
+                <div className="grid gap-8 md:grid-cols-2 items-center">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-3">
+                      {getContent("home.planner.card.title", "Plan every launch, one mat at a time")}
+                    </h3>
+                    <p className="text-foreground text-sm leading-relaxed mb-6">
+                      {getContent("home.planner.card.desc", "Draw robot routes right on the mat, pick your mission points, and the planner totals your score. Log practice attempts, upload a photo of each attachment, and let the analysis point out weak missions, timing risks, and launches you could combine.")}
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      <Link href="/planner">
+                        <Button size="lg" className="gap-2 px-6 py-5 text-sm shadow-lg shadow-cyan-500/15">
+                          <Route className="h-4 w-4" />
+                          Open the planner
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                      <Link href="/planner/downloads">
+                        <Button size="lg" variant="outline" className="gap-2 px-6 py-5 text-sm">
+                          <MapPin className="h-4 w-4" />
+                          Upload runs
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="rounded-xl border bg-background p-5">
+                    <ul className="space-y-3">
+                      {[
+                        "Draw and colour robot routes on the mat",
+                        "Score missions and see your match total live",
+                        "Analyse time, reliability, risk and plan health",
+                        "Upload an attachment photo for every run",
+                      ].map((line) => (
+                        <li key={line} className="flex items-start gap-2.5 text-sm text-foreground">
+                          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-cyan-500" />
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Quick Links */}
       <section className="py-20 sm:py-24 bg-muted/20 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
               <h2 className="text-4xl sm:text-5xl font-bold mb-3">{getContent("home.explore.title", "EXPLORE MORE")}</h2>
-              <p className="text-muted-foreground text-base max-w-lg mx-auto">
+              <p className="text-foreground text-base max-w-lg mx-auto">
                 {getContent("home.explore.desc", "Dive deeper into our project and team.")}
               </p>
             </div>
@@ -325,7 +420,7 @@ export default function HomePage() {
                         {item.title}
                         <ArrowUpRight className="h-3.5 w-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                       </h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
+                      <p className="text-xs text-foreground leading-relaxed">
                         {item.desc}
                       </p>
                     </CardContent>
@@ -354,21 +449,17 @@ export default function HomePage() {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <Badge variant="outline" className="text-xs font-mono mb-3">
-                            {new Date(latestUpdate.date || latestUpdate.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })}
+                            {formatUpdateDate(latestUpdate)}
                           </Badge>
                           <h3 className="font-semibold text-lg mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                             {latestUpdate.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground line-clamp-3">
+                          <p className="text-sm text-foreground line-clamp-3">
                             {latestUpdate.description.slice(0, 160)}
                             {latestUpdate.description.length > 160 ? "..." : ""}
                           </p>
                         </div>
-                        <ArrowUpRight className="h-5 w-5 text-muted-foreground/30 group-hover:text-amber-500 transition-colors shrink-0 mt-1" />
+                        <ArrowUpRight className="h-5 w-5 text-foreground/40 group-hover:text-amber-500 transition-colors shrink-0 mt-1" />
                       </div>
                     </CardContent>
                   </Card>
@@ -377,8 +468,8 @@ export default function HomePage() {
                 <Card className="border-2 border-dashed h-full">
                   <CardContent className="pt-7">
                     <div className="text-center py-10">
-                      <Calendar className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
-                      <p className="text-sm text-muted-foreground">No updates yet</p>
+                      <Calendar className="h-10 w-10 mx-auto text-foreground/40 mb-3" />
+                      <p className="text-sm text-foreground">No updates yet</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -405,7 +496,7 @@ export default function HomePage() {
                       <h3 className="font-semibold text-lg mb-1.5 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                         {featuredPhoto.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground line-clamp-2">
+                      <p className="text-xs text-foreground line-clamp-2">
                         {featuredPhoto.description}
                       </p>
                     </CardContent>
@@ -415,8 +506,8 @@ export default function HomePage() {
                 <Card className="border-2 border-dashed h-full">
                   <CardContent className="pt-7">
                     <div className="text-center py-10">
-                      <Camera className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
-                      <p className="text-sm text-muted-foreground">No photos yet</p>
+                      <Camera className="h-10 w-10 mx-auto text-foreground/40 mb-3" />
+                      <p className="text-sm text-foreground">No photos yet</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -430,7 +521,7 @@ export default function HomePage() {
       <section className="py-20 sm:py-24 bg-muted/20 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-foreground mb-8">
               Proudly Supported By
             </p>
             {getContent("site.sponsor.logo", "") ? (
@@ -448,10 +539,10 @@ export default function HomePage() {
               </a>
             ) : (
               <div className="inline-flex items-center justify-center h-24 sm:h-28 md:h-32 w-48 rounded-xl border-2 border-dashed border-muted-foreground/20 mb-6">
-                <span className="text-xs text-muted-foreground/50">Sponsor logo</span>
+                <span className="text-xs text-foreground">Sponsor logo</span>
               </div>
             )}
-            <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+            <p className="text-sm text-foreground max-w-md mx-auto leading-relaxed">
               Thank you for supporting Billistic Beaniez and helping our team pursue robotics, engineering and STEM.
             </p>
             {getContent("site.sponsor.logo", "") && (
@@ -459,7 +550,7 @@ export default function HomePage() {
                 href={getContent("site.sponsor.url", "https://www.facebook.com/DNARacingWA/")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 mt-5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-1.5 mt-5 text-sm font-medium text-foreground hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
               >
                 VISIT SPONSOR <ArrowRight className="h-3.5 w-3.5" />
               </a>

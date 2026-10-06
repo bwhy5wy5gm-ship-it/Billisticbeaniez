@@ -31,7 +31,11 @@ export async function POST(req: NextRequest) {
     const request = await prisma.adminSignupRequest.create({
       data: { name, email, reason },
     });
-    await sendAdminSignupRequest({ name, email, reason, requestId: request.id });
+    try {
+      await sendAdminSignupRequest({ name, email, reason, requestId: request.id });
+    } catch (emailError) {
+      console.error("Signup request email failed:", emailError);
+    }
     return NextResponse.json({ success: true, id: request.id });
   } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });

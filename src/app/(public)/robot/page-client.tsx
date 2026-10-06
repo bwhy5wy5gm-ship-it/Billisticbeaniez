@@ -23,6 +23,10 @@ export default function RobotPage() {
   const { getContent } = useContent();
   const [attachments, setAttachments] = useState<Attachment[]>([]);
 
+  const robotImage = getContent("robot.image", "");
+  const robotRotation = parseInt(getContent("robot.image.rotate", "0"), 10) || 0;
+  const robotRotated = robotRotation === 90 || robotRotation === 270;
+
   useEffect(() => {
     const raw = getContent("robot.attachments", "");
     if (raw) {
@@ -51,9 +55,20 @@ export default function RobotPage() {
         </div>
 
         {/* Robot Photo */}
-        {getContent("robot.image", "") && (
-          <div className="mb-16 rounded-2xl overflow-hidden shadow-2xl border-2">
-            <img src={getContent("robot.image", "")} alt="Robot" className="w-full h-auto object-contain bg-muted max-h-[500px]" />
+        {robotImage && (
+          <div className="mb-16 rounded-2xl border-2 bg-muted shadow-2xl">
+            <div className="flex items-center justify-center p-4 sm:p-6">
+              <img
+                src={robotImage}
+                alt="Billistic Beaniez robot, top view"
+                className={`object-contain rounded-xl ${
+                  robotRotated
+                    ? "max-h-[440px] w-auto max-w-[440px]"
+                    : "max-h-[500px] w-auto max-w-full"
+                }`}
+                style={{ transform: `rotate(${robotRotation}deg)` }}
+              />
+            </div>
           </div>
         )}
 

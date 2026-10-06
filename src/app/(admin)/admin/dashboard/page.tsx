@@ -18,6 +18,8 @@ import {
   Clock,
   BarChart3,
   FileText,
+  Map,
+  Bot,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -111,12 +113,28 @@ export default function AdminDashboardPage() {
       bg: "bg-orange-50 dark:bg-orange-950/20",
     },
     {
+      icon: Bot,
+      title: "Robot",
+      desc: "Upload the robot photo used in the planner and on the robot page",
+      href: "/admin/robot",
+      color: "text-cyan-500",
+      bg: "bg-cyan-50 dark:bg-cyan-950/20",
+    },
+    {
       icon: FileText,
       title: "Documents",
       desc: "Upload and manage team documents",
       href: "/admin/docs",
       color: "text-teal-500",
       bg: "bg-teal-50 dark:bg-teal-950/20",
+    },
+    {
+      icon: Map,
+      title: "Planner",
+      desc: "Mat image, checklist and mission scoring",
+      href: "/admin/planner",
+      color: "text-cyan-500",
+      bg: "bg-cyan-50 dark:bg-cyan-950/20",
     },
   ];
 

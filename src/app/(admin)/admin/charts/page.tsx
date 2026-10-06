@@ -12,8 +12,6 @@ import {
   Plus,
   Trash2,
   Save,
-  X,
-  GripVertical,
 } from "lucide-react";
 
 interface ChartRow {
@@ -22,8 +20,6 @@ interface ChartRow {
   day: number;
   co2Control: number;
   co2Exp: number;
-  o2Control: number;
-  o2Exp: number;
   tempControl: number;
   tempExp: number;
   humidityControl: number;
@@ -35,8 +31,6 @@ const emptyRow: ChartRow = {
   day: 1,
   co2Control: 0,
   co2Exp: 0,
-  o2Control: 0,
-  o2Exp: 0,
   tempControl: 0,
   tempExp: 0,
   humidityControl: 0,
@@ -61,7 +55,7 @@ export default function AdminChartsPage() {
       fetch("/api/admin/chart-data")
         .then((r) => r.json())
         .then((d) => {
-          if (d.data && d.data.length > 0) {
+          if (Array.isArray(d.data)) {
             setRows(d.data);
           }
           setLoading(false);
@@ -167,10 +161,9 @@ export default function AdminChartsPage() {
         ) : (
           <div className="space-y-4">
             {/* Header row */}
-            <div className="hidden lg:grid lg:grid-cols-[140px_1fr_1fr_1fr_1fr_40px] gap-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <div className="hidden lg:grid lg:grid-cols-[140px_1fr_1fr_1fr_40px] gap-3 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               <div>Day</div>
               <div className="text-center">CO2 (ppm)</div>
-              <div className="text-center">Oxygen (%)</div>
               <div className="text-center">Temperature</div>
               <div className="text-center">Humidity (%)</div>
               <div />
@@ -179,7 +172,7 @@ export default function AdminChartsPage() {
             {rows.map((row, idx) => (
               <Card key={idx} className="border-2">
                 <CardContent className="pt-4 pb-4">
-                  <div className="lg:grid lg:grid-cols-[140px_1fr_1fr_1fr_1fr_40px] gap-3 items-center">
+                  <div className="lg:grid lg:grid-cols-[140px_1fr_1fr_1fr_40px] gap-3 items-center">
                     {/* Day label */}
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block lg:hidden">Day</label>
@@ -210,32 +203,6 @@ export default function AdminChartsPage() {
                           value={row.co2Exp || ""}
                           onChange={(e) => updateRow(idx, "co2Exp", Number(e.target.value))}
                           placeholder="815"
-                          className="h-9 text-sm tabular-nums"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Oxygen */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-[10px] text-muted-foreground mb-0.5 block">Control</label>
-                        <Input
-                          type="number"
-                          step="0.1"
-                          value={row.o2Control || ""}
-                          onChange={(e) => updateRow(idx, "o2Control", Number(e.target.value))}
-                          placeholder="6.2"
-                          className="h-9 text-sm tabular-nums"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-emerald-600 dark:text-emerald-400 mb-0.5 block">Experiment</label>
-                        <Input
-                          type="number"
-                          step="0.1"
-                          value={row.o2Exp || ""}
-                          onChange={(e) => updateRow(idx, "o2Exp", Number(e.target.value))}
-                          placeholder="6.3"
                           className="h-9 text-sm tabular-nums"
                         />
                       </div>

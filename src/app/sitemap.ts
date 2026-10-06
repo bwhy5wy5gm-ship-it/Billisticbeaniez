@@ -21,6 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/photo-log/team`, lastModified: now },
     { url: `${base}/photo-log/core-values`, lastModified: now },
     { url: `${base}/photo-log/competition`, lastModified: now },
+    { url: `${base}/planner`, lastModified: now },
+    { url: `${base}/planner/downloads`, lastModified: now },
   ];
 
   const dynamicPages: MetadataRoute.Sitemap = [];

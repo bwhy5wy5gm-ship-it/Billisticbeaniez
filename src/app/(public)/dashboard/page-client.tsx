@@ -16,14 +16,28 @@ import {
 import {
   Activity,
   Droplets,
-  Wind,
   Thermometer,
   TrendingDown,
   BarChart3,
 } from "lucide-react";
 
+interface ChartRow {
+  id?: string;
+  label: string;
+  day: number;
+  co2Control: number;
+  co2Exp: number;
+  o2Control?: number;
+  o2Exp?: number;
+  tempControl: number;
+  tempExp: number;
+  humidityControl: number;
+  humidityExp: number;
+  createdAt?: string;
+}
+
 export default function DashboardPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<ChartRow[]>([]);
   const [lastUpdated, setLastUpdated] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +45,7 @@ export default function DashboardPage() {
     fetch("/api/admin/chart-data")
       .then((r) => r.json())
       .then((d) => {
-        if (d.data && d.data.length > 0) {
+        if (Array.isArray(d.data) && d.data.length > 0) {
           setData(d.data);
         }
         setLastUpdated(new Date().toLocaleTimeString());
@@ -54,17 +68,6 @@ export default function DashboardPage() {
       controlKey: "co2Control",
       expKey: "co2Exp",
       unit: "ppm",
-    },
-    {
-      id: "o2",
-      label: "Oxygen",
-      icon: Wind,
-      color: "text-green-500",
-      bg: "bg-green-50 dark:bg-green-950/20",
-      border: "border-green-200/50 dark:border-green-800/30",
-      controlKey: "o2Control",
-      expKey: "o2Exp",
-      unit: "%",
     },
     {
       id: "temp",
@@ -111,8 +114,8 @@ export default function DashboardPage() {
 
         {loading ? (
           <div className="space-y-4">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="h-32 bg-muted rounded-xl animate-pulse" />
               ))}
             </div>
@@ -132,7 +135,7 @@ export default function DashboardPage() {
           </Card>
         ) : (
           <>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {metrics.map((m) => {
             const latest = data[data.length - 1];
             const controlVal = latest[m.controlKey as keyof typeof latest];
@@ -179,7 +182,7 @@ export default function DashboardPage() {
         </div>
 
         <Tabs defaultValue="co2" className="mb-8">
-          <TabsList className="w-full sm:w-auto grid grid-cols-4 sm:flex">
+          <TabsList className="w-full sm:w-auto grid grid-cols-3 sm:flex">
             {metrics.map((m) => (
               <TabsTrigger key={m.id} value={m.id} className="gap-1.5 text-xs">
                 <m.icon className="h-3 w-3 hidden sm:inline" />

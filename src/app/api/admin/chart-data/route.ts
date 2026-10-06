@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 
 export async function GET() {
   try {
-    const data = prisma.chartData.findMany();
+    const data = await prisma.chartData.findMany();
     return NextResponse.json({ data });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
@@ -21,9 +21,9 @@ export async function POST(req: NextRequest) {
     if (!Array.isArray(rows)) {
       return NextResponse.json({ error: "rows must be an array" }, { status: 400 });
     }
-    prisma.chartData.deleteAll();
+    await prisma.chartData.deleteAll();
     for (const row of rows) {
-      prisma.chartData.create({
+      await prisma.chartData.create({
         data: {
           label: row.label,
           day: row.day,

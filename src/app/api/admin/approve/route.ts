@@ -24,6 +24,15 @@ export async function POST(req: NextRequest) {
       if (!password) {
         return NextResponse.json({ error: "Password required" }, { status: 400 });
       }
+      const existingUser = await prisma.user.findUnique({
+        where: { email: signupRequest.email },
+      });
+      if (existingUser) {
+        return NextResponse.json(
+          { error: "That email already has an account" },
+          { status: 400 }
+        );
+      }
       const hashedPassword = await bcrypt.hash(password, 12);
       await prisma.user.create({
         data: {
@@ -38,23 +47,34 @@ export async function POST(req: NextRequest) {
         where: { id: requestId },
         data: { status: "approved" },
       });
-      await sendAdminApprovedEmail({
-        name: signupRequest.name,
-        email: signupRequest.email,
-      });
+      try {
+        await sendAdminApprovedEmail({
+          name: signupRequest.name,
+          email: signupRequest.email,
+        });
+      } catch (emailError) {
+        console.error("Approval email failed:", emailError);
+      }
       return NextResponse.json({ success: true });
     } else {
       await prisma.adminSignupRequest.update({
         where: { id: requestId },
         data: { status: "denied" },
       });
-      await sendAdminDeniedEmail({
-        name: signupRequest.name,
-        email: signupRequest.email,
-      });
+      try {
+        await sendAdminDeniedEmail({
+          name: signupRequest.name,
+          email: signupRequest.email,
+        });
+      } catch (emailError) {
+        console.error("Denial email failed:", emailError);
+      }
       return NextResponse.json({ success: true });
     }
-  } catch {
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "Failed" },
+      { status: 500 }
+    );
   }
 }

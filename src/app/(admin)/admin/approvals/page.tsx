@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, User, Mail } from "lucide-react";
+import { CheckCircle, XCircle, User, Mail, MessageSquare } from "lucide-react";
 
 interface SignupRequest {
-  id: number;
+  id: string;
   name: string;
   email: string;
+  reason?: string;
   status: string;
   createdAt: string;
 }
@@ -21,6 +22,8 @@ export default function ApprovalsPage() {
   const router = useRouter();
   const [requests, setRequests] = useState<SignupRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [workingId, setWorkingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
@@ -29,23 +32,55 @@ export default function ApprovalsPage() {
   useEffect(() => {
     if (session) {
       fetch("/api/admin/signup-requests")
-        .then((r) => r.json())
+        .then((r) => (r.ok ? r.json() : []))
         .then((data) => {
-          setRequests(data.requests || []);
+          setRequests(
+            Array.isArray(data)
+              ? data.filter((r: SignupRequest) => r.status === "pending")
+              : []
+          );
           setLoading(false);
         })
         .catch(() => setLoading(false));
     }
   }, [session]);
 
-  async function handleApprove(id: number) {
-    await fetch(`/api/admin/signup-requests/${id}/approve`, { method: "POST" });
-    setRequests((prev) => prev.filter((r) => r.id !== id));
+  async function postDecision(req: SignupRequest, action: "approve" | "deny", password?: string) {
+    setWorkingId(req.id);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId: req.id, action, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Failed to update request");
+        return;
+      }
+      setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    } catch {
+      setError("Failed to update request");
+    } finally {
+      setWorkingId(null);
+    }
   }
 
-  async function handleDeny(id: number) {
-    await fetch(`/api/admin/signup-requests/${id}/deny`, { method: "POST" });
-    setRequests((prev) => prev.filter((r) => r.id !== id));
+  function handleApprove(req: SignupRequest) {
+    const password = window.prompt(
+      `Set a password for the new admin account (${req.email}). It must be at least 6 characters.`
+    );
+    if (password === null) return;
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+    void postDecision(req, "approve", password);
+  }
+
+  function handleDeny(req: SignupRequest) {
+    void postDecision(req, "deny");
   }
 
   if (status === "loading" || !session) return null;
@@ -63,6 +98,12 @@ export default function ApprovalsPage() {
             Review and approve pending admin requests
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-2.5 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200/50 dark:border-red-800/30">
+            <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+          </div>
+        )}
 
         {loading ? (
           <div className="space-y-4">
@@ -95,7 +136,7 @@ export default function ApprovalsPage() {
               <Card key={req.id} className="border-2">
                 <CardContent className="pt-5">
                   <div className="flex items-start justify-between gap-4">
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <User className="h-3.5 w-3.5 text-muted-foreground" />
                         <span className="font-semibold text-sm">
@@ -108,15 +149,27 @@ export default function ApprovalsPage() {
                           {req.email}
                         </span>
                       </div>
+                      {req.reason && (
+                        <div className="mb-2 rounded-md bg-muted/50 px-2.5 py-2">
+                          <span className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground mb-1">
+                            <MessageSquare className="h-3 w-3" />
+                            Reason
+                          </span>
+                          <p className="text-xs leading-snug text-foreground">
+                            {req.reason}
+                          </p>
+                        </div>
+                      )}
                       <Badge variant="outline" className="text-xs font-mono">
                         {new Date(req.createdAt).toLocaleDateString()}
                       </Badge>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex shrink-0 gap-2">
                       <Button
                         size="sm"
                         className="gap-1.5 bg-emerald-600 hover:bg-emerald-700"
-                        onClick={() => handleApprove(req.id)}
+                        disabled={workingId === req.id}
+                        onClick={() => handleApprove(req)}
                       >
                         <CheckCircle className="h-3.5 w-3.5" />
                         Approve
@@ -125,7 +178,8 @@ export default function ApprovalsPage() {
                         size="sm"
                         variant="outline"
                         className="gap-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
-                        onClick={() => handleDeny(req.id)}
+                        disabled={workingId === req.id}
+                        onClick={() => handleDeny(req)}
                       >
                         <XCircle className="h-3.5 w-3.5" />
                         Deny

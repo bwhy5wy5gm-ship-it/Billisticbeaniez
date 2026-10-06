@@ -5,12 +5,13 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Beaker, Atom, Lock, Mail, User, ArrowRight, CheckCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Beaker, Atom, MessageSquare, Mail, User, ArrowRight, CheckCircle } from "lucide-react";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [reason, setReason] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -20,12 +21,12 @@ export default function SignupPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch("/api/admin/signup-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, reason }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (data.success) {
         setSent(true);
       } else {
@@ -102,17 +103,16 @@ export default function SignupPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1.5 flex items-center gap-1.5">
-                    <Lock className="h-3.5 w-3.5 text-muted-foreground" />
-                    Password
+                    <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+                    Reason
                   </label>
-                  <Input
-                    type="password"
-                    placeholder="Choose a password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                  <Textarea
+                    placeholder="Why do you need admin access?"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
                     required
-                    minLength={6}
-                    className="h-10"
+                    rows={3}
+                    className="resize-none text-sm"
                   />
                 </div>
                 {error && (
