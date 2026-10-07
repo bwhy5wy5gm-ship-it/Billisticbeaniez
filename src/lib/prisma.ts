@@ -347,7 +347,11 @@ const chartData = {
     await getDb().from("ChartData").delete().eq("id", args.where.id);
   },
   async deleteAll() {
-    await getDb().from("ChartData").delete().neq("id", "__delete_all__");
+    const { error } = await getDb()
+      .from("ChartData")
+      .delete()
+      .neq("id", "__delete_all__");
+    if (error) throw new Error(error.message);
   },
 };
 

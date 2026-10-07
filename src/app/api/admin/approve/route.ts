@@ -7,7 +7,8 @@ import bcrypt from "bcryptjs";
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
-    if (!(session?.user as any)?.isAdmin) {
+    const currentUser = session?.user as { isAdmin?: boolean } | null | undefined;
+    if (!currentUser?.isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -47,29 +48,33 @@ export async function POST(req: NextRequest) {
         where: { id: requestId },
         data: { status: "approved" },
       });
+      let emailSent = true;
       try {
         await sendAdminApprovedEmail({
           name: signupRequest.name,
           email: signupRequest.email,
         });
       } catch (emailError) {
+        emailSent = false;
         console.error("Approval email failed:", emailError);
       }
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, emailSent });
     } else {
       await prisma.adminSignupRequest.update({
         where: { id: requestId },
         data: { status: "denied" },
       });
+      let emailSent = true;
       try {
         await sendAdminDeniedEmail({
           name: signupRequest.name,
           email: signupRequest.email,
         });
       } catch (emailError) {
+        emailSent = false;
         console.error("Denial email failed:", emailError);
       }
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, emailSent });
     }
   } catch (e) {
     return NextResponse.json(

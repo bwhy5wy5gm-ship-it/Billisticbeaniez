@@ -1,8 +1,13 @@
 import { Resend } from "resend";
 
 const TEAM_NAME = "Billistic Beaniez FIRST Lego League Team";
-const TEAM_EMAIL = "Billistic Beaniez <onboarding@resend.dev>";
-const ADMIN_EMAIL = "info@billisticbeaniez.com";
+const EMAIL_FROM =
+  process.env.EMAIL_FROM || "Billistic Beaniez <info@billisticbeaniez.com>";
+export const ADMIN_TO = process.env.ADMIN_EMAIL || "info@billisticbeaniez.com";
+const SITE_URL =
+  process.env.VERCEL_ENV === "production"
+    ? "https://www.billisticbeaniez.com"
+    : process.env.NEXTAUTH_URL || "https://www.billisticbeaniez.com";
 
 let _resend: Resend | null = null;
 function getResend() {
@@ -14,6 +19,27 @@ function getResend() {
   return _resend;
 }
 
+async function deliver({
+  to,
+  subject,
+  html,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+}) {
+  const resend = getResend();
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to,
+    subject,
+    html,
+  });
+  if (error) {
+    throw new Error(`Resend ${error.name}: ${error.message}`);
+  }
+}
+
 export async function sendContactEmail({
   name,
   email,
@@ -23,11 +49,8 @@ export async function sendContactEmail({
   email: string;
   message: string;
 }) {
-  const resend = getResend();
-
-  await resend.emails.send({
-    from: TEAM_EMAIL,
-    to: ADMIN_EMAIL,
+  await deliver({
+    to: ADMIN_TO,
     subject: `New Contact from ${name}`,
     html: `
       <h2>New Contact Form Submission</h2>
@@ -38,8 +61,7 @@ export async function sendContactEmail({
     `,
   });
 
-  await resend.emails.send({
-    from: TEAM_EMAIL,
+  await deliver({
     to: email,
     subject: `Thank you for contacting ${TEAM_NAME}!`,
     html: `
@@ -56,25 +78,21 @@ export async function sendAdminSignupRequest({
   name,
   email,
   reason,
-  requestId,
 }: {
   name: string;
   email: string;
   reason: string;
   requestId: string;
 }) {
-  const resend = getResend();
-
-  await resend.emails.send({
-    from: TEAM_EMAIL,
-    to: ADMIN_EMAIL,
+  await deliver({
+    to: ADMIN_TO,
     subject: `New Admin Signup Request from ${name}`,
     html: `
       <h2>New Admin Signup Request</h2>
       <p><strong>Name:</strong> ${name}</p>
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Reason:</strong> ${reason}</p>
-      <p><a href="${process.env.NEXTAUTH_URL}/admin/approvals">Review Request</a></p>
+      <p><a href="${SITE_URL}/admin/approvals">Review Request</a></p>
     `,
   });
 }
@@ -86,16 +104,13 @@ export async function sendAdminApprovedEmail({
   name: string;
   email: string;
 }) {
-  const resend = getResend();
-
-  await resend.emails.send({
-    from: TEAM_EMAIL,
+  await deliver({
     to: email,
     subject: `Your Admin Account Has Been Approved!`,
     html: `
       <h2>Welcome, ${name}!</h2>
       <p>Your admin account has been approved. You can now log in to the admin dashboard.</p>
-      <p><a href="${process.env.NEXTAUTH_URL}/login">Log In Now</a></p>
+      <p><a href="${SITE_URL}/login">Log In Now</a></p>
       <br/>
       <p>Best regards,<br/>${TEAM_NAME}</p>
     `,
@@ -109,10 +124,7 @@ export async function sendAdminDeniedEmail({
   name: string;
   email: string;
 }) {
-  const resend = getResend();
-
-  await resend.emails.send({
-    from: TEAM_EMAIL,
+  await deliver({
     to: email,
     subject: `Admin Signup Request Update`,
     html: `

@@ -42,19 +42,27 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/chart-data")
-      .then((r) => r.json())
-      .then((d) => {
-        if (Array.isArray(d.data) && d.data.length > 0) {
-          setData(d.data);
-        }
-        setLastUpdated(new Date().toLocaleTimeString());
-        setLoading(false);
-      })
-      .catch(() => {
-        setLastUpdated(new Date().toLocaleTimeString());
-        setLoading(false);
-      });
+    let alive = true;
+    function load() {
+      fetch("/api/admin/chart-data", { cache: "no-store" })
+        .then((r) => r.json())
+        .then((d) => {
+          if (alive) setData(Array.isArray(d.data) ? d.data : []);
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (alive) {
+            setLastUpdated(new Date().toLocaleTimeString());
+            setLoading(false);
+          }
+        });
+    }
+    load();
+    const timer = setInterval(load, 60000);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
   }, []);
 
   const metrics = [

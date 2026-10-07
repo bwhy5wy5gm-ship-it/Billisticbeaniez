@@ -44,6 +44,7 @@ export default function AdminChartsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -70,10 +71,12 @@ export default function AdminChartsPage() {
       ...prev,
       { ...emptyRow, label: `Day ${dayNum}`, day: dayNum },
     ]);
+    setDirty(true);
   }
 
   function removeRow(idx: number) {
     setRows((prev) => prev.filter((_, i) => i !== idx));
+    setDirty(true);
   }
 
   function updateRow(idx: number, field: keyof ChartRow, value: string | number) {
@@ -82,6 +85,7 @@ export default function AdminChartsPage() {
       next[idx] = { ...next[idx], [field]: value };
       return next;
     });
+    setDirty(true);
   }
 
   async function handleSave() {
@@ -97,6 +101,7 @@ export default function AdminChartsPage() {
       if (!res.ok) {
         setError(data.error || "Failed to save");
       } else {
+        setDirty(false);
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
       }
@@ -119,10 +124,17 @@ export default function AdminChartsPage() {
             </Badge>
             <h1 className="text-3xl font-bold">Manage Dashboard Data</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Add one row per day of your experiment. Data shows on the public dashboard.
+              Add one row per day of your experiment. Data shows on the public
+              dashboard. Deleted days disappear from the dashboard after you
+              click Save All.
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {dirty && !saving && (
+              <span className="text-xs text-amber-600 dark:text-amber-400">
+                Unsaved changes
+              </span>
+            )}
             {saved && <span className="text-xs text-green-500">Saved!</span>}
             {error && <span className="text-xs text-red-500">{error}</span>}
             <Button onClick={addRow} variant="outline" className="gap-2">

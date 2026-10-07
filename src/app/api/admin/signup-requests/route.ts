@@ -6,7 +6,8 @@ import { auth } from "@/lib/auth";
 export async function GET() {
   try {
     const session = await auth();
-    if (!(session?.user as any)?.isAdmin) {
+    const currentUser = session?.user as { isAdmin?: boolean } | null | undefined;
+    if (!currentUser?.isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const requests = await prisma.adminSignupRequest.findMany();
@@ -31,12 +32,14 @@ export async function POST(req: NextRequest) {
     const request = await prisma.adminSignupRequest.create({
       data: { name, email, reason },
     });
+    let emailSent = true;
     try {
       await sendAdminSignupRequest({ name, email, reason, requestId: request.id });
     } catch (emailError) {
+      emailSent = false;
       console.error("Signup request email failed:", emailError);
     }
-    return NextResponse.json({ success: true, id: request.id });
+    return NextResponse.json({ success: true, id: request.id, emailSent });
   } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
