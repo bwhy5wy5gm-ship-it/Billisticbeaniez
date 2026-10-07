@@ -56,7 +56,7 @@ const SECTIONS: { title: string; lines: string[] }[] = [
   {
     title: "Downloads and import",
     lines: [
-      "Auto save is off. Your work stays on this device in your browser until you download it.",
+      "Auto save is off. Your plans and runs are private to this device and never shown to anyone else until you download them.",
       "Downloads page: pick launches, choose JSON for full data, CSV for a spreadsheet, or SVG for a picture of the mat.",
       "Upload a downloaded JSON file on the same page to import everything back, including notes, risk, practice logs and settings.",
       "The Download button in the planner header opens that page.",

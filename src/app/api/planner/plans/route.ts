@@ -14,6 +14,11 @@ function sessionUserId(session: Session | null): string | undefined {
   return (session?.user as { id?: string } | undefined)?.id;
 }
 
+function ownerMatchesUser(owner: string, userId: string): boolean {
+  const rest = owner.slice(2);
+  return rest === userId || rest.startsWith(`${userId}.`);
+}
+
 export async function GET(req: NextRequest) {
   try {
     const owner = req.nextUrl.searchParams.get("owner") || "";
@@ -22,7 +27,7 @@ export async function GET(req: NextRequest) {
     }
     if (owner.startsWith("u:")) {
       const userId = sessionUserId(await auth());
-      if (!userId || userId !== owner.slice(2)) {
+      if (!userId || !ownerMatchesUser(owner, userId)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }
@@ -46,7 +51,7 @@ export async function PUT(req: NextRequest) {
     }
     if (owner.startsWith("u:")) {
       const userId = sessionUserId(await auth());
-      if (!userId || userId !== owner.slice(2)) {
+      if (!userId || !ownerMatchesUser(owner, userId)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }

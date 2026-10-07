@@ -59,6 +59,7 @@ import {
   createRun,
   createStore,
   guestOwner,
+  userDeviceOwner,
   normalizeConfig,
   normalizeStore,
   resolveSettings,
@@ -118,7 +119,9 @@ export function PlannerApp() {
     if (status === "loading") return;
     const sessionUser = session?.user as SessionUser | undefined;
     const nextOwner =
-      status === "authenticated" && sessionUser?.id ? `u:${sessionUser.id}` : guestOwner();
+      status === "authenticated" && sessionUser?.id
+        ? userDeviceOwner(sessionUser.id)
+        : guestOwner();
     if (loadedForRef.current === nextOwner) return;
     loadedForRef.current = nextOwner;
     const seq = ++loadSeqRef.current;

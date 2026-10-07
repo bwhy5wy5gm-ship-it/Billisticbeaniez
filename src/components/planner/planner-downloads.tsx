@@ -23,6 +23,7 @@ import {
   createStore,
   createPlan,
   guestOwner,
+  userDeviceOwner,
   normalizeConfig,
   normalizeStore,
   resolveSettings,
@@ -100,7 +101,8 @@ export function PlannerDownloads() {
   useEffect(() => {
     if (status === "loading") return;
     const userId = (session?.user as SessionUser | undefined)?.id;
-    const nextOwner = status === "authenticated" && userId ? `u:${userId}` : guestOwner();
+    const nextOwner =
+      status === "authenticated" && userId ? userDeviceOwner(userId) : guestOwner();
     let alive = true;
     (async () => {
       const [cfg, mis, plans] = await Promise.all([

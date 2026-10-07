@@ -17,6 +17,7 @@ export const MAT_HEIGHT = 600;
 export const TIMER_SECONDS = 150;
 export const PLANS_KEY = "planner.store";
 export const OWNER_KEY = "planner.owner";
+export const DEVICE_KEY = "planner.device";
 
 export const DEFAULT_CONFIG: PlannerConfig = {
   title: "BioGlow Planner",
@@ -96,6 +97,25 @@ export function guestOwner(): string {
   }
 }
 
+export function deviceUuid(): string {
+  try {
+    const existing = localStorage.getItem(DEVICE_KEY);
+    if (existing && existing.length >= 6) return existing;
+    const uuid =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Math.random().toString(36).slice(2, 12)}${Date.now().toString(36)}`;
+    localStorage.setItem(DEVICE_KEY, uuid);
+    return uuid;
+  } catch {
+    return `${Math.random().toString(36).slice(2, 12)}${Date.now().toString(36)}`;
+  }
+}
+
+export function userDeviceOwner(userId: string): string {
+  return `u:${userId}.${deviceUuid()}`;
+}
+
 export function activePlan(store: PlannerStore): Plan {
   return store.plans.find((p) => p.id === store.activePlanId) || store.plans[0];
 }
@@ -104,7 +124,7 @@ export function activeRun(plan: Plan): Run {
   return plan.runs.find((r) => r.id === plan.activeRunId) || plan.runs[0];
 }
 
-const OWNER_PATTERN = /^[ug]:[A-Za-z0-9-]{6,64}$/;
+const OWNER_PATTERN = /^[ug]:[A-Za-z0-9.-]{6,96}$/;
 
 export function isValidOwner(owner: string): boolean {
   return OWNER_PATTERN.test(owner);
