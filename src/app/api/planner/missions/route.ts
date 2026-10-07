@@ -19,7 +19,9 @@ async function readMissions() {
 
 export async function GET() {
   try {
-    return NextResponse.json(await readMissions());
+    const res = NextResponse.json(await readMissions());
+    res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+    return res;
   } catch {
     return NextResponse.json(DEFAULT_MISSIONS);
   }

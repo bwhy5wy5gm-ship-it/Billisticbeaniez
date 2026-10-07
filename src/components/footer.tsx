@@ -9,7 +9,7 @@ import { useContent } from "@/lib/use-content";
 export function Footer() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const { getContent } = useContent();
+  const { getContent, loaded } = useContent();
   const logo = getContent("site.logo", "");
   const logoRotate = getContent("site.logo.rotate", "0");
   const sponsorLogo = getContent("site.sponsor.logo", "");
@@ -29,11 +29,13 @@ export function Footer() {
               className="h-24 w-24 rounded-2xl object-contain shadow-lg mb-6"
               style={{ transform: `rotate(${logoRotate}deg)` }}
             />
-          ) : (
+          ) : loaded ? (
             <div className="relative flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-lg mb-6">
               <Beaker className="h-12 w-12" />
               <Atom className="h-5 w-5 absolute -top-1 -right-1 text-emerald-200" />
             </div>
+          ) : (
+            <div className="h-24 w-24 rounded-2xl bg-muted animate-pulse mb-6" />
           )}
           <h2 className="text-3xl font-bold tracking-tight mb-2">
             <span className="text-cyan-600 dark:text-cyan-400">Billistic</span>{" "}

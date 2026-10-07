@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,10 +9,6 @@ import {
   Target,
   Zap,
   Gauge,
-  FileImage,
-  Plus,
-  X,
-  Rocket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/lib/use-content";
@@ -21,18 +17,21 @@ type Attachment = { image: string; title: string; desc: string };
 
 export default function RobotPage() {
   const { getContent } = useContent();
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   const robotImage = getContent("robot.image", "");
   const robotRotation = parseInt(getContent("robot.image.rotate", "0"), 10) || 0;
   const robotRotated = robotRotation === 90 || robotRotation === 270;
 
-  useEffect(() => {
-    const raw = getContent("robot.attachments", "");
-    if (raw) {
-      try { setAttachments(JSON.parse(raw)); } catch {}
+  const attachmentsRaw = getContent("robot.attachments", "");
+  const attachments = useMemo<Attachment[]>(() => {
+    if (!attachmentsRaw) return [];
+    try {
+      const parsed = JSON.parse(attachmentsRaw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
     }
-  }, [getContent("robot.attachments", "")]);
+  }, [attachmentsRaw]);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -160,7 +159,7 @@ export default function RobotPage() {
               <h2 className="text-2xl font-bold">{getContent("robot.attachments.title", "Attachments")}</h2>
             </div>
             {attachments.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">No attachments added yet. Add them in the admin Pages editor.</p>
+              <p className="text-sm text-muted-foreground italic">Nothing uploaded, check back later.</p>
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {attachments.map((att, i) => (

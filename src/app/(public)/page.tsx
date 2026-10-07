@@ -52,7 +52,7 @@ function formatUpdateDate(update: { date?: string; createdAt?: string }): string
 }
 
 export default function HomePage() {
-  const { getContent } = useContent();
+  const { getContent, loaded } = useContent();
   const [mounted, setMounted] = useState(false);
   const [latestUpdate, setLatestUpdate] = useState<HomeUpdate | null>(null);
   const [featuredPhoto, setFeaturedPhoto] = useState<HomePhoto | null>(null);
@@ -116,10 +116,12 @@ export default function HomePage() {
                   className="h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 rounded-3xl object-contain mx-auto drop-shadow-2xl"
                   style={{ transform: `rotate(${getContent("site.logo.rotate", "0")}deg)` }}
                 />
-              ) : (
+              ) : loaded ? (
                 <div className="inline-flex items-center justify-center h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 rounded-3xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white shadow-2xl shadow-cyan-500/30">
                   <Beaker className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28" />
                 </div>
+              ) : (
+                <div className="inline-flex h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56 lg:h-64 lg:w-64 rounded-3xl bg-muted animate-pulse mx-auto" />
               )}
             </div>
 

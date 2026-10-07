@@ -17,7 +17,9 @@ async function readConfig() {
 
 export async function GET() {
   try {
-    return NextResponse.json(await readConfig());
+    const res = NextResponse.json(await readConfig());
+    res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+    return res;
   } catch {
     return NextResponse.json(DEFAULT_CONFIG);
   }

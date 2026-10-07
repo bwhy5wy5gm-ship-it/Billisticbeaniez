@@ -6,41 +6,46 @@ import { defaults } from "./content-defaults";
 let globalContent: Record<string, string> | null = null;
 let globalVersion = 0;
 
+function mergeContent(data: Record<string, unknown>) {
+  if (!data || typeof data !== "object" || data.error) return;
+  const merged = { ...defaults, ...(data as Record<string, string>) };
+  globalContent = merged;
+}
+
 export function useContent() {
   const [content, setContent] = useState<Record<string, string>>(
     globalContent ?? defaults
   );
   const [version, setVersion] = useState(globalVersion);
+  const [loaded, setLoaded] = useState(globalContent !== null);
 
   useEffect(() => {
-    if (globalContent) {
-      setContent(globalContent);
-      return;
-    }
-    fetch("/api/admin/content")
+    if (globalContent) return;
+    fetch("/api/content")
       .then((r) => r.json())
       .then((data) => {
         if (data && typeof data === "object") {
-          const merged = { ...defaults, ...data };
-          globalContent = merged;
-          setContent(merged);
+          mergeContent(data);
+          if (globalContent) {
+            setContent(globalContent);
+            setLoaded(true);
+          }
         }
       })
-      .catch(() => {})
-      .finally(() => {});
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     const check = () => {
       if (globalVersion !== version) {
         setVersion(globalVersion);
-        fetch("/api/admin/content")
+        fetch("/api/content")
           .then((r) => r.json())
           .then((data) => {
-            if (data && typeof data === "object") {
-              const merged = { ...defaults, ...data };
-              globalContent = merged;
-              setContent(merged);
+            mergeContent(data);
+            if (globalContent) {
+              setContent(globalContent);
+              setLoaded(true);
             }
           })
           .catch(() => {});
@@ -55,7 +60,7 @@ export function useContent() {
     [content]
   );
 
-  return { getContent, loading: false };
+  return { getContent, loaded, loading: false };
 }
 
 export function invalidateContent() {
