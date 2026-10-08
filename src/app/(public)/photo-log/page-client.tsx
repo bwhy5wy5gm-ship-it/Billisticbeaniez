@@ -70,7 +70,7 @@ export default function PhotoLogPage() {
           </div>
 
           {/* Year Tabs */}
-          <div className="flex justify-center gap-3 mb-12">
+            <div className="flex flex-wrap justify-center gap-3 mb-12">
             {years.map((year) => (
               <button
                 key={year}

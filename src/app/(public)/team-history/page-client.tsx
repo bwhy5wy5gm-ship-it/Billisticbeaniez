@@ -22,7 +22,7 @@ export default function TeamHistoryPage() {
     fetch("/api/history")
       .then((r) => r.json())
       .then((data) => {
-        setEntries(data.map((h: any) => ({ ...h, photos: h.photos || [] })));
+        setEntries(data.map((h: HistoryEntry) => ({ ...h, photos: h.photos || [] })));
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -55,11 +55,11 @@ export default function TeamHistoryPage() {
               <div className="absolute left-8 top-0 bottom-0 w-1 bg-muted rounded-full" />
               <div className="space-y-12">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="relative flex gap-8 animate-pulse">
+                  <div key={i} className="relative flex gap-4 sm:gap-8 animate-pulse">
                     <div className="w-16 h-16 rounded-2xl bg-muted border-4 border-background z-10 shrink-0" />
                     <Card className="flex-1 border-2">
-                      <CardContent className="p-6">
-                        <div className="h-4 bg-muted rounded w-1/4 mb-3" />
+          <CardContent className="p-4 sm:p-6">
+            <div className="h-4 bg-muted rounded w-1/4 mb-3" />
                         <div className="h-7 bg-muted rounded w-2/3 mb-3" />
                         <div className="h-4 bg-muted rounded w-full" />
                       </CardContent>
@@ -85,7 +85,7 @@ export default function TeamHistoryPage() {
 
               <div className="space-y-16">
                 {sorted.map((entry, i) => (
-                  <div key={entry.id} className="relative flex gap-8 items-start group">
+                  <div key={entry.id} className="relative flex gap-4 sm:gap-8 items-start group">
                     {/* Year badge */}
                     <div className="relative z-10 shrink-0">
                       <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white font-bold text-lg border-4 border-background shadow-xl shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-shadow duration-300">
@@ -95,7 +95,7 @@ export default function TeamHistoryPage() {
 
                     {/* Card */}
                     <Card className="flex-1 border-2 hover:border-cyan-200/80 dark:hover:border-cyan-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 hover:-translate-y-1">
-                      <CardContent className="p-6 md:p-8">
+                      <CardContent className="p-4 sm:p-6 md:p-8">
                         <div className="flex items-center gap-3 mb-4">
                           <Badge variant="outline" className="text-sm font-mono gap-1.5 px-3 py-1">
                             {entry.year}

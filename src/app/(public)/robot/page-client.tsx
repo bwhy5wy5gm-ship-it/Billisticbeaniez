@@ -61,8 +61,8 @@ export default function RobotPage() {
                 src={robotImage}
                 alt="Billistic Beaniez robot, top view"
                 className={`object-contain rounded-xl ${
-                  robotRotated
-                    ? "max-h-[440px] w-auto max-w-[440px]"
+            robotRotated
+              ? "max-h-[440px] w-auto max-w-full"
                     : "max-h-[500px] w-auto max-w-full"
                 }`}
                 style={{ transform: `rotate(${robotRotation}deg)` }}
