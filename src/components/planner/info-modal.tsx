@@ -65,7 +65,7 @@ const SECTIONS: { title: string; lines: string[] }[] = [
   {
     title: "Settings",
     lines: [
-      "Settings tab: match duration, reliability threshold, maximum launches, maximum attachment changes, default robot size, distance units, heading arrow and plan health.",
+      "Settings tab: match duration, reliability threshold, maximum launches, maximum attachment changes, default robot size, robot speed, distance units, heading arrow and plan health.",
       "Settings apply to the current plan only and are used by the analysis.",
       "Admins can edit the shared mat image, checklist and missions from the admin site.",
     ],

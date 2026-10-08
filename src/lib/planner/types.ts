@@ -81,6 +81,7 @@ export interface PlanSettings {
   planHealthEnabled?: boolean;
   defaultRobotWidth?: number;
   defaultRobotLength?: number;
+  robotSpeedPercent?: number;
 }
 
 export interface Run {

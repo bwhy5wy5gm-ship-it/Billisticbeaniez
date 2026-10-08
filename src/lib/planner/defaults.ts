@@ -257,6 +257,8 @@ export function sanitizeSettings(raw: unknown): PlanSettings {
   if (dw !== null) out.defaultRobotWidth = dw;
   const dl = int(s.defaultRobotLength, 20, 400);
   if (dl !== null) out.defaultRobotLength = dl;
+  const sp = int(s.robotSpeedPercent, 25, 400);
+  if (sp !== null) out.robotSpeedPercent = sp;
   return out;
 }
 
@@ -270,6 +272,7 @@ export interface ResolvedSettings {
   planHealthEnabled: boolean;
   defaultRobotWidth: number | null;
   defaultRobotLength: number | null;
+  robotSpeedPercent: number;
 }
 
 export function resolveSettings(plan?: { settings?: PlanSettings } | null): ResolvedSettings {
@@ -284,6 +287,7 @@ export function resolveSettings(plan?: { settings?: PlanSettings } | null): Reso
     planHealthEnabled: s.planHealthEnabled ?? true,
     defaultRobotWidth: s.defaultRobotWidth ?? null,
     defaultRobotLength: s.defaultRobotLength ?? null,
+    robotSpeedPercent: s.robotSpeedPercent ?? 100,
   };
 }
 

@@ -719,7 +719,7 @@ export function PlannerApp() {
                 selected={selected}
                 draft={draft}
                 simRunning={timerRunning}
-                simDurationMs={TIMER_SECONDS * 1000}
+                simDurationMs={(TIMER_SECONDS * 1000 * 100) / planSettings.robotSpeedPercent}
                 robotImageUrl={robotImageUrl}
                 robotImageRotation={robotImageRotation}
                 showHeading={planSettings.showHeading}
@@ -1105,6 +1105,26 @@ export function PlannerApp() {
                 </div>
                 <div>
                   <label className="mb-1 block text-xs text-foreground">
+                    Robot speed (% of real time)
+                  </label>
+                  <Input
+                    type="number"
+                    min={25}
+                    max={400}
+                    defaultValue={planSettings.robotSpeedPercent}
+                    onBlur={(e) =>
+                      commitNumber(e.currentTarget.value, 25, 400, (v) =>
+                        patchSettings({ robotSpeedPercent: v })
+                      )
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") e.currentTarget.blur();
+                    }}
+                    className="h-8 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-foreground">
                     Default robot width (cm)
                   </label>
                   <Input
@@ -1205,7 +1225,8 @@ export function PlannerApp() {
 
               <p className="text-[11px] leading-snug text-foreground">
                 New launches pick up the default robot size. The timer widget always uses 2:30 and
-                the plan duration only affects the analysis.
+                the plan duration only affects the analysis. Robot speed only changes how fast the
+                robot moves along the drawn line while the timer runs.
               </p>
             </div>
           </TabsContent>
