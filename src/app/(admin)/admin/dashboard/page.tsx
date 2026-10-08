@@ -20,6 +20,7 @@ import {
   FileText,
   Map,
   Bot,
+  UserRound,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -135,6 +136,14 @@ export default function AdminDashboardPage() {
       href: "/admin/planner",
       color: "text-cyan-500",
       bg: "bg-cyan-50 dark:bg-cyan-950/20",
+    },
+    {
+      icon: UserRound,
+      title: "Account",
+      desc: "Change your password and view login history",
+      href: "/admin/account",
+      color: "text-violet-500",
+      bg: "bg-violet-50 dark:bg-violet-950/20",
     },
   ];
 

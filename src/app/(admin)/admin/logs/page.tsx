@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollText, Clock, User } from "lucide-react";
 
 interface LogEntry {
-  id: number;
-  action: string;
-  userId?: string;
+  id: string;
+  page: string;
+  visitorId?: string | null;
   timestamp: string;
 }
 
@@ -29,7 +29,8 @@ export default function LogsPage() {
       fetch("/api/admin/logs")
         .then((r) => r.json())
         .then((data) => {
-          setLogs(data.logs || []);
+          const rows: LogEntry[] = data.logs || [];
+          setLogs(rows.filter((l) => l.page !== "login"));
           setLoading(false);
         })
         .catch(() => setLoading(false));
@@ -85,9 +86,9 @@ export default function LogsPage() {
                         <User className="h-3 w-3 text-muted-foreground" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{log.action}</p>
+                        <p className="text-sm font-medium">{log.page}</p>
                         <p className="text-xs text-muted-foreground">
-                          {log.userId || "System"}
+                          {log.visitorId || "Guest"}
                         </p>
                       </div>
                     </div>

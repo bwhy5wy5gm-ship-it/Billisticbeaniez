@@ -30,6 +30,7 @@ export default function LoginPage() {
       setError("Invalid email or password");
       setLoading(false);
     } else {
+      await fetch("/api/auth/login-event", { method: "POST" }).catch(() => {});
       router.push("/admin/dashboard");
       router.refresh();
     }
