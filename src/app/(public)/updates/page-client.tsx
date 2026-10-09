@@ -79,7 +79,7 @@ export default function UpdatesPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-8">
+          <div className="flex flex-col gap-8">
             {updates.map((update) => (
               <Link key={update.id} href={`/updates/${update.id}`}>
                 <Card className="border-2 hover:border-amber-200/80 dark:hover:border-amber-800/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer group">
